@@ -10,14 +10,14 @@ local ppass ""
 *  =======================================
 *  = Log definitions and standard set-up =
 *  =======================================
-GenericSetupSteveHarris spot_early cr_working, logon
+GenericSetupSteveHarris spot_ward cr_working, logon
 
 
 *  =======================================
 *  = Visit level data import from SQL db =
 *  =======================================
 
-capture {
+// capture {
 
 	odbc query "`ddsn'", user("`uuser'") pass("`ppass'") verbose
 
@@ -61,7 +61,7 @@ capture {
 		di as error "Error: Unable to label data"
 		exit
 	}
-}
+// }
 save ../data/working_raw.dta, replace
 
 *  ========================
