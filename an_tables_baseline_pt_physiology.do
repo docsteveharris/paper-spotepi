@@ -63,7 +63,8 @@ Other labs
 *  =========================
 *  = Define you table name =
 *  =========================
-GenericSetupSteveHarris spot_early an_tables_baseline_pt_physiology, logon
+cd ~/data/spot_ward/vcode
+GenericSetupSteveHarris spot_ward an_tables_baseline_pt_physiology, logon
 global table_name baseline_pt_physiology
 
 /*

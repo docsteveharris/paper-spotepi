@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_early an_model_count_sepsis, logon
+GenericSetupSteveHarris spot_ward an_model_count_sepsis, logon
 
 /*
 Model the number of severe sepsis / septic shock patients per week

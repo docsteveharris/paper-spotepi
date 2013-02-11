@@ -25,7 +25,7 @@ CHANGED: 2013-02-08 - now combined with visit outcome fields
 *  =========================
 *  = Define you table name =
 *  =========================
-GenericSetupSteveHarris spot_early an_tables_baseline_pt_chars, logon
+GenericSetupSteveHarris spot_ward an_tables_baseline_pt_chars, logon
 global table_name baseline_pt_chars
 
 /*
@@ -38,7 +38,7 @@ You will need the following columns
 - max
 */
 
-local clean_run 0
+local clean_run 1
 if `clean_run' == 1 {
 	clear
 	use ../data/working.dta
@@ -72,11 +72,11 @@ local table_vars ///
 	`outcome'
 
 * Specify the type of variable
-local norm_vars
+local norm_vars age
 local skew_vars spo2 fio2_std uvol1h creatinine urea gcst ///
 	hrate bpsys bpmap rrate temperature ///
 	`laboratory'
-local range_vars age
+local range_vars 
 local bin_vars male periarrest delayed_referral hsinus rxrrt ///
 	rxlimits
 local cat_vars v_ccmds vitals sepsis rxcvs rx_resp avpu sepsis_site ///

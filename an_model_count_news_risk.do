@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_early an_model_count_news_risk, logon
+GenericSetupSteveHarris spot_ward an_model_count_news_risk, logon
 
 /*
 

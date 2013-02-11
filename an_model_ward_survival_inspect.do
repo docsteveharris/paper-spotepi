@@ -8,7 +8,7 @@ Use cox model
 Allow for site level effects via frailty
 */
 
-GenericSetupSteveHarris spot_early an_model_ward_survival_inspect, logon
+GenericSetupSteveHarris spot_ward an_model_ward_survival_inspect, logon
 * NOTE: 2013-01-29 - cr_survival.do stsets @ 28 days by default
 
 local patient_vars age sex sepsis_b delayed_referral icnarc0

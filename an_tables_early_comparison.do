@@ -8,7 +8,7 @@ Prepare table comparing characteristics of the early versus deferred admission
 *  =========================
 *  = Define you table name =
 *  =========================
-GenericSetupSteveHarris spot_early an_tables_early_comparison, logon
+GenericSetupSteveHarris spot_ward an_tables_early_comparison, logon
 global table_name early_comparison
 
 /*

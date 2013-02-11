@@ -2,7 +2,7 @@
 *  = Explore / inspect data =
 *  ==========================
 
-GenericSetupSteveHarris spot_early an_inspect_outofsample.do
+GenericSetupSteveHarris spot_ward an_inspect_outofsample.do
 /*
 Compare major characteristics of participating and non-participating sites
 - where participation is defined by meeting the early/ward inclusion criteria

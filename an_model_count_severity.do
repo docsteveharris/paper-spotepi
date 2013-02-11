@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_early an_model_count_severity, logon
+GenericSetupSteveHarris spot_ward an_model_count_severity, logon
 
 /*
 Model the number of patients by ICNARC score decile per week

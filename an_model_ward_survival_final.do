@@ -2,7 +2,7 @@
 *  = Produce a table showing coefficients from final ward survival model =
 *  =======================================================================
 
-GenericSetupSteveHarris spot_early an_survival_ward, logon
+GenericSetupSteveHarris spot_ward an_survival_ward, logon
 
 /*
 Consider the following models

@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_early an_describe_ind_vars, logon
+GenericSetupSteveHarris spot_ward an_describe_ind_vars, logon
 
 
 use ../data/working.dta, clear

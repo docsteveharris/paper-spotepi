@@ -8,7 +8,7 @@
 - Organ failure??
 */
 
-* GenericSetupSteveHarris spot_early an_tables_severity, logon
+* GenericSetupSteveHarris spot_ward an_tables_severity, logon
 local clean_run 0
 if `clean_run' == 1 {
 	clear

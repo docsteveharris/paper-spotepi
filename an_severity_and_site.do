@@ -2,7 +2,7 @@
 *  = Inter-site variation and severity of illness of ward patient =
 *  ================================================================
 
-GenericSetupSteveHarris spot_early an_severity_and_site, logon
+GenericSetupSteveHarris spot_ward an_severity_and_site, logon
 
 
 use ../data/working.dta, clear

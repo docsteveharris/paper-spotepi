@@ -2,7 +2,7 @@
 *  = Regression diagnostics =
 *  ==========================
 
-GenericSetupSteveHarris spot_early an_model_ward_survival, logon
+GenericSetupSteveHarris spot_ward an_model_ward_survival, logon
 
 /*
 Consider the following issues

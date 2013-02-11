@@ -2,7 +2,7 @@
 *  = Occupancy and time =
 *  ======================
 
-GenericSetupSteveHarris spot_early an_occupancy_and_time, logon
+GenericSetupSteveHarris spot_ward an_occupancy_and_time, logon
 
 global ddsn mysqlspot
 global uuser stevetm

@@ -8,7 +8,7 @@ Ultimately you will need to transfer the results of these decisions
 into a small pre-flight do file before running a model
 */
 
-GenericSetupSteveHarris spot_early an_model_building.do
+GenericSetupSteveHarris spot_ward an_model_building.do
 
 use ../data/working.dta, clear
 include cr_survival.do

@@ -13,7 +13,7 @@ local ppass ""
 /*
 NOTE: 2013-01-08 - less strict (uses a 70% quality threshold)
 */
-GenericSetupSteveHarris spot_early cr_working_sensitivity, logon
+GenericSetupSteveHarris spot_ward cr_working_sensitivity, logon
 
 
 

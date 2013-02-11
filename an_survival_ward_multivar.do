@@ -15,7 +15,7 @@ Steps
 
 */
 
-GenericSetupSteveHarris spot_early an_survival_ward, logon
+GenericSetupSteveHarris spot_ward an_survival_ward, logon
 * NOTE: 2013-01-29 - cr_survival.do stsets @ 28 days by default
 qui include cr_survival.do
 sts list, at(0/28)

@@ -2,7 +2,7 @@
  * = Study variables with respect to time =
  * ========================================
 
-GenericSetupSteveHarris spot_early an_study_and_time, logon
+GenericSetupSteveHarris spot_ward an_study_and_time, logon
 
 
 use ../data/working.dta, clear

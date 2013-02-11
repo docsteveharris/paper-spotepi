@@ -11,7 +11,7 @@ i.e.
 - diagnosis
 */
 
-GenericSetupSteveHarris spot_early cr_admitted_pts, logon
+GenericSetupSteveHarris spot_ward cr_admitted_pts, logon
 
 
 

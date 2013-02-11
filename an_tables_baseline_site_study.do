@@ -2,7 +2,7 @@
 *  = Baseline tables =
 *  ===================
 
-GenericSetupSteveHarris spot_early an_tables_baseline_site_study, logon
+GenericSetupSteveHarris spot_ward an_tables_baseline_site_study, logon
 
 *  ===========================================================
 *  = Pull together data from all patients at all study sites =
