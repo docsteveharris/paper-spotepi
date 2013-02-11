@@ -463,7 +463,7 @@ if `append_statistic_type' {
 
 local justify lrl
 
-local tablefontsize "\footnotesize"
+local tablefontsize "\scriptsize"
 local arraystretch 1.0
 local taburowcolors 2{white .. white}
 /*
