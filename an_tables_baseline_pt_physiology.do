@@ -173,6 +173,7 @@ postfile `pname' ///
 	double 	vmin ///
 	double 	vmax ///
 	double 	vother ///
+	str244	sparkspike ///
 	using `pfile' , replace
 
 tempfile working
@@ -186,6 +187,7 @@ foreach lvl of local bylevels {
 	count 
 	local grp_sizes `grp_sizes' `=r(N)'
 	local table_order 1
+	local sparkspike = ""
 	foreach var of local table_vars {
 		local varname `var'
 		local varlabel: variable label `var'
@@ -234,6 +236,18 @@ foreach lvl of local bylevels {
 			local vmin		= r(p25)
 			local vmax		= r(p75)
 			local vother 	= .
+			// sparkspike routine
+			cap drop kd kx kx20 kdmedian
+			kdensity `var', gen(kx kd) nograph 
+			egen kx20 = cut(kx), group(20)
+			bys kx20: egen kdmedian = median(kd)
+			forvalues k = 1/20 {
+				// hack to get the kdmedian value
+				qui su kdmedian if kx20 == `k', meanonly
+				local y = round(`=r(mean)', 0.01)
+				local spike "`k' `y'"
+				local sparkspike "`sparkspike' `spike'"
+			}
 		}
 
 		local check_in_list: list posof "`var'" in range_vars
@@ -260,7 +274,8 @@ foreach lvl of local bylevels {
 				(`vcentral') ///
 				(`vmin') ///
 				(`vmax') ///
-				(`vother')
+				(`vother') ///
+				("`sparkspike'")
 
 			local table_order = `table_order' + 1
 			continue
@@ -298,7 +313,8 @@ foreach lvl of local bylevels {
 			(`vcentral') ///
 			(`vmin') ///
 			(`vmax') ///
-			(`vother')
+			(`vother') ///
+			("`sparkspike'")
 
 
 		local table_order = `table_order' + 1
@@ -313,6 +329,7 @@ postclose `pname'
 use `pfile', clear
 qui compress
 br
+exit
 
 *  ===================================================================
 *  = Now you need to pull in the table row labels, units and formats =
