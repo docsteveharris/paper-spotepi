@@ -121,11 +121,31 @@ local norm_vars age
 local skew_vars spo2 fio2_std uvol1h creatinine urea gcst ///
 	hrate bpsys bpmap rrate temperature ///
 	`laboratory'
-local range_vars 
-local bin_vars male periarrest delayed_referral hsinus rxrrt ///
-	rxlimits
+local range_vars
+* local bin_vars male periarrest delayed_referral hsinus rxrrt ///
+* 	rxlimits
 local cat_vars v_ccmds vitals sepsis rxcvs rx_resp avpu sepsis_site ///
-	rx_visit ccmds_delta v_decision 
+	rx_visit ccmds_delta v_decision ///
+	periarrest hsinus rxrrt
+
+*  ==============================
+*  = Set up sparkline variables =
+*  ==============================
+* sparks = number of bars
+local sparks 12
+* sparkwidth = number of x widths for sparkline plot
+local sparkwidth 8
+global sparkspike_width 1.5
+local sparkspike_vars ///
+	temperature wcc hrate bpsys bpmap rrate spo2 fio2_std ///
+	uvol1h creatinine urea ///
+	ph pf paco2 hco3 lactate platelets sodium bili
+* Use fat 2 point sparkline for horizontal bars (default 0.2pt)
+local sparkhbar_width 3pt
+local sparkhbar_vars ///
+	male periarrest hsinus rxrrt ///
+	v_ccmds vitals rxcvs rx_resp
+
 
 * CHANGED: 2013-02-05 - use the gap_here indicator to add gaps
 * these need to be numbered as _1 etc
@@ -176,6 +196,7 @@ postfile `pname' ///
 	str244	sparkspike ///
 	using `pfile' , replace
 
+
 tempfile working
 save `working', replace
 levelsof `byvar', clean local(bylevels)
@@ -184,7 +205,7 @@ foreach lvl of local bylevels {
 	keep if `byvar' == `lvl'
 	local lvl_label: label (`byvar') `lvl'
 	local lvl_labels `lvl_labels' `lvl_label'
-	count 
+	count
 	local grp_sizes `grp_sizes' `=r(N)'
 	local table_order 1
 	local sparkspike = ""
@@ -226,6 +247,13 @@ foreach lvl of local bylevels {
 			local vmax		= .
 			su `var'
 			local vother 	= r(mean) * 100
+			// sparkhbar routine
+			local check_in_list: list posof "`var'" in sparkhbar_vars
+			if `check_in_list' > 0 {
+				local x : di %9.2f `=r(mean)'
+				local x = trim("`x'")
+				local sparkspike "\setlength{\sparklinethickness}{`sparkhbar_width'}\begin{sparkline}{`sparkwidth'}\spark 0.0 0.5 `x' 0.5 / \end{sparkline}\setlength{\sparklinethickness}{0.2pt}"
+			}
 		}
 
 		local check_in_list: list posof "`var'" in skew_vars
@@ -236,18 +264,6 @@ foreach lvl of local bylevels {
 			local vmin		= r(p25)
 			local vmax		= r(p75)
 			local vother 	= .
-			// sparkspike routine
-			cap drop kd kx kx20 kdmedian
-			kdensity `var', gen(kx kd) nograph 
-			egen kx20 = cut(kx), group(20)
-			bys kx20: egen kdmedian = median(kd)
-			forvalues k = 1/20 {
-				// hack to get the kdmedian value
-				qui su kdmedian if kx20 == `k', meanonly
-				local y = round(`=r(mean)', 0.01)
-				local spike "`k' `y'"
-				local sparkspike "`sparkspike' `spike'"
-			}
 		}
 
 		local check_in_list: list posof "`var'" in range_vars
@@ -258,6 +274,35 @@ foreach lvl of local bylevels {
 			local vmin		= r(min)
 			local vmax		= r(max)
 			local vother 	= .
+		}
+
+
+		// sparkspike routine
+		local check_in_list: list posof "`var'" in sparkspike_vars
+		if `check_in_list' > 0 {
+			local sparkspike = ""
+			cap drop kd kx kx20 kdmedian
+			kdensity `var', gen(kx kd) nograph
+			// normalise over the [0,1] scale
+			qui su kd
+			replace kd = kd / r(max)
+			egen kx20 = cut(kx), group(20)
+			replace kx20 = kx20 + 1
+			bys kx20: egen kdmedian = median(kd)
+			local sparkspike "\begin{sparkline}{`sparkwidth'}\renewcommand*{\do}[1]{\sparkspike #1 }\docsvlist{"
+			forvalues k = 1/`sparks' {
+				// hack to get the kdmedian value
+				qui su kdmedian if kx20 == `k', meanonly
+				local spike : di %9.2f `=r(mean)'
+				local spike = trim("`spike'")
+				local x = `k' / `sparks'
+				local x : di %9.2f `x'
+				local x = trim("`x'")
+				local sparkspike "`sparkspike'{`x' `spike'}"
+				// add a comma if not the end of the list
+				if `k' != `sparks' local sparkspike "`sparkspike',"
+			}
+			local sparkspike "`sparkspike'}\end{sparkline}"
 		}
 
 		local check_in_list: list posof "`var'" in cat_vars
@@ -300,6 +345,12 @@ foreach lvl of local bylevels {
 			local vmin		= .
 			local vmax		= .
 			local vother 	= vother[`i']
+			// sparkhbar routine
+			local check_in_list: list posof "`var'" in sparkhbar_vars
+			if `check_in_list' > 0 {
+				local x = round(`vother' / 100, 0.01)
+				local sparkspike "\setlength{\sparklinethickness}{`sparkhbar_width'}\begin{sparkline}{`sparkwidth'}\spark 0.0 0.5 `x' 0.5 / \end{sparkline}\setlength{\sparklinethickness}{0.2pt}"
+			}
 
 		post `pname' ///
 			(`lvl') ///
@@ -329,7 +380,6 @@ postclose `pname'
 use `pfile', clear
 qui compress
 br
-exit
 
 *  ===================================================================
 *  = Now you need to pull in the table row labels, units and formats =
@@ -446,7 +496,7 @@ listtab_vars tablerowlabel vcentral_fmt vbracket, ///
 *  = Now convert to wide format =
 *  ==============================
 keep bylevel table_order tablerowlabel vcentral_fmt vbracket seq ///
-	varname var_type var_label var_level_lab var_level
+	varname var_type var_label var_level_lab var_level sparkspike
 
 chardef tablerowlabel vcentral_fmt, ///
 	char(varname) prefix("\textit{") suffix("}") ///
@@ -485,7 +535,7 @@ order seq tablerowlabel vcentral_fmt1 vbracket1
 save ../data/scratch/scratch.dta, replace
 clear
 local table_order $table_order
-local obs = wordcount("`table_order'") 
+local obs = wordcount("`table_order'")
 set obs `obs'
 gen design_order = .
 gen varname = ""
@@ -539,10 +589,18 @@ if `append_statistic_type' {
 }
 
 local justify lrl
-
 local tablefontsize "\scriptsize"
 local arraystretch 1.0
 local taburowcolors 2{white .. white}
+// switch on sparklines?
+local sparklines_on = 1
+if `sparklines_on' {
+	local nonrowvars `nonrowvars' sparkspike
+	local sparkspike_width "\renewcommand\sparkspikewidth{$sparkspike_width}"
+	local justify lrll
+	local sparkspike_colour "\definecolor{sparkspikecolor}{gray}{0.7}"
+	local sparkline_colour "\definecolor{sparklinecolor}{gray}{0.7}"
+}
 /*
 Use san-serif font for tables: so \sffamily {} enclosed the whole table
 Add a label to the table at the end for cross-referencing
@@ -554,6 +612,9 @@ listtab tablerowlabel `nonrowvars'  ///
 		"`tablefontsize'" ///
 		"\renewcommand{\arraystretch}{`arraystretch'}" ///
 		"\taburowcolors `taburowcolors'" ///
+		"`sparkspike_width'" ///
+		"`sparkspike_colour'" ///
+		"`sparkline_colour'" ///
 		"\sffamily{" ///
 		"\begin{tabu} to " ///
 		"\textwidth {`justify'}" ///
