@@ -1,3 +1,7 @@
+* TODO: 2013-02-19 - diff this against current cr_working to check it has not changed 
+* force exit now so you don't forget
+exit
+
 clear
 * ==================================
 * = DEFINE LOCAL AND GLOBAL MACROS =
@@ -138,7 +142,6 @@ drop include exclude1 exclude2
 save ../data/working_sensitivity.dta, replace
 
 log close
-
 
 
 
