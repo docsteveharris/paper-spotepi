@@ -15,128 +15,162 @@ if `clean_run' == 1 {
 	use ../data/working.dta
 	qui include cr_preflight.do
 }
+*  =================================================
+*  = Tabulate reported sepsis and sepsis diagnosis =
+*  =================================================
 
-*  ===============
-*  = Sepsis 2001 =
-*  ===============
-use sepsis2001 using ../data/working_postflight.dta, clear
-contract sepsis2001
-egen percent = total(_freq)
-replace percent = round(_freq / percent * 100,0.1)
-sdecode _freq, format(%9.0gc) gen(count)
-sdecode percent, format(%9.1fc) replace ///
-	prefix("(") suffix(")")
-sdecode sepsis2001, gen(tablerowname)
+use ../data/working_postflight.dta, clear
+count
+lookfor sepsis
+tab sepsis
+tab sepsis_site
+tab sepsis_dx
 
-replace tablerowname = "No SIRS" if sepsis2001 == 0
+contract sepsis_dx, freq(n) percent(percent)
 
-local vars tablerowname count percent 
-chardef `vars', ///
-	char(varname) ///
-	prefix("\textit{") suffix("}") ///
-	values( ///
-		"Sepsis status" ///
-		"Number" ///
-		"(\%)" ///
-		)
+// sparkbar code
+local sparkhbar_width 3pt
+local sparkwidth 8
+gen p = percent/100
+sdecode p, format(%9.2fc) replace
+gen sparkbar = `"\setlength{\sparklinethickness}{`sparkhbar_width'}\begin{sparkline}{`sparkwidth'}\spark 0.0 0.5 "' ///
+	 + p + `" 0.5 / \end{sparkline}\setlength{\sparklinethickness}{0.2pt}"'
 
+sdecode n, format(%9.0gc) replace
+sdecode percent, format(%9.1fc) replace
 
-listtab_vars `vars', ///
-	begin("") delimiter("&") end(`"\\"') ///
-	substitute(char varname) ///
-	local(h1)
+label list sepsis_dx
+gsort -sepsis_dx
+gen table_order = _n
+sdecode sepsis_dx, gen(tablerowlabel)
+replace tablerowlabel = "Unlikely+" if sepsis_dx == 0
+replace tablerowlabel = "Other/unspecified" if sepsis_dx == 1
+replace tablerowlabel = "Genitourinary" if sepsis_dx == 2
+replace tablerowlabel = "Gastrointestinal" if sepsis_dx == 3
+replace tablerowlabel = "Respiratory" if sepsis_dx == 4
+replace tablerowlabel =  "\hspace*{1em}\smaller[1]{" + tablerowlabel + "}" ///
+	if sepsis_dx != 0
+ingap 1
+replace tablerowlabel = "Likely+" if _n == 1
 
-global table_name severity_sepsis2001
-local justify lrl
-local tablefontsize "\small"
-local arraystretch 1.2
+global table_name sepsis_reports
+local justify X[7lb]X[rb]X[rb]X[lb]
+* local tablefontsize "\scriptsize"
+local arraystretch 1.0
 local taburowcolors 2{white .. white}
-/*
-NOTE: 2013-01-28 - needed in the pre-amble for colors
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\definecolor{gray90}{gray}{0.9}
-*/
+local super_heading1 "Sepsis & N & (\%) & \\"
 
-listtab `vars' ///
+listtex tablerowlabel n percent sparkbar ///
 	using ../outputs/tables/$table_name.tex, ///
 	replace rstyle(tabular) ///
 	headlines( ///
 		"`tablefontsize'" ///
 		"\renewcommand{\arraystretch}{`arraystretch'}" ///
-		"\sffamily{" ///
 		"\taburowcolors `taburowcolors'" ///
-		"\begin{tabu} spread " ///
-		"\textwidth {`justify'}" ///
+		"\begin{tabu} {`justify'}" ///
 		"\toprule" ///
-		"`h1'" ///
+		"`super_heading1'" ///
 		"\midrule" ) ///
 	footlines( ///
 		"\bottomrule" ///
-		"\end{tabu} } " ///
-		"\label{$table_name} " ///
-		"\normalfont" ///
-		"\normalsize")
+		"\end{tabu} " ///
+		"\label{tab:$table_name} ")
+
+
+*  ===================
+*  = Sepsis severity =
+*  ===================
+use ../data/working_postflight.dta, clear
+count
+tab sepsis_severity
+
+
+contract sepsis_severity, freq(n) percent(percent)
+
+// sparkbar code
+local sparkhbar_width 3pt
+local sparkwidth 8
+gen p = percent/100
+sdecode p, format(%9.2fc) replace
+gen sparkbar = `"\setlength{\sparklinethickness}{`sparkhbar_width'}\begin{sparkline}{`sparkwidth'}\spark 0.0 0.5 "' ///
+	 + p + `" 0.5 / \end{sparkline}\setlength{\sparklinethickness}{0.2pt}"'
+
+sdecode n, format(%9.0gc) replace
+sdecode percent, format(%9.1fc) replace
+
+gsort -sepsis_severity
+gen table_order = _n
+sdecode sepsis_severity, gen(tablerowlabel)
+label list sepsis_severity
+replace tablerowlabel = "None" if sepsis_severity == 0
+
+global table_name sepsis_severity
+local justify X[7lb]X[rb]X[rb]X[lb]
+* local tablefontsize "\scriptsize"
+local arraystretch 1.0
+local taburowcolors 2{white .. white}
+local super_heading1 "Sepsis severity & N & (\%) & \\"
+
+listtex tablerowlabel n percent sparkbar ///
+	using ../outputs/tables/$table_name.tex, ///
+	replace rstyle(tabular) ///
+	headlines( ///
+		"`tablefontsize'" ///
+		"\renewcommand{\arraystretch}{`arraystretch'}" ///
+		"\taburowcolors `taburowcolors'" ///
+		"\begin{tabu} {`justify'}" ///
+		"\toprule" ///
+		"`super_heading1'" ///
+		"\midrule" ) ///
+	footlines( ///
+		"\bottomrule" ///
+		"\end{tabu} " ///
+		"\label{tab:$table_name} ")
+
 
 *  =============
 *  = NEWS risk =
 *  =============
 use news_risk using ../data/working_postflight.dta, clear
-contract news_risk
-egen percent = total(_freq)
-replace percent = round(_freq / percent * 100,0.1)
-sdecode _freq, format(%9.0gc) gen(count)
-sdecode percent, format(%9.1fc) replace ///
-	prefix("(") suffix(")")
-sdecode news_risk, gen(tablerowname)
+contract news_risk, freq(n) percent(percent)
+gsort -news_risk
+gen table_order = _n
 
+// sparkbar code
+local sparkhbar_width 3pt
+local sparkwidth 8
+gen p = percent/100
+sdecode p, format(%9.2fc) replace
 
-local vars tablerowname count percent 
-chardef `vars', ///
-	char(varname) ///
-	prefix("\textit{") suffix("}") ///
-	values( ///
-		"NEWS risk" ///
-		"Number" ///
-		"(\%)" ///
-		)
+gen sparkbar = `"\setlength{\sparklinethickness}{`sparkhbar_width'}\begin{sparkline}{`sparkwidth'}\spark 0.0 0.5 "' ///
+	 + p + `" 0.5 / \end{sparkline}\setlength{\sparklinethickness}{0.2pt}"'
 
-
-listtab_vars `vars', ///
-	begin("") delimiter("&") end(`"\\"') ///
-	substitute(char varname) ///
-	local(h1)
+sdecode n, format(%9.0gc) replace
+sdecode percent, format(%9.1fc) replace
+sdecode news_risk, gen(tablerowlabel)
 
 global table_name severity_news_risk
-local justify lrl
-local tablefontsize "\small"
-local arraystretch 1.2
+local justify X[7lb]X[rb]X[rb]X[lb]
+* local tablefontsize "\scriptsize"
+local arraystretch 1.0
 local taburowcolors 2{white .. white}
-/*
-NOTE: 2013-01-28 - needed in the pre-amble for colors
-\usepackage[usenames,dvipsnames,svgnames,table]{xcolor}
-\definecolor{gray90}{gray}{0.9}
-*/
+local super_heading1 "NEWS Risk & N & (\%) & \\"
 
-listtab `vars' ///
+listtex tablerowlabel n percent sparkbar ///
 	using ../outputs/tables/$table_name.tex, ///
 	replace rstyle(tabular) ///
 	headlines( ///
 		"`tablefontsize'" ///
 		"\renewcommand{\arraystretch}{`arraystretch'}" ///
-		"\sffamily{" ///
 		"\taburowcolors `taburowcolors'" ///
-		"\begin{tabu} spread " ///
-		"\textwidth {`justify'}" ///
+		"\begin{tabu} {`justify'}" ///
 		"\toprule" ///
-		"`h1'" ///
+		"`super_heading1'" ///
 		"\midrule" ) ///
 	footlines( ///
 		"\bottomrule" ///
-		"\end{tabu} } " ///
-		"\label{$table_name} " ///
-		"\normalfont" ///
-		"\normalsize")
-
+		"\end{tabu} " ///
+		"\label{tab:$table_name} ")
 
 
 cap log close
