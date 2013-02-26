@@ -6,7 +6,7 @@
 * be needed to work out occupancy and ccot shift patterns
 
 
-local debug = 1
+local debug = 0
 
 if `debug' {
 	use ../data/working.dta, clear
@@ -201,7 +201,9 @@ gen sepsis_severity = sepsis2001
 replace sepsis_severity = 4 if inlist(sepsis2001, 4,5,6)
 label var sepsis_severity "Sepsis severity"
 label copy sepsis2001 sepsis_severity
+label define sepsis_severity 0 "Neither SIRS nor sepsis", modify
 label define sepsis_severity 4 "Septic shock" 5 "" 6 "", modify
+label values sepsis_severity sepsis_severity
 tab sepsis_severity
 
 cap drop sepsis_dx
