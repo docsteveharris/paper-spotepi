@@ -13,9 +13,8 @@ in the principal model ... use for sensitivity
 	- study month
 
 - timing
-	CHANGED: 2013-03-12
-		- drop beds_none since this represents a feature of the visit not the week
-		- beds_none
+	- beds_none
+		: enter this uncentered and then scale so 1 unit = 10%
 	- out_of_hours
 	- weekend
 
@@ -35,8 +34,22 @@ if `clean_run' == 1 {
     use ../data/working.dta
     include cr_preflight.do
 }
+use ../data/working_occupancy, clear
+keep icode icnno odate beds_none
+gen v_week = wofd(odate) 
+collapse (mean) beds_none_week = beds_none, by(icode v_week)
+// convert mean beds_none (occupancy) to a 10% change from 0 so can be interpreted
+replace beds_none_week = 10 * beds_none_week
+drop if missing(icode, v_week, beds_none)
+tempfile 2merge
+save `2merge', replace
 
 use ../data/working_postflight.dta, clear
+gen v_week = wofd(dofC(v_timestamp))
+label var v_week "Visit week"
+merge m:1 icode v_week using `2merge'
+drop if _merge  == 2
+drop _merge
 est drop _all
 //NOTE: 2013-01-18 - gllamm does not like factor variables
 //so expand up your ccot_shift_pattern (leaving 24/7 as the reference)
@@ -59,13 +72,10 @@ global site_vars ///
 	ccot_p_2 ///
 	ccot_p_3 ///
 	patients_perhesadmx_c ///
-	decjanfeb
+	decjanfeb ///
+	beds_none_week
 
-global week_vars ///
-	beds_none
-
-
-global model_vars $site_vars $week_vars
+global model_vars $site_vars 
 
 *  =================================
 *  = Macros etc for building table =
@@ -85,15 +95,12 @@ pp 395 of Rabe-Hesketh: recommend using the robust SE (sandwich estimator)
 *  ==================
 use ../data/scratch/scratch.dta, clear
 keep if news_risk == 3
-gen v_week = wofd(dofC(v_timestamp))
-label var v_week "Visit week"
 cap drop new_patients
 gen new_patients = 1
 label var new_patients "New patients (per week)"
 collapse ///
 	(count) vperweek = new_patients ///
 	(firstnm) $site_vars ///
-	(mean) $week_vars ///
 	(min) studymonth visit_month ///
 	, by(site v_week)
 cap drop cons
@@ -137,15 +144,12 @@ local model_name = "severe_sepsis"
 
 use ../data/scratch/scratch.dta, clear
 keep if sepsis2001 == 3
-gen v_week = wofd(dofC(v_timestamp))
-label var v_week "Visit week"
 cap drop new_patients
 gen new_patients = 1
 label var new_patients "New patients (per week)"
 collapse ///
 	(count) vperweek = new_patients ///
 	(firstnm) $site_vars ///
-	(mean) $week_vars ///
 	(min) studymonth visit_month ///
 	, by(site v_week)
 cap drop cons
@@ -190,15 +194,12 @@ local model_name = "septic_shock"
 
 use ../data/scratch/scratch.dta, clear
 keep if  inlist(sepsis2001,4,5,6)
-gen v_week = wofd(dofC(v_timestamp))
-label var v_week "Visit week"
 cap drop new_patients
 gen new_patients = 1
 label var new_patients "New patients (per week)"
 collapse ///
 	(count) vperweek = new_patients ///
 	(firstnm) $site_vars ///
-	(mean) $week_vars ///
 	(min) studymonth visit_month ///
 	, by(site v_week)
 cap drop cons
@@ -294,7 +295,7 @@ global table_order ///
 	ccot_shift_pattern ///
 	patients_perhesadmx ///
 	decjanfeb ///
-	beds_none ///
+	beds_none_week ///
 	_cons ///
 
 mt_table_order
@@ -302,12 +303,12 @@ sort table_order var_level
 
 forvalues i = 1/3 {
 	gen est_raw_`i' = estimate_`i'
-	sdecode estimate_`i', format(%9.2fc) replace
+	sdecode estimate_`i', format(%9.3fc) replace
 	replace stars_`i' = "\textsuperscript{" + stars_`i' + "}"
 	replace estimate_`i' = estimate_`i' + stars_`i'
 	// replace reference categories
-	replace estimate_`i' = "--" if varname == "ccot_shift_pattern" & var_level == 3
 	replace estimate_`i' = "" if est_raw_`i' == .
+	replace estimate_`i' = "--" if varname == "ccot_shift_pattern" & var_level == 3
 }
 
 // indent categorical variables
@@ -322,6 +323,7 @@ forvalues i = 1/3 {
 	replace estimate_`i' = min95_`i' + "--" + max95_`i' if parm == "_cons"
 }
 replace tablerowlabel = "Baseline Incidence Rate (95\% CI)" if parm == "_cons"
+replace tablerowlabel = "No critical care beds" if parm == "beds_none_week"
 
 
 // now prepare footers with site level variability

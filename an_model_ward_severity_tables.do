@@ -16,6 +16,7 @@ local all_vars ///
 	hes_overnight_c ///
 	hes_emergx_c ///
 	cmp_beds_max_c ///
+	decjanfeb ///
 	weekend ///
 	out_of_hours ///
 	delayed_referral ///
@@ -91,7 +92,7 @@ local ++i
 use ../data/scratch/scratch.dta, clear
 local ++model_sequence
 xtreg sofa_score $model_vars
-est store news
+est store sofa
 parmest, ///
 	label list(parm label estimate min* max* p) ///
 	escal(rho) ///
@@ -108,6 +109,7 @@ append using `estimates_file'
 save ../outputs/tables/$table_name.dta, replace
 local ++i
 
+estimates save ../data/estimates/$table_name, replace
 
 *  ===================================
 *  = Now produce the tables in latex =
@@ -159,7 +161,7 @@ order model_sequence varname var_level
 spot_label_table_vars
 
 order tablerowlabel var_level_lab
-replace tablerowlabel = "Mean severity score" if parm == "_cons"
+replace tablerowlabel = "Mean severity score (95\%CI)" if parm == "_cons"
 replace tablerowlabel = "Intra-class correlation" if parm == "icc"
 
 global table_order ///
@@ -169,6 +171,7 @@ global table_order ///
 	referrals_permonth ///
 	ccot_shift_pattern ///
 	gap_here ///
+	decjanfeb ///
 	weekend ///
 	out_of_hours ///
 	gap_here ///
@@ -196,10 +199,18 @@ forvalues i = 1/3 {
 	replace estimate_`i' = "" if est_raw_`i' == .
 }
 
+// now replace the estimate with a range for baseline values
+forvalues i = 1/3 {
+	sdecode min95_`i', format(%9.1fc) replace
+	sdecode max95_`i', format(%9.1fc) replace
+	replace estimate_`i' = min95_`i' + "--" + max95_`i' if parm == "_cons"
+}
+
+
 // indent categorical variables
 mt_indent_categorical_vars
 
-ingap 10 13 21 22
+ingap 10 13 22 23
 
 // now send the table to latex
 local cols tablerowlabel estimate_1 estimate_2 estimate_3
