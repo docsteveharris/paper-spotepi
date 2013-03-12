@@ -12,6 +12,10 @@ CREATE VIEW spot_early.headsFinal_raw AS
   SELECT *
 FROM spot.headsFinal;
 
+-- Make up to date view of HES
+DROP VIEW IF EXISTS hes_providers;
+CREATE VIEW hes_providers AS SELECT * FROM spot.hes_providers;
+
 -- Monthly quality (by unit)
 DROP VIEW IF EXISTS spot_early.lite_summ_monthly_raw;
 CREATE VIEW spot_early.lite_summ_monthly_raw AS

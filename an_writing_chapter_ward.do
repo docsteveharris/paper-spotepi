@@ -94,15 +94,23 @@ duplicates drop icode, force
 count
 tab units_notincmp
 tab units_notincmp_l3
-
 /*
 Royal Liverpool - the only one with L3 beds: this is a PACU
 The others are Coronary Care or HDU beds
 */
 
+// visits per 1000 hes_admission
+su patients_perhesadmx,d
+
+*  =====================================
+*  = Summarise patient characteristics =
+*  =====================================
+use ../data/working_postflight.dta, clear
+su age, d
+
+
 * Results: patients
 // CCMDS pre
-use ../data/working_postflight.dta, clear
 tab v_ccmds
 tab rx_resp if v_ccmds == 2
 tab rxcvs if v_ccmds == 2
@@ -111,3 +119,21 @@ cap drop organ_support
 gen organ_support = (rx_resp > 1 | rxcvs > 1 | rxrrt > 0) & !missing(rx_resp, rxcvs, rxrrt)
 tab v_ccmds organ_support, row col
 
+// sepsis
+tab sepsis2001
+
+*  ==============================
+*  = Missing physiological data =
+*  ==============================
+
+use ../data/working_postflight.dta, clear
+tab abg, m
+misstable patterns hrate bpsys rrate creatinine sodium wcc temperature urea uvol1h pf gcst
+misstable summarize hrate bpsys rrate creatinine sodium wcc temperature urea uvol1h pf gcst
+
+*  ==================
+*  = Incidence data =
+*  ==================
+use ../data/working_postflight.dta, clear
+su hes_overnight*
+su hes_emerg*

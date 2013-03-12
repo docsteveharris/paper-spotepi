@@ -40,7 +40,11 @@ tab _valid_row
 duplicates example _list_unusual if _count_unusual > 0
 duplicates example _list_imposs if _count_imposs > 0
 
-keep if _valid_row
+* CHANGED: 2013-03-11 - keep these so you stay consistent with CONSORT
+* You may need to drop them from survival analyses
+* keep if _valid_row
+replace v_timestamp = . if strpos(_list_imposschks,"icu_admit_before_visit") > 0
+replace date_trace = . if strpos(_list_imposschks,"MRIS_ICNARC_death_mismatch") > 0
 
 *  ============================
 *  = Merge in site level data =
@@ -91,11 +95,12 @@ label define cmp_beds_peradmx_k 2 "4+", add
 label values cmp_beds_peradmx_k cmp_beds_peradmx_k
 
 cap drop patients_perhesadmx
-gen patients_perhesadmx = (count_patients / hes_admissions * 1000)
-label var patients_perhesadmx "Standardised monthly ward referrals"
+gen patients_perhesadmx = (count_patients / hes_overnight * 12 )
+label var patients_perhesadmx "Ward referrals per 1000 admissions"
 qui su patients_perhesadmx
+cap drop patients_perhesadmx_c
 gen patients_perhesadmx_c = patients_perhesadmx - r(mean)
-label var patients_perhesadmx_c "Standardised monthly ward referrals (centred)"
+label var patients_perhesadmx_c "Ward referrals per 1000 admission (centred)"
 
 
 xtile count_patients_q5 = count_patients, nq(5)
