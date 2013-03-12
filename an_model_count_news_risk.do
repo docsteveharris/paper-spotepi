@@ -12,12 +12,14 @@ NOTE: 2013-02-04 - do not include this in the principal model ... use for sensit
 	- study month
 
 - timing
-	- beds_none
+	CHANGED: 2013-03-12 
+		- drop beds_none since this represents a feature of the visit not the week
+		- beds_none 
 	- out_of_hours
 	- weekend
 
 - Site factors
-	- referrals_permonth_c
+	- patients_perhesadmx_c
 	- ccot_shift_pattern
 	- hes_overnight_c
 	- hes_emergx_c
@@ -34,21 +36,21 @@ And that its variation is strongly influences by pattern of CCOT provision
 /* First of all collapse the data and examine the distribution of assessments */
 
 global ivars ///
-	beds_none out_of_hours weekend ///
-	referrals_permonth_c ccot_shift_pattern hes_overnight_c ///
+	 out_of_hours weekend ///
+	patients_perhesadmx_c ccot_shift_pattern hes_overnight_c ///
 	hes_emergx_c cmp_beds_max_c
 
 global ivars_4model ///
-	beds_none out_of_hours weekend ///
-	referrals_permonth_c ib3.ccot_shift_pattern hes_overnight_c ///
+	 out_of_hours weekend ///
+	patients_perhesadmx_c ib3.ccot_shift_pattern hes_overnight_c ///
 	hes_emergx_c cmp_beds_max_c
 
 global ivars_site_level ///
-	referrals_permonth_c ccot_shift_pattern hes_overnight_c ///
+	patients_perhesadmx_c ccot_shift_pattern hes_overnight_c ///
 	hes_emergx_c cmp_beds_max_c
 
 global ivars_week_level ///
-	beds_none out_of_hours weekend
+	 out_of_hours weekend
 
 
 cap program drop count_news_risk
@@ -269,7 +271,7 @@ use ../data/count_news_risk_estimates.dta, clear
 bys idnum (er_1_1): replace er_1_1 = er_1_1[1] if er_1_1 == .
 replace er_1_1 = er_1_1^2
 rename er_1_1 var_lvl2
-gen medianIRR = exp(2^0.5 * var_lvl2) * invnormal(3/4)
+gen medianIRR = exp((2 * var_lvl2)^0.5 * invnormal(3/4))
 format var_lvl2 medianIRR %9.3f
 drop if eq == "sit1_1"
 br idstr idnum parm estimate min95 max95 p var_lvl2 medianIRR
@@ -286,6 +288,14 @@ use ../data/count_news_risk_estimates.dta, clear
 * Level 2 variance
 sdecode var_lvl2, format(%9.3fc) replace
 global var_lvl2 = var_lvl2[1]
+// Now calculate the median incidence rate ratio
+// see pp 383 in Rabe-Hesketh
+global med_irr = exp(sqrt(2 * $var_lvl2) * invnormal(3/4))
+global med_irr_25 = 1 / $med_irr
+global med_irr: di %9.2fc $med_irr
+global med_irr_25: di %9.2fc $med_irr_25
+global med_irr = trim("$med_irr")
+global med_irr_25 = trim("$med_irr_25")
 
 local n = _N + 1
 set obs `n'
@@ -299,7 +309,7 @@ gen var_level = substr(parm, -1, 1) if substr(parm, 1, 6) == "ccot_p"
 destring var_level, replace
 
 local table_order hes_overnight hes_emergx cmp_beds_max ccot_shift_pattern ///
-	 referrals_permonth out_of_hours weekend beds_none _cons
+	 patients_perhesadmx out_of_hours weekend  _cons
 cap drop table_order
 gen table_order = .
 local i = 1
@@ -338,10 +348,13 @@ replace tablerowlabel =  "\hspace*{1em}{" + tablerowlabel + "}" ///
 replace tablerowlabel =  "\hspace*{2em}\smaller[0]{" + tablerowlabel + "}" ///
 	if !missing(var_level_lab)
 
-ingap 1 10 13
+ingap 1 10 12
 replace tablerowlabel = "\textit{Site factors}" if _n == 1
 replace tablerowlabel = "\textit{Timing factors}" if _n == 11
 replace tablerowlabel = "\textit{Baseline incidence rate}" if parm == "_cons"
+
+// extra spacing for legibility
+ingap 5 10 11
 
 * now write the table to latex
 local cols tablerowlabel est est_ci95 p
@@ -354,6 +367,10 @@ local arraystretch 1.1
 local taburowcolors 2{white .. white}
 local table_name incidence_news_risk_high
 local f1 "Site level variance & \multicolumn{3}{l}{$var_lvl2} \\"
+local f2 "Median incidence-rate ratio & \multicolumn{3}{l}{$med_irr_25--$med_irr} \\"
+di "`f1'"
+di "`f2'"
+
 
 listtab `cols' ///
 	using ../outputs/tables/`table_name'.tex, ///
@@ -371,6 +388,7 @@ listtab `cols' ///
 	footlines( ///
 		"\midrule" ///
 		"`f1'" ///
+		"`f2'" ///
 		"\bottomrule" ///
 		"\end{tabu} } " ///
 		"\label{`table_name'_best} " ///
