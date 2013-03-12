@@ -53,7 +53,7 @@ replace date_trace = . if strpos(_list_imposschks,"MRIS_ICNARC_death_mismatch") 
 merge m:1 icode using ../data/sites.dta, ///
 	keepusing(ccot ccot_days ccot_start ccot_hours ccot_shift_pattern ///
 		cmp_patients_permonth tails_othercc all_cc_in_cmp ///
-		hes_admissions hes_emergencies  hes_daycase ///
+		hes_admissions hes_emergencies hes_daycase ///
 		tails_all_percent cmp_beds_persite studydays)
 
 drop if _m != 3
@@ -375,6 +375,9 @@ label define month ///
 	12 	"Dec"
 label values visit_month month
 tab visit_month
+
+gen decjanfeb = inlist(visit_month,12,1,2)
+label var decjanfeb "Winter"
 
 cap drop weekend
 gen weekend = inlist(visit_dow, 0, 6)
