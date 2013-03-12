@@ -235,6 +235,7 @@ append using `estimates_file'
 save ../outputs/tables/$table_name.dta, replace
 local ++i
 
+est save ../data/estimates/count_combine, replace
 
 *  ===================================
 *  = Now produce the tables in latex =
@@ -284,7 +285,6 @@ replace var_level = 3 if varname == "ccot_shift_pattern" & var_level == .
 spot_label_table_vars
 
 order tablerowlabel var_level_lab
-replace tablerowlabel = "Mean Incidence Rate" if parm == "_cons"
 // add in blank line as ref category for ccot_shift_pattern
 
 global table_order ///
@@ -314,6 +314,15 @@ forvalues i = 1/3 {
 mt_indent_categorical_vars
 
 ingap 12
+
+// now replace the estimate with a range for baseline values
+forvalues i = 1/3 {
+	sdecode min95_`i', format(%9.2fc) replace
+	sdecode max95_`i', format(%9.2fc) replace
+	replace estimate_`i' = min95_`i' + "--" + max95_`i' if parm == "_cons"
+}
+replace tablerowlabel = "Baseline Incidence Rate (95\% CI)" if parm == "_cons"
+
 
 // now prepare footers with site level variability
 forvalues i = 1/3 {
