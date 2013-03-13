@@ -15,32 +15,40 @@ Consider the following models
 *  ===================
 *  = Model variables =
 *  ===================
-local patient_vars age_c male sepsis_b delayed_referral icnarc0_c i.v_ccmds
-local timing_vars out_of_hours weekend beds_none
+local patient_vars ///
+	age_c ///
+	male ///
+	ib0.sepsis_dx ///
+	delayed_referral ///
+	i.v_ccmds
+
+// NOTE: 2013-03-13 - enter icnarc0 separtely
+// icnarc0_c ///
+
+local timing_vars ///
+	out_of_hours ///
+	weekend ///
+	decjanfeb
+
 local site_vars ///
-	referrals_permonth_c ///
-	ib3.ccot_shift_pattern ///
-	hes_overnight_c ///
-	hes_emergx_c ///
-	cmp_beds_max_c
+		hes_overnight_c ///
+		hes_emergx_c ///
+		cmp_beds_max_c ///
+		patients_perhesadmx_c ///
+		ib3.ccot_shift_pattern ///
 
 *  ===============================================
 *  = Model variables assembled into single macro =
 *  ===============================================
-local all_vars age_c male sepsis_b delayed_referral icnarc0_c i.v_ccmds ///
-	out_of_hours weekend beds_none ///
-	referrals_permonth_c ///
-	ib3.ccot_shift_pattern ///
-	hes_overnight_c ///
-	hes_emergx_c ///
-	cmp_beds_max_c
+global all_vars ///
+	`site_vars' ///
+	`timing_vars' ///
+	`patient_vars' ///
 
 
 
 local clean_run 1
 if `clean_run' == 1 {
-	include cr_survival.do
-
 	global table_name ward_survival_final_est
 	use ../data/working_survival.dta, clear
 	// NOTE: 2013-01-29 - cr_survival.do stsets @ 28 days by default
@@ -49,18 +57,7 @@ if `clean_run' == 1 {
 	// =====================================
 	// = Run full model - ignoring frailty =
 	// =====================================
-	stcox age_c male sepsis_b delayed_referral ///
-		icnarc0_c ///
-		i.v_ccmds ///
-		out_of_hours weekend beds_none ///
-		referrals_permonth_c ///
-		ib3.ccot_shift_pattern ///
-		hes_overnight_c ///
-		hes_emergx_c ///
-		cmp_beds_max_c ///
-		, ///
-		nolog
-
+	stcox $all_vars icnarc0_c, nolog
 	local model_name full no_frailty
 	est store full1
 	tempfile estimates_file
@@ -82,19 +79,7 @@ if `clean_run' == 1 {
 	use ../data/working_survival.dta, clear
 	stsplit tb, at(1 3 7)
 	label var tb "Analysis time blocks"
-	stcox age_c male sepsis_b delayed_referral ///
-		icnarc0_c ///
-		i.v_ccmds ///
-		out_of_hours weekend beds_none ///
-		referrals_permonth_c ///
-		ib3.ccot_shift_pattern ///
-		hes_overnight_c ///
-		hes_emergx_c ///
-		cmp_beds_max_c ///
-		i.tb#c.icnarc0_c ///
-		, ///
-		nolog
-
+	stcox $all_vars i.tb#c.icnarc0_c, nolog
 	local model_name full time_dependent
 	est store full2
 	tempfile estimates_file
@@ -113,28 +98,15 @@ if `clean_run' == 1 {
 	save ../outputs/tables/$table_name.dta, replace
 	local ++i
 
-
-
 	// ===============================
 	// = Run full model with frailty =
 	// ===============================
 	use ../data/working_survival.dta, clear
 	stsplit tb, at(1 3 7)
 	label var tb "Analysis time blocks"
-	stcox age_c male sepsis_b delayed_referral ///
-		icnarc0_c ///
-		i.v_ccmds ///
-		out_of_hours weekend beds_none ///
-		referrals_permonth_c ///
-		ib3.ccot_shift_pattern ///
-		hes_overnight_c ///
-		hes_emergx_c ///
-		cmp_beds_max_c ///
-		i.tb#c.icnarc0_c ///
-		, ///
-		shared(site) ///
+	stcox $all_vars i.tb#c.icnarc0_c ///
+		, shared(site) ///
 		nolog
-
 	local model_name full_frailty
 	est store full3
 	estimates save ../data/survival_final, replace
@@ -156,16 +128,7 @@ if `clean_run' == 1 {
 	local ++i
 
 	// Univariate estimates
-	local uni_vars age_c male sepsis_b delayed_referral ///
-		icnarc0_c ///
-		i.v_ccmds ///
-		out_of_hours weekend beds_none ///
-		referrals_permonth_c ///
-		ib3.ccot_shift_pattern ///
-		hes_overnight_c ///
-		hes_emergx_c ///
-		cmp_beds_max_c ///
-
+	local uni_vars $all_vars icnarc0_c
 	local table_order = 1
 	foreach var of local uni_vars {
 		use ../data/working_survival.dta, clear
