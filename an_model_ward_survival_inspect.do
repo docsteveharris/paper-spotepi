@@ -201,63 +201,6 @@ graph rename dead28_vs_referrals_permonth, replace
 graph export ../outputs/figures/dead28_vs_referrals_permonth.pdf, replace
 exit
 
-*  ===========================================
-*  = Now check for time-dependence of hazard =
-*  ===========================================
-local clean_run 0
-if `clean_run' == 1 {
-	include cr_survival.do
-}
-
-use ../data/working_survival.dta, clear
-sts list, at(0/28)
-sts graph
-count if ppsample
-stci, p(25)
-sts graph, hazard ci ///
-	ciopts(color(gs12)) ///
-	tscale(noextend) ///
-	tlabel(0(7)28) ///
-	ttitle("Days following bedside assessment", margin(medium)) ///
-	yscale(noextend) ///
-	ylabel( ///
-		0.000 "0" ///
-		0.010 "10" ///
-		0.020 "20" ///
-		0.030 "30" ///
-		0.040 "40" ///
-		0.050 "50" ///
-		, nogrid) ///
-	ytitle("Deaths" "(per 1000 patients per day)", margin(medium)) ///
-	legend(off) ///
-	title("Mortality rate") ///
-	xsize(6) ysize(6)
-graph rename hazard_all, replace
-
-sts graph, surv ci ///
-	ciopts(color(gs12)) ///
-	plotopts(lwidth(thin)) ///
-	tscale(noextend) ///
-	tlabel(0(7)28) ///
-	ttitle("Days following bedside assessment", margin(medium)) ///
-	yscale(noextend) ///
-	ylabel( ///
-		0 	"0" ///
-		.25 "25%" ///
-		.5 	"50%" ///
-		.75 "75%" ///
-		1 	"100%" ///
-		, nogrid) ///
-	ytitle("Survival" "(percentage)", margin(medium)) ///
-	legend(off) ///
-	title("Survival curve") ///
-	xsize(6) ysize(6)
-graph rename survival_all, replace
-graph combine hazard_all survival_all, rows(1) ysize(4) xsize(6)
-graph export ../outputs/figures/hazard_and_survival_all.pdf, replace
-
-
-
 
 *  =================
 *  = Patient level =
