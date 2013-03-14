@@ -51,7 +51,9 @@ replace date_trace = . if strpos(_list_imposschks,"MRIS_ICNARC_death_mismatch") 
 *  ============================
 
 merge m:1 icode using ../data/sites.dta, ///
-	keepusing(ccot ccot_days ccot_start ccot_hours ccot_shift_pattern ///
+	keepusing( ///
+		ccot ccot_days ccot_start ccot_hours ccot_shift_pattern ///
+		ccot_senior ccot_consultant ///
 		cmp_patients_permonth tails_othercc all_cc_in_cmp ///
 		hes_admissions hes_emergencies hes_daycase ///
 		tails_all_percent cmp_beds_persite studydays)

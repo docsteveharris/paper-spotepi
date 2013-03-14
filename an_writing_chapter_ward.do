@@ -26,14 +26,24 @@ su patients, detail
 *  ==========================
 *  = Tabulate CCOT activity =
 *  ==========================
+
 use ../data/working_postflight.dta, clear
 keep if pickone_site
 tab ccot_shift_pattern
 * copy-past to /an_writing_chapter_ward.do
 // not working nicely ... try listtex
-contract ccot_shift_pattern, freq(n) percent(percent)
-local sparkspike `x'
-local _N = _N
+destring ccot_senior, replace
+collapse ///
+	(count) n = id ///
+	(median) v_est = patients_perhesadmx ///
+	(p25) v_p25 = patients_perhesadmx ///
+	(p75) v_p75 = patients_perhesadmx ///
+	(mean) ccot_consultant ///
+	(median) ccot_senior ///
+	, ///
+	by(ccot_shift_pattern)
+egen sites = total(n)
+gen percent = n / sites * 100
 
 gen tablerowlabel = ""
 replace tablerowlabel = "No CCOT" if ccot_shift_pattern == 0
@@ -51,21 +61,32 @@ gen sparkbar = `"\setlength{\sparklinethickness}{`sparkhbar_width'}\begin{sparkl
 
 sdecode n, format(%9.0gc) replace
 sdecode percent, format(%9.1fc) replace
+sdecode v_est, format(%9.0fc) replace
+sdecode v_p25, format(%9.0fc) replace
+sdecode v_p75, format(%9.0fc) replace
+gen v_iqr = v_p25 + "--" + v_p75
+replace ccot_consultant = 100 * ccot_consultant
+sdecode ccot_consultant, format(%9.0fc) replace
+order tablerowlabel n percent sparkbar ccot_consultant v_iqr
+
+replace v_iqr = "" if ccot_shift_pattern == 0
+replace v_est = "" if ccot_shift_pattern == 0
+replace ccot_consultant = "" if ccot_shift_pattern == 0
 
 local sparkspike_colour "\definecolor{sparkspikecolor}{gray}{0.7}"
 local sparkline_colour "\definecolor{sparklinecolor}{gray}{0.7}"
 local sparkspike_width "\renewcommand\sparkspikewidth{$sparkspike_width}"
 global table_name ccot_shift_pattern
-local justify X[6lb]X[rb]X[rb]X[lb]
+local justify spread \textwidth {X[3rb] X[rb] X[rb] X[2rb] X[2rb]}
 * local tablefontsize "\footnotesize"
 local arraystretch 1.0
 local taburowcolors 2{white .. white}
-local super_heading1 "Shift pattern & N & (\%) & \\"
+local super_heading1 "Shift pattern & No. & (\%) & Consultant cover (\%) & Visits (per 1000 admissions) \\"
 /*
 Use san-serif font for tables: so \sffamily {} enclosed the whole table
 Add a label to the table at the end for cross-referencing
 */
-listtex tablerowlabel n percent sparkbar ///
+listtex tablerowlabel n percent v_est ccot_consultant ///
 	using ../outputs/tables/$table_name.tex, ///
 	replace rstyle(tabular) ///
 	headlines( ///
@@ -75,7 +96,7 @@ listtex tablerowlabel n percent sparkbar ///
 		"`sparkspike_width'" ///
 		"`sparkspike_colour'" ///
 		"`sparkline_colour'" ///
-		"\begin{tabu} {`justify'}" ///
+		"\begin{tabu} `justify'" ///
 		"\toprule" ///
 		"`super_heading1'" ///
 		"\midrule" ) ///
@@ -209,3 +230,22 @@ estimates esample: `evars'
 count if e(sample)
 lincom _cons
 lincom hes_overnight_c * 10
+
+
+*  ========================
+*  = Survival and outcome =
+*  ========================
+
+
+// simple survival figures
+
+use ../data/working_survival.dta, clear
+stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+gen class  = 0
+replace class = -1 if v_disposal == 5
+replace class = 1 if rxlimits == 1
+tab class if ppsample
+sts list, at(0 1 3 7 28 90) failure  noshow
+sts list, at(0 1 3 7 28 90) failure by(class) noshow
+sts list, at(0 1 3 7 28 90) failure by(rxlimits) noshow
+
