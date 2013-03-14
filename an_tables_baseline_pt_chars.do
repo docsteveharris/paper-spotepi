@@ -144,6 +144,8 @@ postfile `pname' ///
     double  vmin ///
     double  vmax ///
     double  vother ///
+    int     vmiss ///
+    int     vcount ///
     str244  sparkspike ///
     using `pfile' , replace
 
@@ -164,6 +166,10 @@ foreach lvl of local bylevels {
         local varname `var'
         local varlabel: variable label `var'
         local var_sub
+        count
+        local vcount = r(N)
+        count if missing(`var')
+        local vmiss = r(N)
         // CHANGED: 2013-02-05 - in theory you should not have negative value labels
         local var_level -1
         // Little routine to pull the super category
@@ -271,6 +277,8 @@ foreach lvl of local bylevels {
                 (`vmin') ///
                 (`vmax') ///
                 (`vother') ///
+                (`vmiss') ///
+                (`vcount') ///
                 ("`sparkspike'")
 
             local table_order = `table_order' + 1
@@ -316,6 +324,8 @@ foreach lvl of local bylevels {
             (`vmin') ///
             (`vmax') ///
             (`vother') ///
+            (`vmiss') ///
+            (`vcount') ///
             ("`sparkspike'")
 
 
@@ -447,7 +457,7 @@ listtab_vars tablerowlabel vcentral_fmt vbracket, ///
 *  = Now convert to wide format =
 *  ==============================
 keep bylevel table_order tablerowlabel vcentral_fmt vbracket seq ///
-    varname var_type var_label var_level_lab var_level sparkspike
+    varname var_type var_label var_level_lab var_level sparkspike vmiss vcount
 
 chardef tablerowlabel vcentral_fmt, ///
     char(varname) prefix("\textit{") suffix("}") ///
@@ -467,7 +477,7 @@ foreach word of global lvl_labels {
 * NOTE: 2013-02-05 - you have an extra & at the beginning but this is OK as covers parameters
 local grp_size: word 1 of $grp_sizes
 local grp_size: di %9.0gc `grp_size'
-local super_heading1 "& \multicolumn{2}{c}{`grp_size' patients}  \\"
+local super_heading1 "& \multicolumn{2}{c}{`grp_size' patients} & & Missing data (\%) \\"
 * local super_heading1 " `super_heading1' \\"
 * local super_heading2 " `super_heading2' \\"
 * Prepare sub-headings
@@ -519,10 +529,17 @@ while `i' <= `lastrow' {
 }
 di "`gaprows'"
 ingap `gaprows', gapindicator(gaprow)
-replace tablerowlabel = tablerowlabel[_n + 1] ///
-    if gaprow == 1 & !missing(tablerowlabel[_n + 1])
+foreach var in tablerowlabel vmiss vcount {
+    replace `var' = `var'[_n + 1] ///
+        if gaprow == 1 & !missing(`var'[_n + 1])
+}
 replace tablerowlabel = var_level_lab if var_type == "Categorical"
 replace table_order = _n
+
+// now generate percentage missing
+gen vmiss_percent = round(vmiss/vcount * 100)
+sdecode vmiss_percent, format(%9.0fc) replace
+replace vmiss_percent = "" if var_type == "Categorical"
 
 * Indent subcategories
 * NOTE: 2013-01-28 - requires the relsize package
@@ -539,7 +556,7 @@ if `append_statistic_type' {
     replace tablerowlabel = tablerowlabel + " `n_percent'" if gaprow == 1
 }
 
-local justify lrl
+local justify lrlr
 * local tablefontsize "\scriptsize"
 local arraystretch 1.0
 local taburowcolors 2{white .. white}
@@ -548,7 +565,7 @@ local sparklines_on = 1
 if `sparklines_on' {
     local nonrowvars `nonrowvars' sparkspike
     local sparkspike_width "\renewcommand\sparkspikewidth{$sparkspike_width}"
-    local justify lrll
+    local justify X[l6]X[r]X[l2]X[l2]X[l2]
     local sparkspike_colour "\definecolor{sparkspikecolor}{gray}{0.7}"
     local sparkline_colour "\definecolor{sparklinecolor}{gray}{0.7}"
 }
@@ -556,7 +573,7 @@ if `sparklines_on' {
 Use san-serif font for tables: so \sffamily {} enclosed the whole table
 Add a label to the table at the end for cross-referencing
 */
-listtab tablerowlabel `nonrowvars'  ///
+listtab tablerowlabel `nonrowvars' vmiss_percent  ///
     using ../outputs/tables/$table_name.tex, ///
     replace rstyle(tabular) ///
     headlines( ///
@@ -570,7 +587,6 @@ listtab tablerowlabel `nonrowvars'  ///
         "\textwidth {`justify'}" ///
         "\toprule" ///
         "`super_heading1'" ///
-        "`super_heading2'" ///
         "\midrule" ) ///
     footlines( ///
         "\bottomrule" ///
