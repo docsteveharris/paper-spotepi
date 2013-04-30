@@ -5,17 +5,21 @@
 * Calling it pre-flight for now to distinguish it from the slower code that will
 * be needed to work out occupancy and ccot shift patterns
 
+// if the global var is not set then you can safely assume it should be 1
+if "$sclean_run" == "" global clean_run = 1
 
-local debug = 0
-
-if `debug' {
+local clean_run = 1
+if `clean_run' == 1 & $clean_run != 0 {
 	use ../data/working.dta, clear
-
+}
+else {
+	di as error "WARNING: debug off - using data in memory"
 }
 
 cap label drop truefalse
 label define truefalse 0 "False" 1 "True"
 
+cap label drop quantiles
 label define quantiles 1 "1st"
 label define quantiles 2 "2nd", add
 label define quantiles 3 "3rd", add
@@ -96,8 +100,35 @@ label define cmp_beds_peradmx_k 1 "2--4", add
 label define cmp_beds_peradmx_k 2 "4+", add
 label values cmp_beds_peradmx_k cmp_beds_peradmx_k
 
+gen small_unit = cmp_beds_max < 10
+label var small_unit "<10 beds"
+
 cap drop patients_perhesadmx
-gen patients_perhesadmx = (count_patients / hes_overnight * 12 )
+* CHANGED: 2013-04-30 - previously had forgotten to standardise this
+/*
+Also count_patients is the monthly number of patients reported - not an average
+Better then to generate your own value
+And standardise this
+- study_patients <- number of patients per site
+- count_patients <- study_patients per month (standardised)
+*/
+preserve
+use ../data/working.dta, clear
+contract icode
+rename _freq study_patients
+tempfile 2merge
+save `2merge', replace
+restore
+merge m:1 icode using `2merge'
+drop _merge
+label var study_patients "Patient reported per site"
+
+cap drop count_patients
+gen count_patients = study_patients * 365 / studydays / 12
+label var count_patients "New ward referrals per month"
+su count_patients
+
+gen patients_perhesadmx = (study_patients / hes_overnight  ) 
 label var patients_perhesadmx "Ward referrals per 1000 admissions"
 qui su patients_perhesadmx
 cap drop patients_perhesadmx_c
@@ -122,12 +153,23 @@ label var time2icu "Time to ICU (hrs)"
 *  ==========================
 *  = Patient flow variables =
 *  ==========================
+* - defaults to Level 0/1 if missing
+* What is being delivered
+tab v_ccmds
+cap drop cc_now
+gen cc_now = 0
+replace cc_now = 0 if inlist(v_ccmds, 0, 1)
+replace cc_now = 1 if inlist(v_ccmds, 2, 3)
+label var cc_now "Higher level of care - now"
+label values cc_now truefalse
+
 * What was recommended
 tab v_ccmds_rec, miss
 cap drop cc_recommended
-gen cc_recommended = .
-replace cc_recommended = 0 if inlist(v_ccmds,0,1)
-replace cc_recommended = 1 if inlist(v_ccmds,2,3)
+gen cc_recommended = 0
+replace cc_recommended = 0 if inlist(v_ccmds_rec,0,1)
+replace cc_recommended = 1 if inlist(v_ccmds_rec,2,3)
+label var cc_recommended "Higher level of care - recommended"
 label values cc_recommended truefalse
 tab cc_recommended
 
@@ -197,11 +239,12 @@ label var male "Sex"
 label define male 0 "Female" 1 "Male"
 label values male male
 
-gen sepsis_b = inlist(sepsis,3,4)
-label var sepsis_b "Clinical sepsis"
-label define sepsis_b 0 "Unlikely"
-label define sepsis_b 1 "Likely", add
-label values sepsis_b sepsis_b
+cap drop sepsis1_b
+gen sepsis1_b = inlist(sepsis,3,4)
+label var sepsis1_b "Clinical sepsis"
+label define sepsis1_b 0 "Unlikely"
+label define sepsis1_b 1 "Likely", add
+label values sepsis1_b sepsis1_b
 
 cap drop sepsis_severity
 gen sepsis_severity = sepsis2001
@@ -215,10 +258,10 @@ tab sepsis_severity
 
 cap drop sepsis_dx
 gen sepsis_dx = 0
-replace sepsis_dx = 1 if sepsis_b
-replace sepsis_dx = 2 if sepsis_b & sepsis_site == 5
-replace sepsis_dx = 3 if sepsis_b & sepsis_site == 3
-replace sepsis_dx = 4 if sepsis_b & sepsis_site == 1
+replace sepsis_dx = 1 if sepsis1_b
+replace sepsis_dx = 2 if sepsis1_b & sepsis_site == 5
+replace sepsis_dx = 3 if sepsis1_b & sepsis_site == 3
+replace sepsis_dx = 4 if sepsis1_b & sepsis_site == 1
 label var sepsis_dx "Sepsis diagnosis"
 label define sepsis_dx 0 "Not septic" 1 "Unspecified sepsis" 2 "GU sepsis" 3 "GI sepsis" 4 "Chest sepsis"
 label values sepsis_dx sepsis_dx
@@ -255,17 +298,23 @@ replace dead90 = . if missing(date_trace)
 label var dead90 "90d mortality"
 label values dead90 truefalse
 
-cap drop icufree_days
-tempvar icu_los days_alive
-gen `days_alive' 	= date_trace - dofc(v_timestamp)
-gen `icu_los' 		= dofc(icu_discharge) - dofc(icu_admit) ///
-	if !missing(icu_admit, icu_discharge)
-replace `icu_los' = 0 if `icu_los' == .
-gen icufree_days = 28 ///
-	- cond(`days_alive' <= 28, 28 - `days_alive', 0) ///
-	- cond(`icu_los' <= 28, `icu_los', 28)
-label var icufree_days "Days alive without ICU (of 1st 28)"
-su icufree_days
+foreach i in 28 90 {
+	cap drop icufree_days`i'
+	tempvar day_`i' icu_days dead_days
+	gen `day_`i'' = dofc(v_timestamp) + `i'
+	gen `icu_days' = 0
+	replace `icu_days' = `i' - (dofc(icu_admit) - dofc(v_timestamp)) if dofc(icu_admit) < `day_`i''
+	// subtract an extra 1 means that you count the day of discharge as an ICU day
+	replace `icu_days' = `icu_days' - (`day_`i'' - dofc(icu_discharge) - 1) if dofc(icu_discharge) < `day_`i''
+	gen `dead_days' = 0
+	replace `dead_days' = `day_`i'' - date_trace if dead == 1 & date_trace < `day_`i''
+	// otherwise double counts the day of death if this occurs in ICU
+	replace `dead_days' = `dead_days' - 1 if dofc(icu_discharge) == date_trace
+	gen icufree_days`i' = `i' - `icu_days' - `dead_days'
+	label var icufree_days`i' "Days alive without ICU (of 1st `i')"
+	su icufree_days`i'
+}
+
 
 * Flag patients where so much physiology missing that associated with badness
 cap drop icnarc_miss
@@ -294,7 +343,9 @@ gen abg = !missing(abgunit)
 label var abg "Arterial blood gas measurement"
 label values abg truefalse
 
-gen 	rxcvs = 0 if rxcvs_sofa == 0
+
+* CHANGED: 2013-03-01 - defaults to zero if missing (imputes)
+gen rxcvs	  = 0
 replace rxcvs = 1 if rxcvs_sofa == 1
 replace rxcvs = 2 if inlist(rxcvs_sofa,2,3,4,5)
 label var rxcvs "Cardiovascular support"
@@ -311,6 +362,7 @@ label var rx_resp "Respiratory support"
 label define rx_resp 0 "None" 1 "Supplemental oxygen" 2 "NIV"
 label values rx_resp rx_resp
 
+replace rxrrt = 0 if rxrrt == .
 *  =======================================
 *  = Defer and delay indicator variables =
 *  =======================================
@@ -407,8 +459,9 @@ label values out_of_hours out_of_hours
 * merge m:1 icode using ../data/sites.dta, ///
 * 	keepusing(ccot ccot_days ccot_start ccot_hours ccot_shift_pattern)
 
-* drop if _m != 3
-* drop _m
+// CCOT senior - tidy
+replace ccot_senior = "" if ccot_senior == "0"
+replace ccot_senior = "8" if ccot_senior == "8b"
 
 * NOTE: 2012-10-05 - defaults to no ccot: seems sensible but a discussion point
 gen ccot_on = 0
@@ -462,7 +515,7 @@ gen ccot_shift_start = ccot_shift_early == 1
 *  ========================
 
 gen org_ok = sofa_score <= 1
-gen healthy = org_ok & news_risk == 0 & v_ccmds_rec <= 1 & rxlimits == 0
+gen healthy = org_ok & news_risk <= 1 & v_ccmds_rec <= 1 & rxlimits == 0
 cap drop pt_cat
 gen pt_cat = .
 replace pt_cat = 1 if rxlimits == 1 & pt_cat == .
@@ -518,21 +571,23 @@ label var full_active1 "No more than 1 dischargeable patient"
 gen open_beds_cmp = (cmp_beds_max - occupancy_active)
 label var open_beds_cmp "Open beds with respect to CMP reported number"
 
-gen bed_pressure = .
-label var bed_pressure "Available critical care beds"
-replace bed_pressure = 2 if open_beds_cmp <= 0
-replace bed_pressure = 1 if open_beds_cmp >= 1
-replace bed_pressure = 0 if open_beds_cmp >= 2
-label define bed_pressure 0 "2 or more beds"
-label define bed_pressure 1 "1 bed only", add
-label define bed_pressure 2 "No beds", add
-label values bed_pressure bed_pressure
-
-
 gen beds_none = open_beds_cmp <= 0
 label var beds_none "Critical care unit full"
 label values beds_none truefalse
 
+gen beds_blocked = cmp_beds_max - occupancy <= 0
+label var beds_blocked "Critical care unit unable to discharge"
+label values beds_blocked truefalse
+
+cap drop bed_pressure
+gen bed_pressure = 0
+label var bed_pressure "Bed pressure"
+replace bed_pressure = 1 if beds_blocked == 1
+replace bed_pressure = 2 if beds_none == 1
+label define bed_pressure 0 "Beds available"
+label define bed_pressure 1 "No beds but discharges pending", add
+label define bed_pressure 2 "No beds and no discharges pending", add
+label values bed_pressure bed_pressure
 *  ============================================
 *  = Prep vars in standardised way for models =
 *  ============================================
@@ -554,6 +609,9 @@ label define age_k 3 "80+", add
 label values age_k age_k
 gen age_c = age - 65
 label var age_c "Age (centred at 65yrs)"
+
+gen age10_c = age_c / 10
+label var age10_c "Age (per decade, centred at 65"
 
 gen delayed_referral = !v_timely
 label var delayed_referral "Delayed referral to ICU"

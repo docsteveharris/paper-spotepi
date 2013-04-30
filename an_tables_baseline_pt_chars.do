@@ -340,7 +340,6 @@ global grp_sizes `grp_sizes'
 postclose `pname'
 use `pfile', clear
 qui compress
-br
 
 *  ===================================================================
 *  = Now you need to pull in the table row labels, units and formats =
@@ -440,7 +439,6 @@ replace tablerowlabel = tablerowlabel + " (" + unitlabel + ")" if !missing(unitl
 order tablerowlabel vcentral_fmt vbracket
 * NOTE: 2013-01-25 - This adds gaps in the table: specific to this table
 
-br tablerowlabel vcentral_fmt vbracket
 
 
 chardef tablerowlabel vcentral_fmt vbracket, ///
@@ -557,7 +555,7 @@ if `append_statistic_type' {
 }
 
 local justify lrlr
-* local tablefontsize "\scriptsize"
+local tablefontsize "\scriptsize"
 local arraystretch 1.0
 local taburowcolors 2{white .. white}
 // switch on sparklines?

@@ -190,7 +190,7 @@ drop include exclude1 exclude2
 
 save ../data/working.dta, replace
 
-log close
+cap log close
 
 
 
