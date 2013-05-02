@@ -589,6 +589,6 @@ listtab tablerowlabel `nonrowvars' vmiss_percent  ///
     footlines( ///
         "\bottomrule" ///
         "\end{tabu} " ///
-        "\label{$table_name} ") ///
+        "\label{tab:$table_name} ") ///
 
 cap log off

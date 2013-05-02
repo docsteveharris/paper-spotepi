@@ -45,7 +45,8 @@ sort tableorder
 
 
 global table_name v_ccmds_organ_support
-local justify lllll
+local tablefontsize "\scriptsize"
+local justify lrrrr
 local arraystretch 1.0
 local taburowcolors 2{white .. white}
 local super_heading1 "& Level 0 & Level 1 & Level 2 & Level 3 \\"

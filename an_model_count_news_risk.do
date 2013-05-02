@@ -1,7 +1,21 @@
+*  ======================================
+*  = Incident rate models by NEWS class =
+*  ======================================
+
 GenericSetupSteveHarris spot_ward an_model_count_news_risk, logon
+
+* created:	1303..
+* modified:	130501
+
+* Log
+/*
+TODO: 2013-05-01 - make sure it runs OK for NEWS 1-3
+TODO: 2013-05-01 - convert to monthly
+*/
 
 /*
 
+# NOTES
 
 Model the number of NEWS high risk assessments per week
 
@@ -60,8 +74,8 @@ program count_news_risk
 
 	global newslevel `newslevel'
 	keep if `varlist' == $newslevel
-	cap drop v_week
 
+	cap drop v_week
 	gen v_week = wofd(dofC(v_timestamp))
 	label var v_week "Visit week"
 	cap drop bedass
@@ -102,7 +116,7 @@ program count_news_risk
 	graph rename vperweek_risk$newslevel, replace
 
 	// quick inspect the distribution of incidence
-	graph export ../logs/vperweek_bar_risk$newslevel.pdf, replace
+	graph export ../logs/vperweek_bar_risk$newslevel.eps, replace
 
 	hist vperweek_bar, s(0) w(1) freq
 	graph rename vperweek_bar, replace
@@ -274,7 +288,6 @@ rename er_1_1 var_lvl2
 gen medianIRR = exp((2 * var_lvl2)^0.5 * invnormal(3/4))
 format var_lvl2 medianIRR %9.3f
 drop if eq == "sit1_1"
-br idstr idnum parm estimate min95 max95 p var_lvl2 medianIRR
 cap graph combine vperweek_risk1 vperweek_risk2 vperweek_risk3, rows(1) ///
 	xcommon ycommon
 save ../data/count_news_risk_estimates.dta, replace
@@ -283,6 +296,7 @@ save ../data/count_news_risk_estimates.dta, replace
 *  ==================================
 *  = Now produce a table of results =
 *  ==================================
+
 use ../data/count_news_risk_estimates.dta, clear
 * store level 2 variance as local macro
 * Level 2 variance
@@ -391,7 +405,7 @@ listtab `cols' ///
 		"`f2'" ///
 		"\bottomrule" ///
 		"\end{tabu} } " ///
-		"\label{`table_name'_best} " ///
+		"\label{tab:`table_name'_best} " ///
 		"\normalfont" ///
 		"\normalsize")
 
