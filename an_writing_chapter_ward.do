@@ -92,6 +92,20 @@ misstable summarize hrate bpsys rrate creatinine sodium wcc temperature urea uvo
 *  ==================
 *  = Incidence data =
 *  ==================
+
+use ../data/count_news_high_linear, clear
+est use ../data/estimates/news_high_linear
+est store news_high_linear
+est dir
+est replay, eform
+// Number of extra patients per 10,000 extra admissions per week
+lincom 10 * hes_overnight_c
+// Express the baseline incidence rate as patients per 1,000 admissions centred at 62.5k admissions per year
+lincom _cons, eform
+di `=r(estimate)' * 365 / 7 / 62.5
+
+
+
 * TODO: 2013-03-12 - estimates save and restore is wrong (see severity below for correct way)
 use ../data/working_postflight.dta, clear
 su hes_overnight*

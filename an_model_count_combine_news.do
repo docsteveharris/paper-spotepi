@@ -256,6 +256,7 @@ global table_order ///
 mt_table_order
 sort table_order var_level
 
+
 forvalues i = 1/3 {
 	gen est_raw_`i' = estimate_`i'
 	sdecode estimate_`i', format(%9.3fc) replace
@@ -264,7 +265,7 @@ forvalues i = 1/3 {
 	// replace reference categories
 	replace estimate_`i' = "" if est_raw_`i' == .
 	replace estimate_`i' = "--" if varname == "ccot_shift_pattern" & var_level == 3
-	replace estimate = "--" if varname == "patients_perhesadmx" & var_level == 2
+	replace estimate_`i' = "--" if varname == "patients_perhesadmx" & var_level == 2
 	replace var_type = "Categorical" if varname == "ccot_shift_pattern"
 	replace var_type = "Categorical" if varname == "patients_perhesadmx"
 }

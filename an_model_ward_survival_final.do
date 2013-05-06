@@ -20,7 +20,7 @@ local patient_vars ///
 	male ///
 	ib0.sepsis_dx ///
 	delayed_referral ///
-	i.v_ccmds
+	ib1.v_ccmds
 
 // NOTE: 2013-03-13 - enter icnarc0 separtely
 // icnarc0_c ///
@@ -79,7 +79,7 @@ if `clean_run' == 1 {
 	use ../data/working_survival.dta, clear
 	stsplit tb, at(1 3 7)
 	label var tb "Analysis time blocks"
-	stcox $all_vars i.tb#c.icnarc0_c, nolog
+	stcox $all_vars icnarc0_c i.tb#c.icnarc0_c, nolog
 	local model_name full time_dependent
 	est store full2
 	tempfile estimates_file
@@ -104,7 +104,7 @@ if `clean_run' == 1 {
 	use ../data/working_survival.dta, clear
 	stsplit tb, at(1 3 7)
 	label var tb "Analysis time blocks"
-	stcox $all_vars i.tb#c.icnarc0_c ///
+	stcox $all_vars icnarc0_c i.tb#c.icnarc0_c ///
 		, shared(site) ///
 		nolog
 	local model_name full_frailty
@@ -116,7 +116,7 @@ if `clean_run' == 1 {
 		label list(parm label estimate min* max* p) ///
 		idnum(`i') idstr("`model_name'") ///
 		stars(0.05 0.01 0.001) ///
-		escal(theta se_theta) ///
+		escal(theta se_theta theta_chi2) ///
 		format(estimate min* max* %9.2f p %9.3f) ///
 		saving(`estimates_file', replace)
 	use `estimates_file', clear
@@ -157,184 +157,152 @@ if `clean_run' == 1 {
 
 * Save a version of the data with a clean name
 * so you don't need to re-run the models when debugging
+est restore full3
+gen theta_chi2 = e(chi2_c) if strpos(idstr, "full_frailty")
 save ../data/scratch/scratch.dta, replace
 
+*  ======================
+*  = Now produce tables =
+*  ======================
+
 use ../data/scratch/scratch.dta, clear
-cap drop varname model model_name var_level
-* Now do a quick bit of variable tidying
-gen varname = parm
+cap drop model_sequence
+gen model_sequence = .
+replace model_sequence = 1 if strpos(idstr, "univariate")
+replace model_sequence = 2 if strpos(idstr, "no_frailty")
+replace model_sequence = 3 if strpos(idstr, "time_dependent")
+replace model_sequence = 4 if strpos(idstr, "full_frailty")
 
-gen model_name = .
-replace model_name = 1 if idstr == "full no_frailty"
-replace model_name = 2 if idstr == "full time_dependent"
-replace model_name = 3 if idstr == "full_frailty"
-replace model_name = 0 if word(idstr, 1) == "univariate"
-cap label drop model_name
-label define model_name 0 "Univariate"
-label define model_name 1 "Multivariate", add
-label define model_name 2 "Time-dependent", add
-label define model_name 3 "Frailty", add
-label values model_name model_name
-decode model_name, gen(model)
+ren es_1 theta_est
+ren es_2 theta_se
 
-replace varname = substr(parm, 1, length(parm) - 2) if substr(parm,-2,2) == "_c"
-replace varname = substr(parm, 1, length(parm) - 2) if substr(parm,-2,2) == "_b"
-replace varname = ///
-	substr(parm, strpos(parm, ".") + 1, length(parm) - strpos(parm, ".") + 1) ///
-	if strpos(parm, ".")
-replace varname = "icnarc0" if strpos(parm,"icnarc0")
-gen var_level = substr(parm,1,1) if strpos(parm, ".")
+// convert to wide
+tempfile working 2merge
+cap restore, not
+preserve
+local wide_vars estimate stderr z p stars min95 max95 theta_est theta_se theta_chi2
+forvalues i = 1/4 {
+	keep parm model_sequence `wide_vars'
+	keep if model_sequence == `i'
+	foreach name in `wide_vars' {
+		rename `name' `name'_`i'
+	}
+	save `2merge', replace
+	if `i' == 1 {
+		save `working', replace
+	}
+	else {
+		use `working', clear
+		merge 1:1 parm using `2merge'
+		drop _merge
+		save `working', replace
+	}
+	restore
+	preserve
+
+}
+restore, not
+use `working', clear
+qui include mt_Programs.do
+mt_extract_varname_from_parm
+order model_sequence varname var_level
+
+// hand label the time-varying interaction
+replace var_level = "0" if strpos(var_level, "0")
+replace var_level = "1" if strpos(var_level, "1")
+replace var_level = "3" if strpos(var_level, "3")
+replace var_level = "7" if strpos(var_level, "7")
 destring var_level, replace
-
-* All this is so that you have appropriate blank rows in table
-* for icnarc0 which has extra variables in 3rd and 4th model
-bys model_name varname: egen table_pos_min = min(table_order)
-replace var_level = -1 if varname == "icnarc0" & missing(var_level)
-
-
-expand 2 if varname == "icnarc0" & inlist(model_name,2), gen(expanded_dummy1)
-drop if var_level == -1 & expanded_dummy1
-replace model_name = 0 if expanded_dummy1
-
-expand 2 if varname == "icnarc0" & inlist(model_name,2), gen(expanded_dummy2)
-drop if var_level == -1 & expanded_dummy2
-replace model_name = 1 if expanded_dummy2
-
-foreach var in stderr idstr parm label estimate z p stars min95 max95 es_1 es_2 model idstr {
-	cap replace `var' = . if expanded_dummy == 1
-	cap replace `var' = "" if expanded_dummy == 1
-}
-cap drop seq
-bys model_name (table_pos_min var_level): egen seq = seq()
-drop table_order
-rename seq table_order
-
-gen dummy = expanded_dummy1 | expanded_dummy2
-cap drop expanded_dummy*
-
-save ../outputs/tables/$table_name.dta, replace
-
-*  ==========================================================
-*  = Now merge in variable chararcteristics from dictionary =
-*  ==========================================================
-
-global table_name ward_survival_final_est
-use ../outputs/tables/$table_name,clear
-cap drop stataformat tablerowlabel unitlabel attributes_found
-
+replace varname = "icnarc0_timev" if strpos(varname, "tb#c")
+// label the vars
 spot_label_table_vars
+replace tablerowlabel = "\textit{--- with modifier of Day 0 effect}" if varname == "icnarc0_timev"
 
-save ../outputs/tables/$table_name.dta, replace
+// replace var_level_lab = "Days 0 effect"  if varname == "icnarc0_timev" & var_level == 0
+replace var_level_lab = "Days 1--2"  if varname == "icnarc0_timev" & var_level == 1
+replace var_level_lab = "Days 3--7"  if varname == "icnarc0_timev" & var_level == 3
+replace var_level_lab = "Days 8+" if varname == "icnarc0_timev" & var_level == 7
 
-*  ========================
-*  = Produce LaTeX tables =
-*  ========================
-use ../outputs/tables/$table_name.dta, clear
-local model_name Univariate Multivariate Multivariate(Frailty)
+order tablerowlabel var_level_lab
+// add in blank line as ref category for ccot_shift_pattern
 
-gen var_level_lab = ""
-* CCMDS level of care
-replace var_level_lab = "Level 0" if varname == "v_ccmds" & var_level ==0
-replace var_level_lab = "Level 1" if varname == "v_ccmds" & var_level ==1
-replace var_level_lab = "Level 2" if varname == "v_ccmds" & var_level ==2
-replace var_level_lab = "Level 3" if varname == "v_ccmds" & var_level ==3
+global table_order ///
+	hes_overnight ///
+	hes_emergx ///
+	cmp_beds_max ///
+	patients_perhesadmx ///
+	ccot_shift_pattern ///
+	gap_here ///
+	out_of_hours ///
+	weekend ///
+	decjanfeb ///
+	gap_here ///
+	age ///
+	male ///
+	sepsis_dx ///
+	delayed_referral ///
+	v_ccmds ///
+	icnarc0 ///
+	icnarc0_timev
 
-* CCOT shift pattern
-replace var_level_lab = "No CCOT" if varname == "ccot_shift_pattern" & var_level ==0
-replace var_level_lab = "Less than 7 days" if varname == "ccot_shift_pattern" & var_level == 1
-replace var_level_lab = "7 days / week" if varname == "ccot_shift_pattern" & var_level == 2
-replace var_level_lab = "24 hrs / 7 days" if varname == "ccot_shift_pattern" & var_level == 3
+mt_table_order
+sort table_order var_level
 
-* Time-dependence of severity
-replace var_level_lab = "Day 0 effect" if varname == "icnarc0" & var_level == -1
-* Label these as effect modifiers
-drop if varname == "icnarc0" & var_level == 0
-
-* replace var_level_lab = "Day 0 modifier"  if varname == "icnarc0" & var_level == 0
-replace var_level_lab = "Days 1--2 modifier"  if varname == "icnarc0" & var_level == 1
-replace var_level_lab = "Days 3--7 modifier"  if varname == "icnarc0" & var_level == 3
-replace var_level_lab = "Days 8+ modifier" if varname == "icnarc0" & var_level == 7
-
-sort model_name table_order var_level
-order model table_order parm tablerowlabel var_level var_level_lab estimate stars
-
-local theta_est = es_1[_N]
-local theta_se = es_2[_N]
-
-gen est = estimate
-sdecode estimate, format(%9.2fc) replace
-replace stars = "\textsuperscript{" + stars + "}"
-replace estimate = estimate + stars
-
-replace estimate = "" if varname == "icnarc0" & var_level >= 0 & inlist(model_name,0,1)
-
-
-
-drop idnum idstr  label stderr z stataformat ///
-	attributes_found es_1 es_2 dummy table_pos_min model
-
-chardef tablerowlabel estimate, ///
-	char(varname) prefix("\textit{") suffix("}") ///
-	values("Parameter" "Hazard ratio")
-
-xrewide estimate stars est min95 max95 p , ///
-	i(table_order) j(model_name) cjlabel(models) lxjk(nonrowvars)
-
-*  ===================================
-*  = Produce comparative model table =
-*  ===================================
-
-listtab_vars tablerowlabel `nonrowvars', rstyle(tabular) ///
-	substitute(char varname) local(h1)
-
-order table_order tablerowlabel estimate0 estimate1 estimate2 estimate3
-ingap 5 9 17, gapindicator(gap)
-gen seq = _n
-replace tablerowlabel = tablerowlabel[_n+1] if missing(tablerowlabel)
-replace tablerowlabel = var_level_lab if !missing(var_level_lab)
-replace tablerowlabel =  "\hspace*{1em}{" + tablerowlabel + "}" ///
-	if missing(var_level_lab)
-replace tablerowlabel =  "\hspace*{2em}\smaller[1]{" + tablerowlabel + "}" ///
-	if !missing(var_level_lab)
-
-foreach var in estimate0 estimate1 estimate2 estimate3 {
-	replace `var' = "--" if varname == "ccot_shift_pattern" & var_level == 3
-	replace `var' = "--" if varname == "v_ccmds" & var_level == 0
+forvalues i = 1/4 {
+	gen est_raw_`i' = estimate_`i'
+	sdecode estimate_`i', format(%9.2fc) replace
+	replace stars_`i' = "\textsuperscript{" + stars_`i' + "}"
+	replace estimate_`i' = estimate_`i' + stars_`i'
+	// replace reference categories
+	replace estimate_`i' = "" if est_raw_`i' == .
+	replace estimate_`i' = "--" if varname == "ccot_shift_pattern" & var_level == 3
+	replace estimate_`i' = "--" if varname == "sepsis_dx" & var_level == 0
+	replace estimate_`i' = "--" if varname == "v_ccmds" & var_level == 1
+	replace estimate_`i' = "" if varname == "icnarc0_timev" & var_level == 0
 }
 
-di "`nonrowvars'"
+// indent categorical variables
+mt_indent_categorical_vars
 
-* Other headings
-ingap 1 15 18
-replace tablerowlabel = "\textit{Patient parameters}" if _n == 1
-replace tablerowlabel = "\textit{Timng parameters}" if _n == 16
-replace tablerowlabel = "\textit{Site parameters}" if _n == 20
+// Other headings
+ingap 1 10 13 27
+replace tablerowlabel = "\textit{Site parameters}" if _n == 1
+replace tablerowlabel = "\textit{Timng parameters}" if _n == 11
+replace tablerowlabel = "\textit{Patient parameters}" if _n == 15
+ingap 11 15
 
-local obs = _N+1
-set obs `obs'
-di "`theta_est'"
-local new = substr("`theta_est'",1,3)
-local new "0`new'"
-di "`new'"
-replace tablerowlabel = "\textit{Site level variance $(\theta)$}" if _n == _N
-replace estimate3 = "`new'\textsuperscript{***}" if _n == _N
+*  =====================
+*  = Comparative table =
+*  =====================
+// now prepare footers with site level variability
+qui su theta_est_4, meanonly
+local f = r(mean)
+qui su theta_chi2_4, meanonly
+local theta_p = chi2tail(1,`=r(mean)')/2
+if `theta_p' < 0.001 local theta_stars = "***"
+local frailty: di %9.3fc `f'
+local frailty "`frailty'\textsuperscript{`theta_stars'}"
+local frailty = subinstr("`frailty'", " ", "",.)
+local f1 "Frailty &  &  & & `frailty'  \\"
+di "`f1'"
 
-local cols estimate0 estimate1 estimate2 estimate3
-* local super_heading "& \multicolumn{2}{c}{Univariate} & \multicolumn{2}{c}{Multivariate} & \multicolumn{2}{c}{Multivariate(with frailty)} \\ "
+local cols tablerowlabel estimate_1 estimate_2 estimate_3 estimate_4
+order `cols'
+
+global table_name ward_survival_all
 local super_heading "& \multicolumn{4}{c}{Hazard ratio} \\"
-local h1 "& Univariate & Multivariate & Time-dependent & Frailty \\ "
-local justify lXXXX
+local h1 "& Uni-variate & Multi-variate & Time-varying & Frailty \\ "
+local justify X[6l]XXXX
 local tablefontsize "\footnotesize"
-local arraystretch 1.1
 local taburowcolors 2{white .. white}
 
-listtab tablerowlabel `cols' ///
+listtab `cols' ///
 	using ../outputs/tables/$table_name.tex, ///
-	replace rstyle(tabular) ///
+	replace  ///
+	begin("") delimiter("&") end(`"\\"') ///
 	headlines( ///
 		"`tablefontsize'" ///
 		"\renewcommand{\arraystretch}{`arraystretch'}" ///
-		"\sffamily{" ///
 		"\taburowcolors `taburowcolors'" ///
 		"\begin{tabu} spread " ///
 		"\textwidth {`justify'}" ///
@@ -344,47 +312,67 @@ listtab tablerowlabel `cols' ///
 		"`h1'" ///
 		"\midrule" ) ///
 	footlines( ///
+		"\midrule" ///
+		"`f1'" ///
 		"\bottomrule" ///
-		"\end{tabu} } " ///
-		"\label{$table_name} " ///
-		"\normalfont" ///
-		"\normalsize")
+		"\end{tabu}  " ///
+		"\label{tab: $table_name} ")
 
-di as result "Created and exported $table_name (best)"
 
-*  =========================
-*  = Produce results table =
-*  =========================
-sdecode est3, format(%9.2fc) replace
-sdecode min953, format(%9.2fc) replace
-sdecode max953, format(%9.2fc) replace
-sdecode p3, format(%9.3fc) replace
-replace p3 = "<0.001" if p3 == "0.000"
-replace est3 = "--" if varname == "ccot_shift_pattern" & var_level == 3
-replace est3 = "--" if varname == "v_ccmds" & var_level == 0
 
-cap drop bracket3
-gen bracket3 = "(" + min953 + "--" + max953 + ")" if !missing(min953, max953)
-replace est3 = estimate3 if _n == _N
+*  ==========================
+*  = Final best model table =
+*  ==========================
+gen estimate = est_raw_4
+gen min95 = min95_4
+gen max95 = max95_4
+gen p = p_4
 
-local cols tablerowlabel est3 bracket3 p3
+sdecode estimate, format(%9.2fc) gen(est)
+sdecode min95, format(%9.2fc) replace
+sdecode max95, format(%9.2fc) replace
+sdecode p, format(%9.3fc) replace
+replace p = "<0.001" if p == "0.000"
+gen est_ci95 = "(" + min95 + "--" + max95 + ")" if !missing(min95, max95)
+replace est = "--" if reference_cat == 1
+replace est_ci95 = "" if reference_cat == 1
+replace est = "" if varname == "icnarc0_timev" & var_level == 0
+
+// now prepare footers with site level variability
+qui su theta_est_4, meanonly
+local f = r(mean)
+qui su theta_chi2_4, meanonly
+local theta_p = chi2tail(1,`=r(mean)')/2
+local theta_p: di %9.3fc `theta_p'
+local theta_p = subinstr("`theta_p'", " ", "",.)
+if `theta_p' < 0.001 local theta_p = "<0.001"
+local frailty: di %9.3fc `f'
+local frailty "`frailty'"
+local frailty = subinstr("`frailty'", " ", "",.)
+local f1 "\multicolumn{4}{r}{Frailty `frailty' $(p`theta_p')$}  \\"
+di "`f1'"
+
+* now write the table to latex
+order tablerowlabel var_level_lab est est_ci95 p
+local cols tablerowlabel est est_ci95 p
 order `cols'
+cap br
 
-local h1 "Parameter & Hazard Ratio & (95\% CI) & p \\ "
-local justify  X[5r]X[r]X[2r]X[r]
-local tablefontsize "\footnotesize"
-local arraystretch 1.1
+global table_name ward_survival_final
+local h1 "Parameter & Odds ratio & (95\% CI) & p \\ "
+local justify lrlr
+* local justify X[5l] X[1l] X[2l] X[1r]
+local tablefontsize "\scriptsize"
+local arraystretch 1.0
 local taburowcolors 2{white .. white}
-local table_name $table_name
 
-
-listtab tablerowlabel est3 bracket3 p3 ///
-	using ../outputs/tables/`table_name'_best.tex, ///
-	replace rstyle(tabular) ///
+listtab `cols' ///
+	using ../outputs/tables/$table_name.tex, ///
+	replace  ///
+	begin("") delimiter("&") end(`"\\"') ///
 	headlines( ///
 		"`tablefontsize'" ///
 		"\renewcommand{\arraystretch}{`arraystretch'}" ///
-		"\sffamily{" ///
 		"\taburowcolors `taburowcolors'" ///
 		"\begin{tabu} spread " ///
 		"\textwidth {`justify'}" ///
@@ -392,14 +380,11 @@ listtab tablerowlabel est3 bracket3 p3 ///
 		"`h1'" ///
 		"\midrule" ) ///
 	footlines( ///
+		"\midrule" ///
+		"`f1'" ///
 		"\bottomrule" ///
-		"\end{tabu} } " ///
-		"\label{`table_name'_best} " ///
-		"\normalfont" ///
-		"\normalsize")
-
-
-di as result "Created and exported $table_name (best)"
+		"\end{tabu}  " ///
+		"\label{tab: $table_name} ")
 
 *  =====================================
 *  = Now inspect importance of frailty =
@@ -500,7 +485,6 @@ graph export ../outputs/figures/survival_reffects_bhaz.pdf, ///
 restore
 
 
-exit
 
 
 
