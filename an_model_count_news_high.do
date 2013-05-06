@@ -106,41 +106,21 @@ forvalues i = 3/3 {
 		, by(site v_week)
 	d 
 	xtset site v_week, weekly
-	* pause on
-	* pause
-	* pause of
-	// set up gllamm equations
 	// CHANGED: 2013-05-05 - allow patients_perhesadmx in as cubic spline
 	// first a model with a cubic spline for the patients_perhesadmx
-	mkspline pts_hes_rcs = patients_perhesadmx_c, cubic nknots(4) displayknots
-	// CHANGED: 2013-05-05 - swap from gllamm to panel models given that the weeks are likely to be correlated
-	* cap drop cons
-	* gen cons = 1
-	* eq ri: cons
-	* qui gllamm vperweek $site_vars pts_hes_rcs* $unit_vars $timing_vars ///
-	* 	, family(poisson) link(log) i(site) eqs(ri) eform dots nolog
-	* noisily gllamm, robust eform
-	/*
-	NOTE: 2013-05-05 - xtpoisson specification
-		- normal option else frailty is gamma distributed
-		- vce(bootstrap) to compensate for the overdispersion
-	*/
-	xtpoisson vperweek $site_vars pts_hes_rcs* $unit_vars $timing_vars ///
-		, normal irr vce(bootstrap)
+	mkspline2 pts_hes_rcs = patients_perhesadmx_c, cubic nknots(4) displayknots
+	* CHANGED: 2013-05-06 - now use xtgee to handle autocorrelation
+	xtgee vperweek $site_vars pts_hes_rcs* $unit_vars $timing_vars ///
+		, family(poisson) link(log) force corr(ar 1) eform i(site) t(v_week)
 	est store news_high_cubic
 	est save ../data/estimates/news_high_cubic, replace
 	// save the data for use with estimates again, 'all' saves estimates
 	save ../data/count_news_high_cubic, replace all
 
 	// now the linear model for the table
-	// NOTE: 2013-05-05 - only include pts_hes_k1 and pts_hes_k3 ... so pts_hes_k2 is reference
-	* gllamm vperweek $site_vars $unit_vars $timing_vars ///
-	* 	pts_hes_k1 pts_hes_k3 ///
-	* 	, family(poisson) link(log) i(site) eqs(ri) eform dots nolog
-	* noisily gllamm, robust eform
-	xtpoisson vperweek $site_vars $unit_vars $timing_vars ///
+	xtgee vperweek $site_vars $unit_vars $timing_vars ///
 	 	pts_hes_k1 pts_hes_k3 ///
-		, normal irr vce(bootstrap)
+		, family(poisson) link(log) force corr(ar 1) eform i(site) t(v_week)
 	est store news_high_linear
 	est save ../data/estimates/news_high_linear, replace
 	// save the data for use with estimates again, 'all' saves estimates
@@ -148,7 +128,6 @@ forvalues i = 3/3 {
 
 	parmest, ///
 		label list(parm label estimate min* max* p) ///
-		erows(sigma_u) ///
 		eform ///
 		idnum(`i') idstr("`model_name'") ///
 		stars(0.05 0.01 0.001) ///
@@ -156,16 +135,6 @@ forvalues i = 3/3 {
 		saving(`estimates_file', replace)
 
 	use `estimates_file', clear
-	// Sort out the Cholesky decomposition matrix
-	* CHANGED: 2013-05-05 - as needed for gllamm
-	bys idnum (er_1_1): replace er_1_1 = er_1_1[1] if er_1_1 == .
-	replace er_1_1 = er_1_1^2
-	rename er_1_1 var_lvl2
-
-	gen medianIRR = exp((2 * var_lvl2)^0.5 * invnormal(3/4))
-	gen medianIRR_1 = 1 / medianIRR
-	format var_lvl2 medianIRR medianIRR_1 %9.3f
-	drop if eq == "sit1_1"
 	gen table_order = `table_order'
 	gen model_sequence = `model_sequence'
 	local ++table_order
@@ -178,7 +147,7 @@ forvalues i = 3/3 {
 *  ===================================
 use ../outputs/tables/$table_name.dta, clear
 cap drop if eq != "vperweek"
-rename medianIRR_1 medianIRRa
+* rename medianIRR_1 medianIRRa
 // convert to wide
 tempfile working 2merge
 qui include mt_Programs.do
@@ -253,14 +222,6 @@ replace tablerowlabel = tablerowlabel + "\smaller[1]{ (" + unitlabel + ")}"  ///
 replace tablerowlabel = tablerowlabel + "\smaller[1]{ (per 1,000 hospital admissions)}"  ///
 	if tablerowlabel == "Ward referrals to ICU"
 
-
-// now prepare footers with site level variability
-qui su var_lvl2, meanonly
-local v2: di %9.2fc `=r(mean)'
-qui su medianIRR, meanonly
-local irr: di %9.2fc `=r(mean)'
-
-
 * now write the table to latex
 local cols tablerowlabel estimate est_ci95 p
 order `cols'
@@ -270,10 +231,6 @@ local justify X[6l] X[1l] X[2l] X[1r]
 local tablefontsize "\scriptsize"
 local arraystretch 1.2
 local taburowcolors 2{white .. white}
-local f1 "Site level variance & \multicolumn{3}{l}{$var_lvl2} \\"
-local f2 "Median incidence-rate ratio & \multicolumn{3}{l}{$med_irr_25--$med_irr} \\"
-di "`f1'"
-di "`f2'"
 
 
 listtab `cols' ///
@@ -289,9 +246,6 @@ listtab `cols' ///
 		"`h1'" ///
 		"\midrule" ) ///
 	footlines( ///
-		"\midrule" ///
-		"`f1'" ///
-		"`f2'" ///
 		"\bottomrule" ///
 		"\end{tabu} " ///
 		"\label{tab:$table_name} " ///
@@ -309,10 +263,12 @@ use ../data/count_news_high_cubic, clear
 gen patients_perhesadmx = patients_perhesadmx_c + `patients_perhesadmx_mean'
 est use ../data/estimates/news_high_cubic
 est restore news_high_cubic
-est replay, irr
+est replay, eform
+* Graph using adjustrcspline ...
+adjustrcspline, link(log)
 * prediction assuming RE is 0
-predict nu0, nu0
-running nu0 patients_perhesadmx ///
+predict yhat, mu
+running yhat patients_perhesadmx ///
 	, ///
 	span(1) repeat(3) ///
 	lpattern(longdash) lwidth(medthick) ///
@@ -322,10 +278,13 @@ running nu0 patients_perhesadmx ///
 	xtitle("Ward referrals assessed by ICU" "(per week)") ///
 	xlabel(0(10)50) ///
 	xscale(noextend) ///
-	scatter(msymbol(oh) msize(vsmall) mcolor(gs8)) ///
+	scatter(msymbol(oh) msize(tiny) mcolor(gs4) jitter(1)) ///
 	xsize(6) ysize(6) ///
 	title("")
 
+if c(os) == "Unix" local gext eps
+if c(os) == "MaxOSX" local gext pdf
 graph rename count_news_high_rcs, replace
-graph export ../outputs/figures/count_news_high_rcs.pdf ///
+graph display count_news_high_rcs
+graph export ../outputs/figures/count_news_high_rcs.`gext' ///
     , name(count_news_high_rcs) replace
