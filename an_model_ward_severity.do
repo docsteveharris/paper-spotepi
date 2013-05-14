@@ -8,7 +8,7 @@ save ../data/scratch/scratch.dta, replace
 *  ======================================
 *  = Set up hierarchical nature of data =
 *  ======================================
-encode icode, gen(site)
+
 xtset site
 /* Example of how to inspect for within/between variation */
 xtsum age sex visit_hour visit_dow visit_month ccot_shift_pattern ///
@@ -45,7 +45,7 @@ estimates store noivars
 estat group
 /* inspect intra-class correlation coefficient */
 estat icc
-/* Random effects correlation matrix */
+	/* Random effects correlation matrix */
 estat recovariance, correlation
 
 *  =========================================
@@ -118,6 +118,7 @@ So little effect of weekend alone
 Office hours important
 But CCOT on appears to be more so
 */
+
 xtmixed icnarc_score ccot_on || icode: , reml cov(unstructured)
 est store candidate1
 xtmixed icnarc_score ccot_on out_of_hours || icode: , reml cov(unstructured)
@@ -164,22 +165,7 @@ est store candidate2
 estimates stats noivars candidate1 candidate2
 estat icc
 
-
-/*
-NOTE: 2013-01-17 - ??exciting: very little evidence of an effect of CCOT provision
-Given that CCOT provision is strongly correlated with the number of visits then
-- suggests that even with higher CCOT provision the 'pool' of deteriorating patients
-is deep and we are not seeing all of them:
-- things to think about:
-	- might be reasonable to consider sites without CCOT separately as
-		- no CCOT means all patients must be referred via doctors
-		- levels of shift pattern suggest the coverage of nursing led referrals
-	- is the same true if you examine visits per month (adjusted for hospital size, emergencies)
-		- better can you plot a relationship whereby you can estimate the point when severity starts to fall
-*/
 * HES admissions
-cap drop pickone_site
-egen pickone_site = tag(icode)
 su hes_admissions if pickone_site
 cap drop icnarc_score_bar1
 bys icode: egen icnarc_score_bar1 = mean(icnarc_score)
@@ -207,7 +193,7 @@ bys icode studymonth: egen icnarc_score_bar2 = mean(icnarc_score)
 
 * Ratio of critical care beds to hospital admissions
 running icnarc_score_bar1 cmp_beds_max if pickone_site
-NOTE: 2013-01-17 - you might expect this to be curvilinear?
+* NOTE: 2013-01-17 - you might expect this to be curvilinear?
 regress icnarc_score_bar1 cmp_beds_max if pickone_site
 est store nocluster
 xtmixed icnarc_score cmp_beds_max || icode: , reml cov(unstructured) nolog

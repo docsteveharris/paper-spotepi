@@ -5,6 +5,8 @@
 clear
 !cp ~/data/spot_study/data/working_occupancy24.dta ../data/working_occupancy24.dta
 use ../data/working_occupancy24
+replace icode = lower(icode)
+d
 
 gen open_beds_cmp = (cmp_beds_max - occupancy_active)
 label var open_beds_cmp "Open beds with respect to CMP reported number"
@@ -30,4 +32,5 @@ label values bed_pressure bed_pressure
 su beds_blocked beds_none
 
 * NOTE: 2013-05-02 - no free beds on the ICU 12% of the time
+pwd
 save ../data/working_occupancy.dta, replace

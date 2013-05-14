@@ -20,7 +20,7 @@ local all_vars ///
 	weekend ///
 	out_of_hours ///
 	delayed_referral ///
-	referrals_permonth_c ///
+	patients_perhesadmx_c ///
 	ib3.ccot_shift_pattern ///
 	age_c ///
 	male ///
@@ -35,7 +35,7 @@ global model_vars `all_vars'
 
 tempfile estimates_file
 global table_name model_ward_severity
-local i = 1
+local i = 3
 local model_sequence = 1
 local table_order = 1
 
@@ -56,18 +56,19 @@ parmest, ///
 	saving(`estimates_file', replace)
 use `estimates_file', clear
 gen table_order = `table_order'
-gen model_sequence = `model_sequence'
+gen model_sequence = 3
 local ++table_order
 save `estimates_file', replace
 save ../outputs/tables/$table_name.dta, replace
-local ++i
+
 
 
 *  ==============
 *  = NEWS score =
 *  ==============
+local i = 1
 use ../data/scratch/scratch.dta, clear
-local ++model_sequence
+local model_sequence = 1
 xtreg news_score $model_vars
 est store news
 parmest, ///
@@ -89,8 +90,9 @@ local ++i
 *  ==============
 *  = SOFA score =
 *  ==============
+local i = 2
 use ../data/scratch/scratch.dta, clear
-local ++model_sequence
+local model_sequence = 2
 xtreg sofa_score $model_vars
 est store sofa
 parmest, ///
@@ -161,14 +163,14 @@ order model_sequence varname var_level
 spot_label_table_vars
 
 order tablerowlabel var_level_lab
-replace tablerowlabel = "Mean severity score (95\%CI)" if parm == "_cons"
+replace tablerowlabel = "\textbf{Mean severity score}" if parm == "_cons"
 replace tablerowlabel = "Intra-class correlation" if parm == "icc"
 
 global table_order ///
 	hes_overnight ///
 	hes_emergx ///
 	cmp_beds_max ///
-	referrals_permonth ///
+	patients_perhesadmx ///
 	ccot_shift_pattern ///
 	gap_here ///
 	decjanfeb ///
@@ -200,15 +202,26 @@ forvalues i = 1/3 {
 }
 
 // now replace the estimate with a range for baseline values
-forvalues i = 1/3 {
-	sdecode min95_`i', format(%9.1fc) replace
-	sdecode max95_`i', format(%9.1fc) replace
-	replace estimate_`i' = min95_`i' + "--" + max95_`i' if parm == "_cons"
-}
+* forvalues i = 1/3 {
+* 	sdecode min95_`i', format(%9.1fc) replace
+* 	sdecode max95_`i', format(%9.1fc) replace
+* 	replace estimate_`i' = min95_`i' + "--" + max95_`i' if parm == "_cons"
+* }
 
 
 // indent categorical variables
 mt_indent_categorical_vars
+
+* Append units
+cap confirm string var unitlabel
+if _rc {
+    tostring unitlabel, replace
+    replace unitlabel = "" if unitlabel == "."
+}
+replace tablerowlabel = tablerowlabel + "\smaller[1]{ (" + unitlabel + ")}"  ///
+	if !missing(unitlabel) & var_type != "Categorical"
+replace tablerowlabel = "Ward referrals to ICU\smaller[1]{ (per 1,000 hosp. adm.)}"  ///
+	if parm == "patients_perhesadmx_c"
 
 ingap 10 13 22 23
 
@@ -217,9 +230,11 @@ local cols tablerowlabel estimate_1 estimate_2 estimate_3
 order `cols'
 
 local super_heading "& \multicolumn{3}{c}{(Change in) mean score} \\"
-local h1 "& ICNARC & NEWS & SOFA \\ "
-local justify lXXX
-local tablefontsize "\footnotesize"
+local h1 "& {NEWS} & {SOFA} & ICNARC \\ "
+* CHANGED: 2013-05-14 - decimally aligned column
+local zcol "\newcolumntype Z{X[-1m]{S[tight-spacing = true,round-mode=places,round-precision=2]}}"
+local justify X[lm]*3{Z}
+local tablefontsize "\scriptsize"
 local taburowcolors 2{white .. white}
 
 listtab `cols' ///
@@ -230,6 +245,7 @@ listtab `cols' ///
 		"`tablefontsize'" ///
 		"\renewcommand{\arraystretch}{`arraystretch'}" ///
 		"\taburowcolors `taburowcolors'" ///
+		"`zcol'" ///
 		"\begin{tabu} spread " ///
 		"\textwidth {`justify'}" ///
 		"\toprule" ///
@@ -240,5 +256,5 @@ listtab `cols' ///
 	footlines( ///
 		"\bottomrule" ///
 		"\end{tabu}  " ///
-		"\label{tab: $table_name} ") 
+		"\label{tab:$table_name} ") 
 

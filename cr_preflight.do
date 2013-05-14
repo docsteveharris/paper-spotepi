@@ -8,7 +8,7 @@
 // if the global var is not set then you can safely assume it should be 1
 if "$sclean_run" == "" global clean_run = 1
 
-local clean_run = 1
+local clean_run = 0
 if `clean_run' == 1 & $clean_run != 0 {
 	use ../data/working.dta, clear
 }
@@ -128,7 +128,7 @@ gen count_patients = study_patients * 365 / studydays / 12
 label var count_patients "New ward referrals per month"
 su count_patients
 
-gen patients_perhesadmx = (study_patients / hes_overnight  ) 
+gen patients_perhesadmx = (count_patients * 12 / hes_overnight  ) 
 label var patients_perhesadmx "Ward referrals per 1000 admissions"
 qui su patients_perhesadmx
 cap drop patients_perhesadmx_c

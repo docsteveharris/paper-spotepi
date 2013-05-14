@@ -1,15 +1,4 @@
-* TODO: 2013-02-19 - diff this against current cr_working to check it has not changed 
-* force exit now so you don't forget
-exit
-
 clear
-* ==================================
-* = DEFINE LOCAL AND GLOBAL MACROS =
-* ==================================
-local ddsn mysqlspot
-local uuser stevetm
-local ppass ""
-
 
 *  =======================================
 *  = Log definitions and standard set-up =
@@ -62,9 +51,14 @@ count if included_months == 1 & include == 1
 /*
 CHANGED: 2013-01-07
 - permit through sites where the overall quality is good (late improvers) 
-*/
+CHANGED: 2013-05-12 - 
+- permit through all study months at this stage and only drop poor quality at next
 replace include = 0 if ///
 	(site_quality_q1 < 70 | site_quality_q1 == .) ///
+	& include == 1
+*/
+replace include = 0 if ///
+	(site_quality_q1 == .) ///
 	& include == 1
 
 cap drop included_sites
@@ -104,7 +98,7 @@ count if included_months == 1 & include == 1 & exclude1 == 0
 count if include == 1 & exclude1 == 0 & site_quality_by_month < 70
 gen exclude2 = 0
 label var exclude2 "Exclude - by choice"
-replace exclude2 = 1 if include == 1 & exclude1 == 0 & site_quality_by_month < 80
+replace exclude2 = 1 if include == 1 & exclude1 == 0 & site_quality_by_month < 70
 tab exclude2 if include == 1
 
 cap drop included_sites

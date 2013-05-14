@@ -146,7 +146,28 @@ lincom beds_none_week*10, eform
 *  =================
 *  = Severity data =
 *  =================
+
 use ../data/working_postflight.dta, clear
+
+tab ccot_shift_pattern abg if ccot_shift_pattern == 0, row
+tab ccot_shift_pattern abg if ccot_shift_pattern != 0, row
+prtest abg, by(ccot)
+
+tab out_of_hours  abg , row
+prtest abg, by(out_of_hours)
+prtest abg, by(male)
+prtest abg, by(male)
+/*
+What proportion of the severity score zero weights are due to missing data?
+NEWS
+ICNARC
+SOFA
+*/
+
+
+
+tab news_risk
+
 est drop _all
 local evars ///
 	hes_overnight_c ///
@@ -161,6 +182,7 @@ local evars ///
 	age_c ///
 	male ///
 	sepsis_dx
+
 // mean severity icnarc
 est use ../data/estimates/model_ward_severity.ster, number(1)
 estimates esample: `evars'
