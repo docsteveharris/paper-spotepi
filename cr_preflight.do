@@ -298,6 +298,11 @@ replace dead90 = . if missing(date_trace)
 label var dead90 "90d mortality"
 label values dead90 truefalse
 
+gen dead1y = (date_trace - dofc(v_timestamp) <= 365 & dead)
+replace dead1y = . if missing(date_trace)
+label var dead1y "1 year mortality"
+label values dead1y truefalse
+
 foreach i in 28 90 {
 	cap drop icufree_days`i'
 	tempvar day_`i' icu_days dead_days

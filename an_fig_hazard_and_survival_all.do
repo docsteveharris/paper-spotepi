@@ -13,7 +13,8 @@ if `clean_run' == 1 {
 *  = Simple non-parametric plots =
 *  ===============================
 use ../data/working_survival.dta, clear
-stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+set scheme shred
+stset dt1, id(id) failure(dead_st) exit(time dt0+365) origin(time dt0)
 sts list, at(0/28)
 * sts graph
 * count if ppsample
@@ -24,29 +25,32 @@ sts graph, ///
 	hazard ci kernel(rectangle) width(0.5) noboundary ///
 	ciopts(pstyle(ci)) ///
 	tscale(noextend) ///
-	tlabel(0(30)90) ///
+	tlabel(0 30 90 180 365) ///
 	ttitle("Days following bedside assessment", margin(medium)) ///
 	yscale(noextend) ///
 	tscale(noextend) ///
 	ylabel( ///
 		0.000 "0" ///
+		0.005 "5" ///
 		0.010 "10" ///
+		0.015 "15" ///
 		0.020 "20" ///
-		0.030 "30" ///
-		0.040 "40" ///
-		0.050 "50" ///
+		0.025 "30" ///
 		, nogrid) ///
 	ytitle("Deaths" "(per 1000 patients per day)", margin(medium)) ///
+	subtitle("(A) Daily mortality rate", position(11) justification(left) ) ///
 	legend(off) ///
-	title("Daily mortality rate") ///
+	title("") ///
 	xsize(6) ysize(6)
+
 graph rename hazard_all, replace
+graph display hazard_all
 
 sts graph, surv ci ///
 	ciopts(color(gs12)) ///
 	plotopts(lwidth(thin)) ///
 	tscale(noextend) ///
-	tlabel(0(30)90) ///
+	tlabel(0 30 90 180 365) ///
 	ttitle("Days following bedside assessment", margin(medium)) ///
 	yscale(noextend) ///
 	tscale(noextend) ///
@@ -59,11 +63,13 @@ sts graph, surv ci ///
 		, nogrid) ///
 	ytitle("Survival" "(percentage)", margin(medium)) ///
 	legend(off) ///
-	title("Survival curve") ///
+	title("") ///
+	subtitle("(B) Kaplan-Meier survival estimate", position(11) justification(left) ) ///
 	xsize(6) ysize(6)
 
 graph rename survival_all, replace
-graph combine hazard_all survival_all, cols(1) ysize(6) xsize(4)
+graph display survival_all
+graph combine hazard_all survival_all, cols(2) ysize(6) xsize(8) 
 graph export ../outputs/figures/hazard_and_survival_all.pdf, replace
 
 

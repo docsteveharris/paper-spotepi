@@ -1,10 +1,17 @@
+GenericSetupSteveHarris spot_ward an_model_ward_survival_final, logon
+
 *  =======================================================================
 *  = Produce a table showing coefficients from final ward survival model =
 *  =======================================================================
 
-GenericSetupSteveHarris spot_ward an_survival_ward, logon
-
 /*
+Created 
+Modifed 130515
+
+Change log
+CHANGED: 2013-05-15 - work with 90 day survival, and add time-varying effect for severity at 28d
+
+
 Consider the following models
 - individual univariate hazard ratio estimates
 - full model - ignoring frailty
@@ -52,6 +59,7 @@ if `clean_run' == 1 {
 	global table_name ward_survival_final_est
 	use ../data/working_survival.dta, clear
 	// NOTE: 2013-01-29 - cr_survival.do stsets @ 28 days by default
+	stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
 
 	local i 1
 	// =====================================
@@ -60,6 +68,7 @@ if `clean_run' == 1 {
 	stcox $all_vars icnarc0_c, nolog
 	local model_name full no_frailty
 	est store full1
+	est save ../data/estimates/survival_full1, replace
 	tempfile estimates_file
 	parmest, ///
 		eform ///
@@ -77,11 +86,13 @@ if `clean_run' == 1 {
 	// = Run model with time-dependence for severity =
 	// ===============================================
 	use ../data/working_survival.dta, clear
-	stsplit tb, at(1 3 7)
+	stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+	stsplit tb, at(1 4 28)
 	label var tb "Analysis time blocks"
 	stcox $all_vars icnarc0_c i.tb#c.icnarc0_c, nolog
 	local model_name full time_dependent
 	est store full2
+	est save ../data/estimates/survival_full2, replace
 	tempfile estimates_file
 	parmest, ///
 		eform ///
@@ -102,13 +113,15 @@ if `clean_run' == 1 {
 	// = Run full model with frailty =
 	// ===============================
 	use ../data/working_survival.dta, clear
-	stsplit tb, at(1 3 7)
+	stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+	stsplit tb, at(1 4 28)
 	label var tb "Analysis time blocks"
 	stcox $all_vars icnarc0_c i.tb#c.icnarc0_c ///
 		, shared(site) ///
 		nolog
 	local model_name full_frailty
 	est store full3
+	est save ../data/estimates/survival_full3, replace
 	estimates save ../data/survival_final, replace
 	tempfile estimates_file
 	parmest, ///
@@ -159,13 +172,13 @@ if `clean_run' == 1 {
 * so you don't need to re-run the models when debugging
 est restore full3
 gen theta_chi2 = e(chi2_c) if strpos(idstr, "full_frailty")
-save ../data/scratch/scratch.dta, replace
+save ../data/scratch/scratch_survival_final.dta, replace
 
 *  ======================
 *  = Now produce tables =
 *  ======================
 
-use ../data/scratch/scratch.dta, clear
+use ../data/scratch/scratch_survival_final.dta, clear
 cap drop model_sequence
 gen model_sequence = .
 replace model_sequence = 1 if strpos(idstr, "univariate")
@@ -210,8 +223,8 @@ order model_sequence varname var_level
 // hand label the time-varying interaction
 replace var_level = "0" if strpos(var_level, "0")
 replace var_level = "1" if strpos(var_level, "1")
-replace var_level = "3" if strpos(var_level, "3")
-replace var_level = "7" if strpos(var_level, "7")
+replace var_level = "4" if strpos(var_level, "4")
+replace var_level = "28" if strpos(var_level, "28")
 destring var_level, replace
 replace varname = "icnarc0_timev" if strpos(varname, "tb#c")
 // label the vars
@@ -220,8 +233,8 @@ replace tablerowlabel = "\textit{--- with modifier of Day 0 effect}" if varname 
 
 // replace var_level_lab = "Days 0 effect"  if varname == "icnarc0_timev" & var_level == 0
 replace var_level_lab = "Days 1--2"  if varname == "icnarc0_timev" & var_level == 1
-replace var_level_lab = "Days 3--7"  if varname == "icnarc0_timev" & var_level == 3
-replace var_level_lab = "Days 8+" if varname == "icnarc0_timev" & var_level == 7
+replace var_level_lab = "Days 4--28"  if varname == "icnarc0_timev" & var_level == 4
+replace var_level_lab = "Days 28+" if varname == "icnarc0_timev" & var_level == 28
 
 order tablerowlabel var_level_lab
 // add in blank line as ref category for ccot_shift_pattern
@@ -267,9 +280,20 @@ mt_indent_categorical_vars
 // Other headings
 ingap 1 10 13 27
 replace tablerowlabel = "\textit{Site parameters}" if _n == 1
-replace tablerowlabel = "\textit{Timng parameters}" if _n == 11
+replace tablerowlabel = "\textit{Timing parameters}" if _n == 11
 replace tablerowlabel = "\textit{Patient parameters}" if _n == 15
 ingap 11 15
+
+* Append units
+cap confirm string var unitlabel
+if _rc {
+    tostring unitlabel, replace
+    replace unitlabel = "" if unitlabel == "."
+}
+replace tablerowlabel = tablerowlabel + "\smaller[1]{ (" + unitlabel + ")}"  ///
+	if !missing(unitlabel) & var_type != "Categorical"
+replace tablerowlabel = "Ward referrals to ICU\smaller[1]{ (per 1,000 hosp. adm.)}"  ///
+	if parm == "patients_perhesadmx_c"
 
 *  =====================
 *  = Comparative table =
@@ -285,6 +309,7 @@ local frailty "`frailty'\textsuperscript{`theta_stars'}"
 local frailty = subinstr("`frailty'", " ", "",.)
 local f1 "Frailty &  &  & & `frailty'  \\"
 di "`f1'"
+
 
 local cols tablerowlabel estimate_1 estimate_2 estimate_3 estimate_4
 order `cols'
@@ -318,7 +343,7 @@ listtab `cols' ///
 		"\end{tabu}  " ///
 		"\label{tab: $table_name} ")
 
-
+est stats full*
 
 *  ==========================
 *  = Final best model table =
@@ -352,6 +377,7 @@ local frailty = subinstr("`frailty'", " ", "",.)
 local f1 "\multicolumn{4}{r}{Frailty `frailty' $(p`theta_p')$}  \\"
 di "`f1'"
 
+
 * now write the table to latex
 order tablerowlabel var_level_lab est est_ci95 p
 local cols tablerowlabel est est_ci95 p
@@ -359,7 +385,7 @@ order `cols'
 cap br
 
 global table_name ward_survival_final
-local h1 "Parameter & Odds ratio & (95\% CI) & p \\ "
+local h1 "Parameter & Hazard ratio & (95\% CI) & p \\ "
 local justify lrlr
 * local justify X[5l] X[1l] X[2l] X[1r]
 local tablefontsize "\scriptsize"
@@ -386,11 +412,17 @@ listtab `cols' ///
 		"\end{tabu}  " ///
 		"\label{tab: $table_name} ")
 
+
 *  =====================================
 *  = Now inspect importance of frailty =
 *  =====================================
-est restore full3
-est replay full3
+use ../data/working_survival.dta, clear
+stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+stsplit tb, at(1 4 28)
+label var tb "Analysis time blocks"
+est use ../data/estimates/survival_full3
+est replay
+estimates esample: `=e(datasignaturevars)'
 
 * predict the random effects
 cap drop site_re
@@ -405,84 +437,107 @@ list icode dorisname site_re in 1/10
 *  ======================================
 *  = Plot the baseline survival frailty =
 *  ======================================
-cap restore, not
-preserve
 
-su site_re
-local site_re_min = r(min)
-local site_re_max = r(max)
+
 stcurve, survival ///
  	outfile(../data/scratch/base_survival, replace)
+stcurve, ///
+	hazard kernel(rectangle) width(0.5) noboundary ///
+ 	outfile(../data/scratch/base_hazard, replace)
+
+contract site_re if ppsample
+levelsof site_re, local(site_re) clean
+global site_re `site_re'
 use ../data/scratch/base_survival, clear
 duplicates drop surv1 _t, force
 rename surv1 base_surv_est
-gen base_surv_max = base_surv_est^(exp(`site_re_max'))
-gen base_surv_min = base_surv_est^(exp(`site_re_min'))
 
+
+local i = 1
+foreach re of global site_re {
+	gen re`i' = base_surv_est^(exp(`re'))
+	local plot (line re`i' _t, lcolor(black) lwidth(vthin) lpattern(solid))
+	local plots `plots' `plot'
+	local ++i
+}
+global plots `plots'
+di "$plots"
 * Manually create the graph: beware 60k data points so draws very slowly
-line base_surv_min base_surv_est base_surv_max _t ///
+sort _t
+tw $plots ///
 	, ///
-	sort c(J J J) ///
-	ylab(0(0.25)1, format(%9.2f) nogrid) ///
+	ylabel( ///
+		0 	"0" ///
+		.25 "25%" ///
+		.5 	"50%" ///
+		.75 "75%" ///
+		1 	"100%" ///
+		, nogrid) ///
 	yscale(noextend) ///
 	ytitle("Survival (proportion)") ///
-	xlab(0(7)28) ///
+	xlab(0(30)90) ///
 	xscale(noextend) ///
 	xtitle("Days following assessment") ///
-	legend( ///
-		label(1 "Best site") ///
-		label(2 "Mean survival") ///
-		label(3 "Worst site") ///
-		cols(1) position(4) ring(0) ///
-		)
+	legend( off )
 graph rename survival_reffects, replace
-graph export ../outputs/figures/survival_reffects.pdf, ///
+graph display survival_reffects
+if c(os) == "MacOSX" local gext pdf
+if c(os) != "MacOSX" local gext eps
+graph export ../outputs/figures/survival_reffects.`gext', ///
 	name(survival_reffects) ///
 	replace
 
-restore
 
 
 *  ================================
 *  = Now draw the baseline hazard =
 *  ================================
-cap restore, not
-preserve
 
-su site_re
-local site_re_min = r(min)
-local site_re_max = r(max)
-stcurve, hazard kernel(gaussian) ///
- 	outfile(../data/scratch/base_hazard, replace)
 use ../data/scratch/base_hazard, clear
 rename haz1 base_haz_est
 label var base_haz_est "Mean frailty hazard"
-gen base_haz_min = base_haz_est * (exp(`site_re_min'))
-gen base_haz_max = base_haz_est * (exp(`site_re_max'))
+local i = 1
+foreach re of global site_re {
+	gen re`i' = base_haz_est^(exp(`re')) * 1000
+	local plot (line re`i' _t, lcolor(black) lwidth(vthin) lpattern(solid))
+	local plots `plots' `plot'
+	local ++i
+}
+global plots `plots'
+di "$plots"
+* Manually create the graph: beware 60k data points so draws very slowly
+sort _t
 
-line base_haz_min base_haz_est base_haz_max _t ///
+tw $plots ///
 	, ///
-	sort c(l l l) ///
-	ylab(, format(%9.2f) nogrid) ///
+	ylab(, format(%9.0f) nogrid) ///
 	yscale(noextend) ///
-	ytitle("Hazard rate" "(Deaths per site per day)") ///
-	xlab(0(7)28) ///
+	ytitle("Hazard rate" "(Deaths per site per 1,000 patients per day)") ///
+	xlab(0(30)90) ///
 	xscale(noextend) ///
 	xtitle("Days following assessment") ///
-	legend( ///
-		order(3 2 1) ///
-		label(1 "Best site") ///
-		label(2 "Mean frailty hazard") ///
-		label(3 "Worst site") ///
-		cols(1) position(2) ring(0) ///
-		)
+	legend(off)
 
 graph rename survival_reffects_bhaz, replace
-graph export ../outputs/figures/survival_reffects_bhaz.pdf, ///
+graph display survival_reffects_bhaz
+if c(os) == "MacOSX" local gext pdf
+if c(os) != "MacOSX" local gext eps
+graph export ../outputs/figures/survival_reffects_bhaz.`gext', ///
 	name(survival_reffects_bhaz) ///
 	replace
 
-restore
+graph combine survival_reffects_bhaz survival_reffects, rows(1) ysize(6) xsize(8)
+graph rename survival_reffects_both, replace
+graph display survival_reffects_both
+if c(os) == "MacOSX" local gext pdf
+if c(os) != "MacOSX" local gext eps
+graph export ../outputs/figures/survival_reffects_both.`gext', ///
+	name(survival_reffects_both) ///
+	replace
+
+
+
+cap log off
 
 
 

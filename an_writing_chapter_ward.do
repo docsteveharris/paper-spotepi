@@ -213,12 +213,33 @@ lincom hes_overnight_c * 10
 // simple survival figures
 
 use ../data/working_survival.dta, clear
-stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+stset dt1, id(id) failure(dead_st) exit(time dt0+365) origin(time dt0)
 gen class  = 0
+label list v_disposal
 replace class = -1 if v_disposal == 5
 replace class = 1 if rxlimits == 1
 tab class if ppsample
-sts list, at(0 1 3 7 28 90) failure  noshow
-sts list, at(0 1 3 7 28 90) failure by(class) noshow
-sts list, at(0 1 3 7 28 90) failure by(rxlimits) noshow
+sts list, at(0 1 7 30 365) failure  noshow
+sts list, at(0 1 7 30 365) failure by(class) noshow
+sts list, at(0 1 7 30 365) failure by(rxlimits) noshow
+
+// mortality in 12th month following ward assessment among patients without 
+// treatment limitation order
+
+sts list, at(330 365) failure  noshow
+
+di 115/8533/35*1000 // daily rate
+di 1 / (115/8533/35*365) // annual rate
+sts list, at(330 365) failure by(rxlimits) noshow
+
+
+// Frailties
+est use ../data/estimates/survival_full3.ster
+est store full3
+est replay
+di e(theta)
+di e(theta) - 1.96*e(se_theta)
+di e(theta) + 1.96*e(se_theta)
+
+
 
