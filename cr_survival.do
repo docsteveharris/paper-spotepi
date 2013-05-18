@@ -188,4 +188,6 @@ stdescribe
 stvary age icu
 sts list, at(0/28)
 
-save ../data/working_survival.dta, replace
+* CHANGED: 2013-05-18 - responsibility of the calling program to save
+* save ../data/working_survival.dta, replace
+

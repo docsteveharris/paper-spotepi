@@ -133,7 +133,72 @@ drop if exclude3 == 1
 * No point keeping these vars since they don't mean anything now
 drop include exclude1 exclude2
 
+count
+count if included_sites
+preserve
+use ../data/working.dta, clear
+contract icode 
+drop _freq
+tempfile 2merge
+save `2merge', replace
+restore
+merge m:1 icode using `2merge'
+gen sens_sites = 0
+replace sens_sites = 1 if _merge == 3
+label var sens_sites "sens_sites Analysis"
+label define sens_sites 0 "Excluded sites"
+label define sens_sites 1 "Study sites", add
+label define sens_sites 2 "Best sites", add
+label values sens_sites sens_sites
+tab sens_sites
+qui duplicates report icode if sens_sites == 1
+ret li
+qui duplicates report icode if sens_sites == 0
+ret li
+drop _merge
+preserve
+use ../data/working.dta, clear
+contract icode studymonth
+drop _freq
+tempfile 2merge
+save `2merge', replace
+restore
+merge m:1 icode studymonth using `2merge'
+gen sens_months = 0
+replace sens_months = 1 if _merge == 3
+label var sens_months "sens_months Analysis"
+label define sens_months 0 "Excluded months"
+label define sens_months 1 "Study months", add
+label define sens_months 2 "Best months", add
+label values sens_months sens_months
+tab sens_months
+drop _merge
+qui duplicates report icode studymonth if sens_months == 1
+ret li
+qui duplicates report icode studymonth if sens_months == 0
+ret li
 save ../data/working_sensitivity.dta, replace
+
+use ../data/working_sensitivity.dta, clear
+su site_quality_by_month
+// original analysis
+lookfor bysens
+gen bysens0 = sens_months == 1
+// all sites
+gen bysens1 = site_quality_by_month >= 70 
+// best sites
+gen bysens2 = site_quality_by_month >= 95 & sens_months == 1
+tab bysens0
+tab bysens1
+tab bysens2
+
+forvalues i = 0/2 {
+	preserve
+	keep if bysens`i'
+	collapse (mean) site_quality_by_month, by(icode studymonth )
+	su site_quality_by_month
+	restore
+}
 
 log close
 

@@ -678,4 +678,6 @@ foreach var of varlist * {
 
 
 cap drop __*
-save ../data/working_postflight.dta, replace
+// CHANGED: 2013-05-17 - Don't save: 
+// that should be the responsibility of the calling code
+* save ../data/working_postflight.dta, replace

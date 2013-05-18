@@ -53,23 +53,110 @@ global all_vars ///
 	`patient_vars' ///
 
 
-
 local clean_run 1
 if `clean_run' == 1 {
-	global table_name ward_survival_final_est
-	use ../data/working_survival.dta, clear
-	// NOTE: 2013-01-29 - cr_survival.do stsets @ 28 days by default
-	stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+    clear
+    use ../data/working.dta
+    qui include cr_preflight.do
+    save ../data/working_postflight, replace
+    qui include cr_survival.do
+    save ../data/working_survival, replace
+}
 
-	local i 1
-	// =====================================
-	// = Run full model - ignoring frailty =
-	// =====================================
-	stcox $all_vars icnarc0_c, nolog
-	local model_name full no_frailty
-	est store full1
-	est save ../data/estimates/survival_full1, replace
-	tempfile estimates_file
+global table_name ward_survival_final_est
+
+use ../data/working_survival.dta, clear
+// NOTE: 2013-01-29 - cr_survival.do stsets @ 28 days by default
+stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+
+local i 1
+// =====================================
+// = Run full model - ignoring frailty =
+// =====================================
+stcox $all_vars icnarc0_c, nolog
+local model_name full no_frailty
+est store full1
+est save ../data/estimates/survival_full1, replace
+tempfile estimates_file
+parmest, ///
+	eform ///
+	label list(parm label estimate min* max* p) ///
+	idnum(`i') idstr("`model_name'") ///
+	stars(0.05 0.01 0.001) ///
+	format(estimate min* max* %9.2f p %9.3f) ///
+	saving(`estimates_file', replace)
+use `estimates_file', clear
+gen table_order = _n
+save ../outputs/tables/$table_name.dta, replace
+local ++i
+
+// ===============================================
+// = Run model with time-dependence for severity =
+// ===============================================
+use ../data/working_survival.dta, clear
+stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+stsplit tb, at(1 4 28)
+label var tb "Analysis time blocks"
+stcox $all_vars icnarc0_c i.tb#c.icnarc0_c, nolog
+local model_name full time_dependent
+est store full2
+est save ../data/estimates/survival_full2, replace
+tempfile estimates_file
+parmest, ///
+	eform ///
+	label list(parm label estimate min* max* p) ///
+	idnum(`i') idstr("`model_name'") ///
+	stars(0.05 0.01 0.001) ///
+	format(estimate min* max* %9.2f p %9.3f) ///
+	saving(`estimates_file', replace)
+use `estimates_file', clear
+gen table_order = _n
+save `estimates_file', replace
+use ../outputs/tables/$table_name.dta, clear
+append using `estimates_file'
+save ../outputs/tables/$table_name.dta, replace
+local ++i
+
+// ===============================
+// = Run full model with frailty =
+// ===============================
+use ../data/working_survival.dta, clear
+stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+stsplit tb, at(1 4 28)
+label var tb "Analysis time blocks"
+stcox $all_vars icnarc0_c i.tb#c.icnarc0_c ///
+	, shared(site) ///
+	nolog
+local model_name full_frailty
+est store full3
+est save ../data/estimates/survival_full3, replace
+estimates save ../data/survival_final, replace
+tempfile estimates_file
+parmest, ///
+	eform ///
+	label list(parm label estimate min* max* p) ///
+	idnum(`i') idstr("`model_name'") ///
+	stars(0.05 0.01 0.001) ///
+	escal(theta se_theta theta_chi2) ///
+	format(estimate min* max* %9.2f p %9.3f) ///
+	saving(`estimates_file', replace)
+use `estimates_file', clear
+gen table_order = _n
+save `estimates_file', replace
+use ../outputs/tables/$table_name.dta, clear
+append using `estimates_file'
+save ../outputs/tables/$table_name.dta, replace
+local ++i
+
+// Univariate estimates
+local uni_vars $all_vars icnarc0_c
+local table_order = 1
+foreach var of local uni_vars {
+	use ../data/working_survival.dta, clear
+	qui stcox `var'
+	est store u_`i'
+	local model_name: word 4 of `=e(datasignaturevars)'
+	local model_name = "univariate `model_name'"
 	parmest, ///
 		eform ///
 		label list(parm label estimate min* max* p) ///
@@ -78,94 +165,13 @@ if `clean_run' == 1 {
 		format(estimate min* max* %9.2f p %9.3f) ///
 		saving(`estimates_file', replace)
 	use `estimates_file', clear
-	gen table_order = _n
-	save ../outputs/tables/$table_name.dta, replace
-	local ++i
-
-	// ===============================================
-	// = Run model with time-dependence for severity =
-	// ===============================================
-	use ../data/working_survival.dta, clear
-	stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
-	stsplit tb, at(1 4 28)
-	label var tb "Analysis time blocks"
-	stcox $all_vars icnarc0_c i.tb#c.icnarc0_c, nolog
-	local model_name full time_dependent
-	est store full2
-	est save ../data/estimates/survival_full2, replace
-	tempfile estimates_file
-	parmest, ///
-		eform ///
-		label list(parm label estimate min* max* p) ///
-		idnum(`i') idstr("`model_name'") ///
-		stars(0.05 0.01 0.001) ///
-		format(estimate min* max* %9.2f p %9.3f) ///
-		saving(`estimates_file', replace)
-	use `estimates_file', clear
-	gen table_order = _n
+	gen table_order = `table_order'
+	local ++table_order
 	save `estimates_file', replace
 	use ../outputs/tables/$table_name.dta, clear
 	append using `estimates_file'
 	save ../outputs/tables/$table_name.dta, replace
 	local ++i
-
-	// ===============================
-	// = Run full model with frailty =
-	// ===============================
-	use ../data/working_survival.dta, clear
-	stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
-	stsplit tb, at(1 4 28)
-	label var tb "Analysis time blocks"
-	stcox $all_vars icnarc0_c i.tb#c.icnarc0_c ///
-		, shared(site) ///
-		nolog
-	local model_name full_frailty
-	est store full3
-	est save ../data/estimates/survival_full3, replace
-	estimates save ../data/survival_final, replace
-	tempfile estimates_file
-	parmest, ///
-		eform ///
-		label list(parm label estimate min* max* p) ///
-		idnum(`i') idstr("`model_name'") ///
-		stars(0.05 0.01 0.001) ///
-		escal(theta se_theta theta_chi2) ///
-		format(estimate min* max* %9.2f p %9.3f) ///
-		saving(`estimates_file', replace)
-	use `estimates_file', clear
-	gen table_order = _n
-	save `estimates_file', replace
-	use ../outputs/tables/$table_name.dta, clear
-	append using `estimates_file'
-	save ../outputs/tables/$table_name.dta, replace
-	local ++i
-
-	// Univariate estimates
-	local uni_vars $all_vars icnarc0_c
-	local table_order = 1
-	foreach var of local uni_vars {
-		use ../data/working_survival.dta, clear
-		qui stcox `var'
-		est store u_`i'
-		local model_name: word 4 of `=e(datasignaturevars)'
-		local model_name = "univariate `model_name'"
-		parmest, ///
-			eform ///
-			label list(parm label estimate min* max* p) ///
-			idnum(`i') idstr("`model_name'") ///
-			stars(0.05 0.01 0.001) ///
-			format(estimate min* max* %9.2f p %9.3f) ///
-			saving(`estimates_file', replace)
-		use `estimates_file', clear
-		gen table_order = `table_order'
-		local ++table_order
-		save `estimates_file', replace
-		use ../outputs/tables/$table_name.dta, clear
-		append using `estimates_file'
-		save ../outputs/tables/$table_name.dta, replace
-		local ++i
-	}
-
 }
 
 * Save a version of the data with a clean name
@@ -318,7 +324,7 @@ global table_name ward_survival_all
 local super_heading "& \multicolumn{4}{c}{Hazard ratio} \\"
 local h1 "& Uni-variate & Multi-variate & Time-varying & Frailty \\ "
 local justify X[6l]XXXX
-local tablefontsize "\footnotesize"
+local tablefontsize "\scriptsize"
 local taburowcolors 2{white .. white}
 
 listtab `cols' ///

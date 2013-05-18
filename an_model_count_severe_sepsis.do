@@ -11,6 +11,7 @@ if `clean_run' == 1 {
     clear
     use ../data/working.dta
     qui include cr_preflight.do
+    save ../data/working_postflight.dta, replace
 }
 use ../data/working_occupancy, clear
 keep icode icnno odate beds_none
@@ -219,7 +220,7 @@ if _rc {
 }
 replace tablerowlabel = tablerowlabel + "\smaller[1]{ (" + unitlabel + ")}"  ///
 	if !missing(unitlabel) & var_type != "Categorical"
-replace tablerowlabel = tablerowlabel + "\smaller[1]{ (per 1,000 hospital admissions)}"  ///
+replace tablerowlabel = tablerowlabel + "\smaller[1]{ (per 1,000 hosp. adm.)}"  ///
 	if tablerowlabel == "Ward referrals to ICU"
 
 * now write the table to latex

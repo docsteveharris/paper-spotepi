@@ -105,6 +105,18 @@ lincom _cons, eform
 di `=r(estimate)' * 365 / 7 / 62.5
 
 
+* NOTE: 2013-05-18 - incidence per 1000 admissions across sites
+use ../data/working_postflight.dta, clear
+lookfor hes day
+collapse (count) n = id (firstnm) studydays hes_overnight hes_admissions, by(site)
+li in 1/5
+gen v_per1000 = n / studydays * 365 / hes_overnight
+su v_per1000, d
+gsort -v_per1000
+li in 1/15
+gen all_per1000 = n / studydays * 365 / hes_admissions * 1000
+su all_per1000, d
+
 
 * TODO: 2013-03-12 - estimates save and restore is wrong (see severity below for correct way)
 use ../data/working_postflight.dta, clear
@@ -243,3 +255,42 @@ di e(theta) + 1.96*e(se_theta)
 
 
 
+// Sensitivity analysis
+use ../outputs/tables/count_news_high_sens,clear
+d
+list estimate stderr if parm == "_cons"
+di 4.515 + 1.96 * (0.219)
+di 4.515 - 1.96 * (0.219)
+
+di 5.036 + 1.96 * (0.169)
+di 5.036 - 1.96 * (0.169)
+
+
+// Length of stay for ward admissions to ICU
+use ../data/secure/cmpclean
+lookfor los
+su yhlos
+su yhlos,d
+lookfor elg
+su yhlos if elgcore
+su yhlos if elgCore
+su yhlos if elgCore,d
+
+
+// Does the shape of the baseline hazard depend on the severity of illness?
+// Is the peak more delayed in the less severely unwell?
+use ../data/working_survival.dta, clear
+tab news_risk if ppsample
+sts graph, ///
+	by(news_risk) ///
+	hazard ci kernel(rectangle) width(0.5) noboundary ///
+	ciopts(pstyle(ci)) ///
+	tscale(noextend) ///
+
+
+// Severity and survival
+use ../data/working_survival.dta, clear
+stset dt1, id(id) origin(dt0) failure(dead_st) exit(time dt0+365)
+tab news_risk rxlimits if ppsample, row 
+sts list if rxlimits == 0 , at(1 7 30 365) by(news_risk) 
+sts list, at(1 7 30 365) by(rxlimits)

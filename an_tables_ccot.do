@@ -96,7 +96,7 @@ dotplot patients_perhesadmx , ///
 	 over(ccot_shift_pattern) center ///
 	 xlabel(0 "None" 1 "<7 days" 2 "7 days" 3 "24h x7 days" ) ///
 	 xtitle("CCOT shift pattern", margin(medium)) ///
-	 ytitle("Patients per 1,000 hospital admissions") ///
+	 ytitle("Patients per 1,000 hosp. adm.") ///
 	 xsize(6) ysize(6) ///
 	 name(pts_by_ccot, replace)
 
