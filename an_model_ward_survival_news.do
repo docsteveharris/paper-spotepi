@@ -31,8 +31,8 @@ local patient_vars ///
 	delayed_referral ///
 	ib1.v_ccmds
 
-// NOTE: 2013-03-13 - enter icnarc0 separtely
-// icnarc0_c ///
+// NOTE: 2013-03-13 - enter news_score separtely
+// news_score_c ///
 
 local timing_vars ///
 	out_of_hours ///
@@ -65,7 +65,7 @@ if `clean_run' == 1 {
     save ../data/working_survival, replace
 }
 
-global table_name ward_survival_final_est
+global table_name ward_survival_news
 
 use ../data/working_survival.dta, clear
 // NOTE: 2013-01-29 - cr_survival.do stsets @ 28 days by default
@@ -75,7 +75,7 @@ local i 1
 // =====================================
 // = Run full model - ignoring frailty =
 // =====================================
-stcox $all_vars icnarc0_c, nolog
+stcox $all_vars news_score_c, nolog
 local model_name full no_frailty
 est store full1
 est save ../data/estimates/survival_full1, replace
@@ -99,7 +99,7 @@ use ../data/working_survival.dta, clear
 stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
 stsplit tb, at(1 4 28)
 label var tb "Analysis time blocks"
-stcox $all_vars icnarc0_c i.tb#c.icnarc0_c, nolog
+stcox $all_vars news_score_c i.tb#c.news_score_c, nolog
 local model_name full time_dependent
 est store full2
 est save ../data/estimates/survival_full2, replace
@@ -126,7 +126,7 @@ use ../data/working_survival.dta, clear
 stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
 stsplit tb, at(1 4 28)
 label var tb "Analysis time blocks"
-stcox $all_vars icnarc0_c i.tb#c.icnarc0_c ///
+stcox $all_vars news_score_c i.tb#c.news_score_c ///
 	, shared(site) ///
 	nolog
 local model_name full_frailty
@@ -151,7 +151,7 @@ save ../outputs/tables/$table_name.dta, replace
 local ++i
 
 // Univariate estimates
-local uni_vars $all_vars icnarc0_c
+local uni_vars $all_vars news_score_c
 local table_order = 1
 foreach var of local uni_vars {
 	use ../data/working_survival.dta, clear
@@ -234,15 +234,15 @@ replace var_level = "1" if strpos(var_level, "1")
 replace var_level = "4" if strpos(var_level, "4")
 replace var_level = "28" if strpos(var_level, "28")
 destring var_level, replace
-replace varname = "icnarc0_timev" if strpos(varname, "tb#c")
+replace varname = "news_score_timev" if strpos(varname, "tb#c")
 // label the vars
 spot_label_table_vars
-replace tablerowlabel = "\textit{--- with modifier of Day 0 effect}" if varname == "icnarc0_timev"
+replace tablerowlabel = "\textit{--- with modifier of Day 0 effect}" if varname == "news_score_timev"
 
-// replace var_level_lab = "Days 0 effect"  if varname == "icnarc0_timev" & var_level == 0
-replace var_level_lab = "Days 1--2"  if varname == "icnarc0_timev" & var_level == 1
-replace var_level_lab = "Days 4--28"  if varname == "icnarc0_timev" & var_level == 4
-replace var_level_lab = "Days 28+" if varname == "icnarc0_timev" & var_level == 28
+// replace var_level_lab = "Days 0 effect"  if varname == "news_score_timev" & var_level == 0
+replace var_level_lab = "Days 1--2"  if varname == "news_score_timev" & var_level == 1
+replace var_level_lab = "Days 4--28"  if varname == "news_score_timev" & var_level == 4
+replace var_level_lab = "Days 28+" if varname == "news_score_timev" & var_level == 28
 
 order tablerowlabel var_level_lab
 // add in blank line as ref category for ccot_shift_pattern
@@ -263,8 +263,8 @@ global table_order ///
 	sepsis_dx ///
 	delayed_referral ///
 	v_ccmds ///
-	icnarc0 ///
-	icnarc0_timev
+	news_score ///
+	news_score_timev
 
 mt_table_order
 sort table_order var_level
@@ -279,7 +279,7 @@ forvalues i = 1/4 {
 	replace estimate_`i' = "--" if varname == "ccot_shift_pattern" & var_level == 3
 	replace estimate_`i' = "--" if varname == "sepsis_dx" & var_level == 0
 	replace estimate_`i' = "--" if varname == "v_ccmds" & var_level == 1
-	replace estimate_`i' = "" if varname == "icnarc0_timev" & var_level == 0
+	replace estimate_`i' = "" if varname == "news_score_timev" & var_level == 0
 }
 
 // indent categorical variables
@@ -322,7 +322,7 @@ di "`f1'"
 local cols tablerowlabel estimate_1 estimate_2 estimate_3 estimate_4
 order `cols'
 
-global table_name ward_survival_all
+global table_name ward_survival_news_all
 local super_heading "& \multicolumn{4}{c}{Hazard ratio} \\"
 local h1 "& Uni-variate & Multi-variate & Time-varying & Frailty \\ "
 local justify X[6l]XXXX
@@ -369,7 +369,7 @@ replace p = "<0.001" if p == "0.000"
 gen est_ci95 = "(" + min95 + "--" + max95 + ")" if !missing(min95, max95)
 replace est = "--" if reference_cat == 1
 replace est_ci95 = "" if reference_cat == 1
-replace est = "" if varname == "icnarc0_timev" & var_level == 0
+replace est = "" if varname == "news_score_timev" & var_level == 0
 
 // now prepare footers with site level variability
 qui su theta_est_4, meanonly
@@ -392,7 +392,7 @@ local cols tablerowlabel est est_ci95 p
 order `cols'
 cap br
 
-global table_name ward_survival_final
+global table_name ward_survival_news
 local h1 "Parameter & Hazard ratio & (95\% CI) & p \\ "
 local justify lrlr
 * local justify X[5l] X[1l] X[2l] X[1r]
@@ -497,7 +497,7 @@ graph rename survival_reffects, replace
 graph display survival_reffects
 if c(os) == "MacOSX" local gext pdf
 if c(os) != "MacOSX" local gext eps
-graph export ../outputs/figures/survival_reffects.`gext', ///
+graph export ../outputs/figures/survival_reffects_news.`gext', ///
 	name(survival_reffects) ///
 	replace
 
@@ -536,7 +536,7 @@ graph rename survival_reffects_bhaz, replace
 graph display survival_reffects_bhaz
 if c(os) == "MacOSX" local gext pdf
 if c(os) != "MacOSX" local gext eps
-graph export ../outputs/figures/survival_reffects_bhaz.`gext', ///
+graph export ../outputs/figures/survival_reffects_bhaz_news.`gext', ///
 	name(survival_reffects_bhaz) ///
 	replace
 
@@ -545,7 +545,7 @@ graph rename survival_reffects_both, replace
 graph display survival_reffects_both
 if c(os) == "MacOSX" local gext pdf
 if c(os) != "MacOSX" local gext eps
-graph export ../outputs/figures/survival_reffects_both.`gext', ///
+graph export ../outputs/figures/survival_reffects_both_news.`gext', ///
 	name(survival_reffects_both) ///
 	replace
 
