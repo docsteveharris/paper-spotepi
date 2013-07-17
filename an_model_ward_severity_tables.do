@@ -196,8 +196,8 @@ forvalues i = 1/3 {
 	replace stars_`i' = "\textsuperscript{" + stars_`i' + "}"
 	replace estimate_`i' = estimate_`i' + stars_`i'
 	// replace reference categories
-	replace estimate_`i' = "--" if parm == "3b.ccot_shift_pattern"
-	replace estimate_`i' = "--" if parm == "0b.sepsis_dx"
+	replace estimate_`i' = "{--}" if parm == "3b.ccot_shift_pattern"
+	replace estimate_`i' = "{--}" if parm == "0b.sepsis_dx"
 	replace estimate_`i' = "" if est_raw_`i' == .
 }
 

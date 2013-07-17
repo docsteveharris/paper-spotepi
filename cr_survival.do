@@ -4,15 +4,6 @@
 
 
 * CHANGED: 2013-02-05 - now will run on any given data set
-local clean_run = 0
-if `clean_run' == 1 & $clean_run != 0 {
-	clear
-	use ../data/working.dta, clear
-	include cr_preflight.do
-}
-else {
-	di as error "Please check you are starting with working_postflight"
-}
 
 
 * CHANGED: 2012-11-26 - commented this out: moved to cr_working

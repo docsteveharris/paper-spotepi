@@ -11,9 +11,6 @@ via cr_working.log
 
 clear
 cd ~/data/spot_early/vcode
-use ../data/working.dta
-qui include cr_preflight.do
-count
 
 * Results: sites
 use ../data/working_postflight, clear
@@ -256,7 +253,7 @@ di e(theta) + 1.96*e(se_theta)
 
 
 // Sensitivity analysis
-use ../outputs/tables/count_news_high_sens,clear
+use ../outputs/tables/count_news_highsubl_sens,clear
 d
 list estimate stderr if parm == "_cons"
 di 4.515 + 1.96 * (0.219)
@@ -294,3 +291,23 @@ stset dt1, id(id) origin(dt0) failure(dead_st) exit(time dt0+365)
 tab news_risk rxlimits if ppsample, row 
 sts list if rxlimits == 0 , at(1 7 30 365) by(news_risk) 
 sts list, at(1 7 30 365) by(rxlimits)
+
+
+// Match quality for ward patients
+* 130521
+use ../data/working_tails.dta, clear
+count
+
+tab elgreport_heads
+tab elgreport_tails
+tab match_is_ok if ///
+	elgcore == 1 ///
+	& elgreport_tails != 0 ///
+	& elgreport_heads != 0 ///
+	& withinsh != 1 ///
+	& site_quality_q1 > 80 ///
+	& site_quality_by_month > 80
+
+
+
+

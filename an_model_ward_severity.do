@@ -68,11 +68,11 @@ running icnarc_score visit_dow
 ttest icnarc_score , by(ccot_on)
 
 /*
+SOMEDAY: 2013-01-16 - check with Colin
 Specify timing variables at the site level?
 - consider cross level random effects
 - for now keep this as an individual level and keep the site as the only 'cluster'
 Makes sense since a Saturday at one hospital should be similar for all patients
-TODO: 2013-01-16 - check with Colin
 */
 
 

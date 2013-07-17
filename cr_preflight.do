@@ -5,16 +5,6 @@
 * Calling it pre-flight for now to distinguish it from the slower code that will
 * be needed to work out occupancy and ccot shift patterns
 
-// if the global var is not set then you can safely assume it should be 1
-if "$sclean_run" == "" global clean_run = 1
-
-local clean_run = 0
-if `clean_run' == 1 & $clean_run != 0 {
-	use ../data/working.dta, clear
-}
-else {
-	di as error "WARNING: debug off - using data in memory"
-}
 
 cap label drop truefalse
 label define truefalse 0 "False" 1 "True"
@@ -41,8 +31,8 @@ count if _valid_row == 0
 *  ============================================
 
 tab _valid_row
-duplicates example _list_unusual if _count_unusual > 0
-duplicates example _list_imposs if _count_imposs > 0
+cap duplicates example _list_unusual if _count_unusual > 0
+cap duplicates example _list_imposs if _count_imposs > 0
 
 * CHANGED: 2013-03-11 - keep these so you stay consistent with CONSORT
 * You may need to drop them from survival analyses

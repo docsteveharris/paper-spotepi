@@ -447,9 +447,15 @@ list icode dorisname site_re in 1/10
 
 stcurve, survival ///
  	outfile(../data/scratch/base_survival, replace)
+
+* NOTE: 2013-05-21 - plot this using standard kernel as suggested in methods
+* here is the rectangular version for reference
+* hazard kernel(rectangle) width(0.5) noboundary
+
 stcurve, ///
-	hazard kernel(rectangle) width(0.5) noboundary ///
+	hazard  ///
  	outfile(../data/scratch/base_hazard, replace)
+
 
 contract site_re if ppsample
 levelsof site_re, local(site_re) clean
