@@ -308,6 +308,17 @@ tab match_is_ok if ///
 	& site_quality_q1 > 80 ///
 	& site_quality_by_month > 80
 
+exit
+// Strengths and limitations: rate of re-admission in CMP
+// 130717
+clear
+use withinsh using /Volumes/phd/data-spot_study/cmpClean.dta 
+tab withinsh
+
+* Q. How many expected to live patients die in the first week?
+use ../data/working_postflight.dta, clear
+bys icucmp: tab dead7 pt_cat, col
+
 
 
 
