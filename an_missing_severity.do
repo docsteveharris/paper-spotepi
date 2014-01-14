@@ -270,51 +270,87 @@ gen news_neuro_wt = 1
 replace news_neuro_wt = . if missing(avpu) & missing(gcs1)
 
 egen news_miss = rowmiss(news_fio2_wt news_neuro_wt news_spo2_wt hr1_wt bps1_wt rr1_wt temp1_wt )
-egen sofa_miss = rowmiss(sofa_haem_wt sofa_liver_wt cr1_wt urin1_wt gcs1_wt pf1_wt )
+egen sofa_miss = rowmiss(sofa_haem_wt sofa_liver_wt cr1_wt  gcs1_wt pf1_wt )
 
 save ../data/scratch/scratch.dta, replace
 
-// Now plot the amount of missing data by the ICNARC score
+* CHANGED: 2014-01-06 - 
+* - Figure 3.6: re-draw figures with adjusted x-axis: 
+* These plots will inevitably appear with a downward trend because you can only
+* get a higher severity score if you're not missing data; they should be
+* redrawn using the mean weight of the observed components not the overall total score.
 
+// Now plot the amount of missing data by the ICNARC score
+set scheme shbw
 use ../data/scratch/scratch.dta, clear
-egen icnarc_k20 = cut(icnarc_score), at(0(5)100)
+foreach var of varlist *1_wt {
+    replace `var' = . if `var'_miss == 1
+}
+
+egen icnarc_mean_wt = rowtotal(*1_wt) 
+replace icnarc_mean_wt = icnarc_mean_wt / (13 - ims1_miss)
+su icnarc_mean_wt
+
+egen icnarc_k20 = cut(icnarc_mean_wt), at(0(0.5)10)
+tab icnarc_k20
+
 collapse (mean) ims1_miss (count) n = id, by(icnarc_k20)
 list
-drop if icnarc_k20 == 50
+* drop small categories and outliers
+drop if icnarc_k20 >= 10
+drop if n <= 20
 gen zero = 0
-gen x = icnarc_k20 + 2.5
+gen x = icnarc_k20 + 0.25
 tostring n, gen(barlabel) format(%9.0fc) force
 tw ///
-    (rbar ims1_miss zero x, barwidth(4) color(gs12)) ///
+    (rbar ims1_miss zero x, barwidth(0.4) color(gs12)) ///
     (scatter ims1_miss x, msym(none) mlabel(barlabel) mlabpos(12) mlabcolor(gs2)) ///
     , ///
     ylabel(0(3)12) ///
+    xlabel(0(1)4) ///
     ytitle("Number of missing components") ///
-    xtitle("ICNARC score") ///
+    xtitle("ICNARC score - mean component weight") ///
     subtitle("(C)", position(10) justification(left)) ///
     legend(off)
 
 graph rename plot1, replace
+* NOTE: 2014-01-14 - note low scores more often missing data
+* and high scores (I assume GCS and non-vent RR)
 
 // Now plot the amount of missing data by the SOFA score
 use ../data/scratch/scratch.dta, clear
 lookfor sofa
 su sofa_score
 tab sofa_miss
-collapse (mean) sofa_miss (count) n = id, by(sofa_score)
-list
-drop if sofa_score >= 12
+
+replace sofa_liver_wt = . if missing(bili)
+replace sofa_haem_wt = . if missing(plat1)
+gen sofa_resp_wt = sofa_r if !missing(pf1_wt)
+gen sofa_renal_wt = sofa_k if !missing(cr1_wt)
+gen sofa_neuro_wt = sofa_n if !missing(gcs1_wt)
+
+egen sofa_mean_wt = rowtotal(sofa_haem_wt sofa_liver_wt sofa_resp_wt sofa_renal_wt sofa_neuro_wt)
+su sofa_miss sofa_mean_wt
+replace sofa_mean_wt = sofa_mean_wt / (5 - sofa_miss)
+su sofa_mean_wt, d
+
+egen sofa_mean_wt_k12 = cut(sofa_mean_wt), at(0(0.5)4)
+
+collapse (mean) sofa_miss (count) n = id, by(sofa_mean_wt_k12)
+drop if n <= 20
+drop if sofa_mean_wt_k12 >= 3
+
 gen zero = 0
-gen x = sofa_score + 0.5
+gen x = sofa_mean_wt_k12 + 0.25
 tostring n, gen(barlabel) format(%9.0fc) force
 tw ///
-    (rbar sofa_miss zero x, barwidth(0.8) color(gs12)) ///
+    (rbar sofa_miss zero x, barwidth(0.4) color(gs12)) ///
     (scatter sofa_miss x, msym(none) mlabel(barlabel) mlabpos(12) mlabcolor(gs2)) ///
     , ///
     ylabel(0(1)6) ///
-    xlabel(0(4)12) ///
+    xlabel(0(0.5)3) ///
     ytitle("Number of missing components") ///
-    xtitle("SOFA score") ///
+    xtitle("SOFA score - mean component weight") ///
     subtitle("(B)", position(10) justification(left)) ///
     legend(off)
 
@@ -324,23 +360,73 @@ graph rename plot2, replace
 // now for the NEWS score
 use ../data/scratch/scratch.dta, clear
 lookfor news
-su news_score
-tab news_miss
-egen news_k2 = cut(news_score), at(0(2)20)
+* Now manually calculate news weights
+gen news_resp_wt = .
+replace news_resp_wt = 0 if !missing(rr1)
+replace news_resp_wt = 1 if (rr1 <= 11 ) & !missing(rr1)
+replace news_resp_wt = 2 if (rr1 >= 21 ) & !missing(rr1)
+replace news_resp_wt = 3 if (rr1 <= 8 | rr1 >= 25) & !missing(rr1)
+su news_resp_wt
+
+
+gen news_temp_wt = .
+replace news_temp_wt = 0 if !missing(temp1)
+replace news_temp_wt = 1 if (temp1 <= 36 | temp1 >= 38.1) & !missing(temp1)
+replace news_temp_wt = 2 if (temp1 >= 39.1 ) & !missing(temp1)
+replace news_temp_wt = 3 if (temp1 <= 35 ) & !missing(temp1)
+su news_temp_wt
+
+gen news_bps_wt = .
+replace news_bps_wt = 0 if !missing(bps1)
+replace news_bps_wt = 1 if (bps1 >= 110 ) & !missing(bps1)
+replace news_bps_wt = 2 if (bps1 <= 100 ) & !missing(bps1)
+replace news_bps_wt = 3 if (bps1 <= 90 | bps1 >= 220) & !missing(bps1)
+su news_bps_wt
+
+gen news_hr_wt = .
+replace news_hr_wt = 0 if !missing(hr1)
+replace news_hr_wt = 1 if (hr1 <= 50 | hr1 >= 91) & !missing(hr1)
+replace news_hr_wt = 2 if (hr1 >= 111 ) & !missing(hr1)
+replace news_hr_wt = 3 if (hr1 <= 40 | hr1 >= 131) & !missing(hr1)
+su news_hr_wt
+
+cap drop news_spo2_wt
+gen news_spo2_wt = .
+replace news_spo2_wt = 0 if !missing(spo2)
+replace news_spo2_wt = 1 if (spo2 <= 95 ) & !missing(spo2)
+replace news_spo2_wt = 2 if (spo2 <= 93 ) & !missing(spo2)
+replace news_spo2_wt = 3 if (spo2 <= 91 ) & !missing(spo2)
+su news_spo2_wt
+
+cap drop news_avpu_wt
+gen news_avpu_wt = .
+replace news_avpu_wt = 0 if !missing(avpu)
+replace news_avpu_wt = 3 if inlist(avpu,2,3,4) & !missing(avpu)
+replace news_avpu_wt = 3 if gcs1 <= 13 & !missing(gcs1)
+su news_avpu_wt
+
+egen news_mean_wt = rowtotal(news_fio2_wt news_avpu_wt news_spo2_wt news_hr_wt news_bps_wt news_resp_wt news_temp_wt )
+cap drop news_miss
+egen news_miss = rowmiss(news_fio2_wt news_avpu_wt news_spo2_wt news_hr_wt news_bps_wt news_resp_wt news_temp_wt )
+replace news_mean_wt = news_mean_wt / (7 - news_miss)
+su news_mean_wt
+
+egen news_k2 = cut(news_mean_wt), at(0(0.25)3)
 collapse (mean) news_miss (count) n = id, by(news_k2)
 list
-drop if news_k2 >= 20
+drop if n <= 20
+drop if news_k2 >= 2.5
 gen zero = 0
-gen x = news_k2 + 1
+gen x = news_k2 + 0.125
 tostring n, gen(barlabel) format(%9.0fc) force
 tw ///
-    (rbar news_miss zero x, barwidth(1.8) color(gs12)) ///
+    (rbar news_miss zero x, barwidth(0.2) color(gs12)) ///
     (scatter news_miss x, msym(none) mlabel(barlabel) mlabpos(12) mlabcolor(gs2)) ///
     , ///
     ylabel(0(1)7) ///
-    xlabel(0(5)20) ///
+    xlabel(0(0.5)2.5) ///
     ytitle("Number of missing components") ///
-    xtitle("NEWS score") ///
+    xtitle("NEWS score - mean component weight") ///
     subtitle("(A)", position(10) justification(left)) ///
     legend(off)
 
@@ -348,6 +434,7 @@ graph rename plot3, replace
 
 graph combine plot3 plot2 plot1, cols(1) ysize(8) xsize(4)
 graph rename aps_missing, replace
+graph display aps_missing
 graph export ../outputs/figures/aps_missing.pdf ///
     , name(aps_missing) replace
 
