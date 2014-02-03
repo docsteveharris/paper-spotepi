@@ -64,7 +64,7 @@ listtex tablerowlabel v1-v4 ///
 		"`sparkspike_width'" ///
 		"`sparkspike_colour'" ///
 		"`sparkline_colour'" ///
-		"\begin{tabu} {`justify'}" ///
+		"\begin{tabu} to \textwidth {`justify'}" ///
 		"\toprule" ///
 		"`super_heading1'" ///
 		"\midrule" ) ///

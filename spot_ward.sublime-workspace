@@ -1,0 +1,2738 @@
+{
+	"auto_complete":
+	{
+		"selected_items":
+		[
+			[
+				"sofa",
+				"sofa_mean_wt"
+			],
+			[
+				"news",
+				"news_mean_wt"
+			],
+			[
+				"gcs",
+				"gcs1"
+			],
+			[
+				"sof",
+				"sofa_mean_wt"
+			],
+			[
+				"gcs1",
+				"gcs1_wt"
+			],
+			[
+				"pf",
+				"pf1_wt"
+			],
+			[
+				"sofam",
+				"sofa_mean_wt"
+			],
+			[
+				"icn",
+				"icnarc_k20"
+			],
+			[
+				"icnar",
+				"icnarc_score"
+			],
+			[
+				"icna",
+				"icnarc_median_wt"
+			],
+			[
+				"with",
+				"withinsh"
+			],
+			[
+				"site",
+				"site_quality_q1"
+			],
+			[
+				"elg",
+				"elgreport_heads"
+			],
+			[
+				"work",
+				"cr_working_sensitivity"
+			],
+			[
+				"working",
+				"cr_working_sensitivity"
+			],
+			[
+				"pic",
+				"pickone_site"
+			],
+			[
+				"sit",
+				"site_in_study"
+			],
+			[
+				"month",
+				"month_in_study"
+			],
+			[
+				"study",
+				"studymonth"
+			],
+			[
+				"stu",
+				"study_month"
+			],
+			[
+				"wo",
+				"working"
+			],
+			[
+				"workin",
+				"working_tails"
+			],
+			[
+				"inc",
+				"included_months"
+			],
+			[
+				"st",
+				"studymonth"
+			],
+			[
+				"include",
+				"included_sites"
+			],
+			[
+				"incl",
+				"included_months"
+			],
+			[
+				"ent",
+				"entry_items"
+			],
+			[
+				"defini",
+				"definition"
+			],
+			[
+				"all",
+				"all_per1000"
+			],
+			[
+				"hes",
+				"hes_admissions"
+			],
+			[
+				"hes_",
+				"hes_overnight"
+			],
+			[
+				"mode",
+				"model_sequence"
+			],
+			[
+				"bysen",
+				"bysens"
+			],
+			[
+				"scr",
+				"scriptsize"
+			],
+			[
+				"sens",
+				"sens_months"
+			],
+			[
+				"pa",
+				"patients"
+			],
+			[
+				"out",
+				"outputs"
+			],
+			[
+				"the",
+				"theta_est"
+			],
+			[
+				"ward",
+				"ward_survival_sensitivity"
+			],
+			[
+				"frai",
+				"frailties"
+			],
+			[
+				"si",
+				"site_quality_by_month"
+			],
+			[
+				"inclu",
+				"included_sites"
+			],
+			[
+				"surv",
+				"survival_reffects"
+			],
+			[
+				"sur",
+				"survival_reffects_bhaz"
+			],
+			[
+				"base",
+				"base_surv_est"
+			],
+			[
+				"ss",
+				"ssresidual_max95"
+			],
+			[
+				"haz",
+				"hazard_all"
+			],
+			[
+				"patients",
+				"patients_perhesadmx_c"
+			],
+			[
+				"im",
+				"ims1_miss"
+			],
+			[
+				"ic",
+				"icnarc_k20"
+			],
+			[
+				"icnarc",
+				"icnarc_k20"
+			],
+			[
+				"missing",
+				"missing_pct"
+			],
+			[
+				"bot",
+				"bottom_line"
+			],
+			[
+				"var",
+				"varname"
+			],
+			[
+				"sofa_",
+				"sofa_liver_wt"
+			],
+			[
+				"new",
+				"news_fio2_wt"
+			],
+			[
+				"miss",
+				"missing_pct"
+			],
+			[
+				"count",
+				"count_news_by_refs"
+			],
+			[
+				"hes_ov",
+				"hes_overnight_c"
+			],
+			[
+				"pat",
+				"patients_perhesadmx"
+			],
+			[
+				"pts",
+				"patients_perhesadmx"
+			],
+			[
+				"pt",
+				"patients_perhesadmx"
+			],
+			[
+				"pts_",
+				"pts_hes_k1"
+			],
+			[
+				"splin",
+				"spline_vars"
+			],
+			[
+				"timin",
+				"timing_vars"
+			],
+			[
+				"unit",
+				"unit_vars"
+			],
+			[
+				"w",
+				"working_occupancy24"
+			],
+			[
+				"cco",
+				"ccot_shift_pattern"
+			],
+			[
+				"stud",
+				"study_patients"
+			],
+			[
+				"df",
+				"dfield"
+			],
+			[
+				"ccot",
+				"ccot_shift_pattern"
+			],
+			[
+				"v_",
+				"v_iqr"
+			],
+			[
+				"spr",
+				"sparkbar"
+			],
+			[
+				"v_p",
+				"v_p25"
+			],
+			[
+				"table",
+				"tablerowlabel"
+			],
+			[
+				"cc",
+				"ccot_consultant"
+			],
+			[
+				"patient",
+				"patients_perhesadmx"
+			],
+			[
+				"vmiss",
+				"vmiss_percent"
+			],
+			[
+				"vmi",
+				"vmiss_percent"
+			],
+			[
+				"ts",
+				"tsplit"
+			],
+			[
+				"ya",
+				"yhat_se"
+			],
+			[
+				"th",
+				"theta_p"
+			],
+			[
+				"mean",
+				"meanonly"
+			],
+			[
+				"es",
+				"estimate_"
+			],
+			[
+				"va",
+				"var_level"
+			],
+			[
+				"time",
+				"time_dependent"
+			],
+			[
+				"no",
+				"no_frailty"
+			],
+			[
+				"model",
+				"model_sequence"
+			],
+			[
+				"mo",
+				"model_sequence"
+			],
+			[
+				"tim",
+				"timing_vars"
+			],
+			[
+				"beds",
+				"beds_none_week"
+			],
+			[
+				"max",
+				"max95_"
+			],
+			[
+				"min",
+				"min95"
+			],
+			[
+				"med",
+				"medianIRR"
+			],
+			[
+				"dec",
+				"decjanfeb"
+			],
+			[
+				"ccot_",
+				"ccot_shift_pattern"
+			],
+			[
+				"medi",
+				"medianIRR_1"
+			],
+			[
+				"sep",
+				"sepsis2001"
+			],
+			[
+				"week",
+				"week_vars"
+			],
+			[
+				"wee",
+				"week_vars"
+			],
+			[
+				"vis",
+				"visit_month"
+			],
+			[
+				"_list",
+				"_list_imposschks"
+			],
+			[
+				"est",
+				"estimate"
+			],
+			[
+				"ref",
+				"referrals_permonth_c"
+			],
+			[
+				"tab",
+				"tableorder"
+			],
+			[
+				"rxresp",
+				"rxresp_2"
+			],
+			[
+				"rxrrt",
+				"rxrrt_2"
+			],
+			[
+				"spar",
+				"sparkbar"
+			],
+			[
+				"rx",
+				"rxlimits"
+			],
+			[
+				"ccm",
+				"ccmds_delta"
+			],
+			[
+				"del",
+				"delayed_referral"
+			],
+			[
+				"tabl",
+				"tablerowlabel"
+			],
+			[
+				"spark",
+				"sparkbar"
+			],
+			[
+				"labe",
+				"label_truefalse"
+			],
+			[
+				"sparks",
+				"sparkspike"
+			],
+			[
+				"pac",
+				"paco2"
+			],
+			[
+				"ph",
+				"ph"
+			],
+			[
+				"ch",
+				"check_in_list"
+			],
+			[
+				"ra",
+				"range_vars"
+			],
+			[
+				"kx",
+				"kx20"
+			],
+			[
+				"kd",
+				"kdmedian"
+			],
+			[
+				"sepsi",
+				"sepsis_severity"
+			],
+			[
+				"sepsis",
+				"sepsis_severity"
+			],
+			[
+				"ga",
+				"gapindicator"
+			],
+			[
+				"wor",
+				"working_months"
+			],
+			[
+				"normal",
+				"normalsize"
+			],
+			[
+				"cmp",
+				"cmp_patients_permonth"
+			],
+			[
+				"v_cc",
+				"v_ccmds_rec"
+			]
+		]
+	},
+	"buffers":
+	[
+		{
+			"file": "an_missing_severity.do",
+			"settings":
+			{
+				"buffer_size": 13980,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "an_model_ward_survival_sensitivity.do",
+			"settings":
+			{
+				"buffer_size": 8737,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "spot_ward.sublime-project",
+			"settings":
+			{
+				"buffer_size": 334,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "an_model_count_news_high.do",
+			"settings":
+			{
+				"buffer_size": 9263,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "an_tables_v_ccmds_organ_support.do",
+			"settings":
+			{
+				"buffer_size": 2288,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/steve/analysis/spot_ward/local/lib_phd/dictionary_fields.yml",
+			"settings":
+			{
+				"buffer_size": 159644,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "an_tables_baseline_site_study.do",
+			"settings":
+			{
+				"buffer_size": 4051,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "an_fig_funnel_news.do",
+			"settings":
+			{
+				"buffer_size": 1673,
+				"line_ending": "Unix"
+			}
+		},
+		{
+			"file": "/Users/steve/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+			"settings":
+			{
+				"buffer_size": 1925,
+				"line_ending": "Unix"
+			}
+		}
+	],
+	"build_system": "",
+	"command_palette":
+	{
+		"height": 207.0,
+		"selected_items":
+		[
+			[
+				"texlin",
+				"TextCommands: Line Length"
+			],
+			[
+				"text",
+				"TextCommands: Line Length"
+			],
+			[
+				"list",
+				"Package Control: List Packages"
+			],
+			[
+				"inst",
+				"Package Control: Install Package"
+			],
+			[
+				"pack",
+				"Package Control: Upgrade Package"
+			],
+			[
+				"gus",
+				"Git: Status"
+			],
+			[
+				"gitst",
+				"Git: Status"
+			],
+			[
+				"dup",
+				"File: Duplicate"
+			],
+			[
+				"todo",
+				"Show TODOs: Project and open files"
+			],
+			[
+				"ren",
+				"File: Rename"
+			],
+			[
+				"shel",
+				"Set Syntax: Shell Script (Bash)"
+			],
+			[
+				"pand",
+				"Pandoc"
+			],
+			[
+				"diff",
+				"FileDiffs: Menu"
+			],
+			[
+				"pan",
+				"Pandoc"
+			],
+			[
+				"file diff",
+				"FileDiffs: Menu"
+			],
+			[
+				"python",
+				"Set Syntax: Python"
+			],
+			[
+				"pyth",
+				"Set Syntax: Python"
+			],
+			[
+				"dif",
+				"FileDiffs: Menu"
+			],
+			[
+				"spac",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"la",
+				"Set Syntax: LaTeX"
+			],
+			[
+				"rev",
+				"File: Reveal"
+			],
+			[
+				"re",
+				"File: Reveal"
+			],
+			[
+				"stata",
+				"Set Syntax: stata"
+			],
+			[
+				"du",
+				"File: Duplicate"
+			],
+			[
+				"set",
+				"Set Syntax: SQL"
+			],
+			[
+				"con",
+				"Indentation: Convert to Spaces"
+			],
+			[
+				"conv",
+				"Indentation: Convert to Tabs"
+			],
+			[
+				"rena",
+				"File: Rename"
+			],
+			[
+				"Package Control: ",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: ins",
+				"Package Control: Install Package"
+			],
+			[
+				"Package Control: dis",
+				"Package Control: Disable Package"
+			],
+			[
+				"",
+				"Package Control: Install Package"
+			],
+			[
+				"perl",
+				"Set Syntax: Perl"
+			]
+		],
+		"width": 587.0
+	},
+	"console":
+	{
+		"height": 62.0,
+		"history":
+		[
+			"view.run_command(\"file_2_stata\")",
+			"view.run_command(\"example\")",
+			"import urllib2,os; pf='Package Control.sublime-package'; ipp=sublime.installed_packages_path(); os.makedirs(ipp) if not os.path.exists(ipp) else None; urllib2.install_opener(urllib2.build_opener(urllib2.ProxyHandler())); open(os.path.join(ipp,pf),'wb').write(urllib2.urlopen('http://sublime.wbond.net/'+pf.replace(' ','%20')).read()); print('Please restart Sublime Text to finish installation')"
+		]
+	},
+	"distraction_free":
+	{
+		"menu_visible": true,
+		"show_minimap": false,
+		"show_open_files": false,
+		"show_tabs": false,
+		"side_bar_visible": false,
+		"status_bar_visible": false
+	},
+	"file_history":
+	[
+		"/Users/steve/Desktop/140114.txt",
+		"/Users/steve/analysis/spot_ward/vcode/cr_preflight.do",
+		"/Users/steve/analysis/spot_ward/vcode/cr_survival.do",
+		"/Users/steve/analysis/spot_ward/vcode/cr_admitted_pts.do",
+		"/Users/steve/analysis/spot_ward/vcode/cr_working_sensitivity.do",
+		"/Users/steve/analysis/spot_ward/vcode/an_fig_ward_surv_unadjusted.do",
+		"/Users/steve/analysis/spot_ward/vcode/spot_ward.sublime-project",
+		"/Users/steve/analysis/spot_ward/vcode/an01Master.do",
+		"/Users/steve/analysis/spot_ward/vcode/an_writing_chapter_ward.do",
+		"/Users/steve/analysis/spot_ward/vcode/an_model_ward_severity.do",
+		"/Users/steve/Library/Application Support/Sublime Text 2/Packages/User/Preferences.sublime-settings",
+		"/Users/steve/analysis/spot_ward/vcode/an_missing_severity.do",
+		"/Users/steve/analysis/spot_ward/vcode/labbook_running.do",
+		"/Users/steve/analysis/spot_ward/vcode/an_fig_hazard_and_survival_all.do",
+		"/Users/steve/analysis/spot_ward/vcode/an_fig_ward_survival_icnarc_tvc.do",
+		"/Users/steve/analysis/spot_ward/vcode/an_model_ward_survival_final.do",
+		"/Users/steve/analysis/spot_ward/vcode/an_model_ward_survival_news.do",
+		"/Users/steve/Data/phd/writing/ch04_ward/ch_ward_pandoc.sh",
+		"/Users/steve/Data/spot_ward/cCode/fields_2latex_glossary.py",
+		"/Users/steve/Data/spot_ward/cCode/export_dictionary.py",
+		"/Users/steve/Data/spot_ward/vcode/labbook_fig_show_risk_adjustment.do",
+		"/Users/steve/Library/Application Support/Sublime Text 3/Packages/Default/Default (OSX).sublime-keymap",
+		"/Users/steve/Data/spot_ward/vcode/cr_working.do",
+		"/Users/steve/Data/spot_ward/vcode/mt_Programs.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_ward_survival_final.do",
+		"/Users/steve/Data/phd/outputs/tables/tables_text/aps_components.tex",
+		"/Users/steve/Data/phd/writing/ch04_ward/ch_ward_text.md",
+		"/Users/steve/Data/spot_ward/vcode/an_model_ward_severity_tables.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_ward_severity_sensitivity.do",
+		"/Users/steve/Code/scripts/glossary_yaml2tex.py",
+		"/Users/steve/Data/spot_ward/vcode/cr_working_sensitivity.do",
+		"/Users/steve/Data/phd/writing/thesis.tpbuild",
+		"/Users/steve/Data/spot_early/cCode/make_table.py",
+		"/Users/steve/Data/spot_ward/vcode/an_model_ward_survival_checks.do",
+		"/Users/steve/Data/spot_early/local/lib_phd/dictionary_checks.yml",
+		"/Users/steve/Data/spot_ward/local/lib_phd/dictionary_fields.yml",
+		"/Users/steve/Data/phd/writing/thesis.tex",
+		"/Users/steve/Data/phd/writing/thesis-refs.bib",
+		"/Users/steve/Data/phd/writing/.texpadtmp/thesis.log",
+		"/Users/steve/Data/phd/writing/ch04_ward/ch_ward_text.tex",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_hazard_and_survival_all.do",
+		"/Users/steve/Data/phd/writing/ch04_ward/thesis.tpbuild",
+		"/Users/steve/Data/phd/writing/.bashrc",
+		"/Users/steve/Data/phd/writing/.profile",
+		"/Users/steve/Library/texlive/2012/texmf-config/web2c/updmap.cfg",
+		"/Users/steve/Data/phd/writing/ch04_ward/root.tpbuild",
+		"/Users/steve/Data/phd/writing/Appendix/thesis_glossary.tex",
+		"/Users/steve/Data/phd/writing/site-report-out.tex",
+		"/Users/steve/Data/phd/writing/thesis-refs.xml",
+		"/Users/steve/Data/AKI/Writing/draft/aki.bib",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_news_high.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_severe_sepsis.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_ward_survival_sensitivity.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_combine_news.do",
+		"/Users/steve/Data/spot_ward/vcode/an_inspect_outofsample.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_ward_survival_icnarc_tvc.do",
+		"/Users/steve/Data/spot_ward/vcode/sublime2stata.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_ccot.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_news_high_sensitivity.do",
+		"/Users/steve/Data/spot_ward/vcode/cr_working.sql",
+		"/Users/steve/Data/spot_ward/vcode/cr_working.sh",
+		"/Users/steve/Data/spot_ward/vcode/an_Master_ch_ward.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_dead28_aps_severity.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_count_news_by_refs.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_time2icu_ward.do",
+		"/Users/steve/Data/spot_ward/local/lib_phd/mt_mysql_conn.do",
+		"/Users/steve/Data/spot_traj/vcode/an_missing_severity.do",
+		"/Users/steve/Data/spot_ward/vcode/scratch.md",
+		"/Users/steve/Data/spot_ward/vcode/untitled.tex",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_baseline_pt_physiology.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_combine.do",
+		"/Users/steve/Data/spot_ward/vcode/cr_preflight_occupancy.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_baseline_pt_chars.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_v_ccmds_organ_support.do",
+		"/Users/steve/Data/spot_ward/vcode/cr_preflight.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_ward_severity.do",
+		"/Users/steve/Data/spot_ward/local/lib_phd/dictionary_tables.yml",
+		"/Users/steve/Data/spot_ward/vcode/an_severity_and_site.do",
+		"/Users/steve/Data/spot_ward/vcode/cr_survival.do",
+		"/Users/steve/Data/spot_ward/cCode/make_table.py",
+		"/Users/steve/Data/phd/lib_phd/scratch.py",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_news_risk.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_funnel_news.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_external_validity.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_funnel_news_high.do",
+		"/Users/steve/Data/spot_traj/vcode/an_mi_model_icnarc.do",
+		"/Users/steve/Data/spot_early/vcode/cr_preflight.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_ward_survival_inspect.do",
+		"/Users/steve/Data/spot_ward/vcode/labbook_today.do",
+		"/Users/steve/Data/phd/writing/ch04_ward/ch_ward.tex",
+		"/Users/steve/Data/spot_ward/vcode/scratch_1.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_severity.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_sepsis.do",
+		"/Users/steve/Data/spot_ward/vcode/scratch_2.do",
+		"/Users/steve/Data/spot_ward/vcode/cr_sites_outofsample.do",
+		"/Users/steve/Data/spot_ward/outputs/tables/tab_ccot_shift_pattern.md",
+		"/Users/steve/Data/spot_ward/vcode/cr_admitted_pts.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_early_comparison.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_baseline_site_study.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_baseline_site_chars.do",
+		"/Users/steve/Data/spot_ward/vcode/an_tables_admitted_pts.do",
+		"/Users/steve/Data/spot_ward/vcode/an_table_mortality.do",
+		"/Users/steve/Data/spot_ward/vcode/an_survival_ward_multivar.do",
+		"/Users/steve/Data/spot_ward/vcode/an_survival_ward_baseline.do",
+		"/Users/steve/Data/spot_ward/vcode/an_study_and_time.do",
+		"/Users/steve/Data/spot_ward/vcode/an_occupancy_and_time.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_propensity.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_severity.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_count_sepsis.do",
+		"/Users/steve/Data/spot_ward/vcode/an_model_building.do",
+		"/Users/steve/Data/spot_ward/vcode/an_inspect.do",
+		"/Users/steve/Data/spot_ward/vcode/an_fig_pt_flow.do",
+		"/Users/steve/Data/spot_ward/vcode/an_describe_ind_vars.do",
+		"/Users/steve/Data/spot_early/vcode/cr_sites.do",
+		"/Users/steve/Data/spot_early/vcode/anMaster_ward.do",
+		"/Users/steve/Data/spot_early/vcode/an_tables_admitted_pts.do",
+		"/Users/Steve/Data/spot_early/vcode/cr_working.do",
+		"/Users/Steve/Data/spot_early/vcode/an_admitted_pts.do",
+		"/Users/steve/Data/spot_early/vcode/an_figure_pt_flow.do",
+		"/Users/Steve/Data/spot_early/vcode/an_tables_baseline_pt_visit.do",
+		"/Users/Steve/Data/spot_early/vcode/an_tables_baseline_site_study.do",
+		"/Users/Steve/Data/spot_early/vcode/an_tables_baseline_site_chars.do",
+		"/Users/Steve/Data/spot_early/vcode/an_tables_baseline_pt_physiology.do",
+		"/Users/Steve/Data/spot_early/vcode/an_tables_baseline_pt_chars.do",
+		"/Users/Steve/Data/spot_early/vcode/an_tables_baseline_site_study_chars.do",
+		"/Users/Steve/Data/spot_early/vcode/an_tables_baseline_sites.do",
+		"/Users/Steve/Data/spot_early/vcode/an_model_count_news_risk.do",
+		"/Users/steve/Data/spot_early/vcode/an_model_ward_survival.do"
+	],
+	"find":
+	{
+		"height": 24.0
+	},
+	"find_in_files":
+	{
+		"height": 95.0,
+		"where_history":
+		[
+			"vcode/",
+			"./",
+			"./vcode",
+			"/vcode",
+			"",
+			"cr_working.do, cr_preflight.do",
+			"<open files>",
+			"",
+			"ccode/",
+			"local/",
+			"vcode/",
+			"~/data/spot/vcode",
+			"vcode/",
+			"/Users/steve/Data/spot_early/cCode,<open files>,<open folders>,-*.sublime*",
+			"/Users/steve/Data/spot_early/cCode,<open files>,<open folders>",
+			"/Users/steve/Data/spot_early/cCode,<open files>",
+			"/Users/steve/Data/spot_early/cCode",
+			"/Users/Steve/Data/spot_early/vcode, /Users/Steve/Data/spot_early/ccode",
+			"/Users/Steve/Data/spot_early,<open folders>",
+			"/Users/Steve/Data/SPOT/vcode,<open folders>",
+			"/Users/Steve/Data/SPOT/vcode",
+			"procHeadsFinal.sql",
+			"",
+			"/Users/Steve/Data/SPOT/vcode",
+			"<open files>,<open folders>",
+			"<open files>",
+			""
+		]
+	},
+	"find_state":
+	{
+		"case_sensitive": false,
+		"find_history":
+		[
+			"liver",
+			"news_score",
+			"spo2",
+			"spo21",
+			"hr",
+			"bps",
+			"temp",
+			"news_temp_wt",
+			"rr",
+			"resp",
+			"rrate",
+			"sofa_mean_wt_k12",
+			"sofa_score",
+			"median",
+			"-",
+			"@",
+			"analysis",
+			"Data",
+			"_news",
+			"NEWS risk",
+			"red",
+			"blue",
+			"news_risk",
+			"news_compare",
+			"ctrl\\+m",
+			"graph export",
+			"news_score",
+			"icnarc0",
+			"ward_survival",
+			"ward_survival_final",
+			"ward_survival_final_est_best",
+			"ward_survival_est_best",
+			"gray90",
+			"baseline_sites_study",
+			"patient_in_study",
+			"month_in_study",
+			"month",
+			"pickone_month",
+			"working.dta",
+			"working",
+			"--",
+			"gloss",
+			"undefined",
+			"Deteriorating ward patient",
+			"Deteriorating ward patients",
+			"pdflatex",
+			"gloss",
+			"aps_missing",
+			"per 1,000 hospital admissions",
+			"ccm",
+			"data",
+			"sites",
+			"s",
+			"patients",
+			"scratch_sens",
+			"scratch",
+			"strpos",
+			"sens_sites",
+			"sites",
+			"_sites",
+			"sensitivity",
+			"Sensitivity",
+			"sensitivity",
+			"scratch_survival_final",
+			"survival_reffects_bhaz",
+			"3 7",
+			"Timng",
+			"1 3 7",
+			"scratch",
+			"ssresidual",
+			"30 365",
+			"30",
+			"90",
+			"dead90",
+			"ccot_shift_pattern",
+			"news_score",
+			"median",
+			"sofa_miss",
+			"e(N)",
+			"sofa",
+			"var",
+			"wt",
+			"\\b\\w+?2\\b",
+			"\\b\\w+?\\b",
+			"\\b\\w+?2\\b",
+			"\\b\\w+?2\\",
+			"\\b\\w+?2\\b",
+			"missing",
+			"label",
+			"count_news_high_rcs",
+			"news_high",
+			"sigma_u",
+			"er_1_1",
+			"patients_perhesadmx",
+			"replace",
+			"patients_perhesadmx_k3",
+			"spline_vars",
+			"table_name",
+			"_`i'",
+			"model_name",
+			"global",
+			"ward referr",
+			"unit",
+			"save ../data/working_occupancy",
+			"export",
+			"v_ccmds_organ_support",
+			"9.0",
+			"count_patients",
+			"count_pa",
+			"count_patients",
+			"patients",
+			"^br.*\\n",
+			"valiases",
+			"deriv",
+			"fio2_std",
+			"^br.*\\n",
+			"^br",
+			"acronym_plural",
+			"news_high",
+			"funnel_ward_news_high",
+			"early",
+			"hazard_and_survival",
+			"recastci",
+			"feld",
+			"schoenfeld",
+			"var",
+			"tablerowlabel",
+			"yscale"
+		],
+		"highlight": true,
+		"in_selection": false,
+		"preserve_case": false,
+		"regex": true,
+		"replace_history":
+		[
+			"per 1,000 hosp. adm.",
+			"",
+			"large",
+			"GenericSetupSteveHarris spot_ward",
+			"patients_perhesadmx",
+			"`byvar2'",
+			"`cont_var'",
+			"../data/scratch/sites.dta",
+			"sitesfinal",
+			"qui compress",
+			"allreferrals == 0",
+			" ",
+			"",
+			"ppsample",
+			"cr_preflight.do",
+			"event",
+			"tails_othercc",
+			"tails_wardemx",
+			"",
+			"elif urine_period == 'd' and v_timestamp.hour != 0",
+			"\\n -",
+			"news_red = True",
+			"headsfinal",
+			"headsfinal:",
+			"",
+			"nameUnit",
+			"lite_summ_tails",
+			"lite_summ_heads",
+			"direct_admx_match_pct",
+			"direct_admx_pct",
+			" \\",
+			"units_Final_lock",
+			"sites_Final_lock",
+			"the_3_tuple",
+			"lite_summ_monthly",
+			"temp_t_quality",
+			"site_quality_monthly",
+			"date_closed",
+			"date_opened",
+			"	SELECT\n		h.icode,",
+			"	h.nameSite as HeadsSite,\n		t.nameSite as TailsSite,\n		t.nameUnit,\n	",
+			"updateReportLite",
+			"t.elgCore, t.elgFirst",
+			"t.elgCore, t.elgFirst, t.elgAge,",
+			"		t.elgAll, t.elgCore, t.elgFirst, t.elgAge, t.elgCPR, t.elgEmx, t.elgWard, t.elgOWard, t.elgTrans, t.elgThtr, t.elgHDU ,\n",
+			"	elgAll, elgCore, elgFirst, elgAge, elgCPR, elgEmx, elgWard, elgOWard, elgTrans, elgThtr, elgHDU , \n",
+			"matchPossTransfer",
+			"BETWEEN -168 AND 336",
+			"matchPossPcode",
+			"matchPossDoB"
+		],
+		"reverse": false,
+		"show_context": true,
+		"use_buffer2": true,
+		"whole_word": false,
+		"wrap": true
+	},
+	"groups":
+	[
+		{
+			"selected": 1,
+			"sheets":
+			[
+				{
+					"buffer": 0,
+					"file": "an_missing_severity.do",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 13980,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								12478,
+								12478
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Stata/Stata.tmLanguage",
+							"tab_size": 4,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 6171.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 1,
+					"type": "text"
+				},
+				{
+					"buffer": 1,
+					"file": "an_model_ward_survival_sensitivity.do",
+					"semi_transient": true,
+					"settings":
+					{
+						"buffer_size": 8737,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Stata/Stata.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 0,
+					"type": "text"
+				},
+				{
+					"buffer": 2,
+					"file": "spot_ward.sublime-project",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 334,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/JavaScript/JSON.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 3,
+					"type": "text"
+				},
+				{
+					"buffer": 3,
+					"file": "an_model_count_news_high.do",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 9263,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								7777,
+								7800
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Stata/Stata.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 3594.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 7,
+					"type": "text"
+				},
+				{
+					"buffer": 4,
+					"file": "an_tables_v_ccmds_organ_support.do",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 2288,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								865,
+								865
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Stata/Stata.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 6,
+					"type": "text"
+				}
+			]
+		},
+		{
+			"selected": 0,
+			"sheets":
+			[
+				{
+					"buffer": 5,
+					"file": "/Users/steve/analysis/spot_ward/local/lib_phd/dictionary_fields.yml",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 159644,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								102035,
+								102039
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/YAML/YAML.tmLanguage",
+							"tab_size": 2,
+							"translate_tabs_to_spaces": true
+						},
+						"translation.x": 0.0,
+						"translation.y": 68546.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 2,
+					"type": "text"
+				},
+				{
+					"buffer": 6,
+					"file": "an_tables_baseline_site_study.do",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 4051,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								4051
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Stata/Stata.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 8,
+					"type": "text"
+				},
+				{
+					"buffer": 7,
+					"file": "an_fig_funnel_news.do",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1673,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								1221,
+								1221
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/Stata/Stata.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 4,
+					"type": "text"
+				},
+				{
+					"buffer": 8,
+					"file": "/Users/steve/Library/Application Support/Sublime Text 3/Packages/User/Preferences.sublime-settings",
+					"semi_transient": false,
+					"settings":
+					{
+						"buffer_size": 1925,
+						"regions":
+						{
+						},
+						"selection":
+						[
+							[
+								0,
+								0
+							]
+						],
+						"settings":
+						{
+							"BracketHighlighterBusy": false,
+							"WordCountShouldRun": true,
+							"annotations":
+							[
+								"TODO",
+								"README",
+								"FIXME"
+							],
+							"bh_regions":
+							[
+								"bh_square",
+								"bh_square_center",
+								"bh_square_open",
+								"bh_square_close",
+								"bh_tag",
+								"bh_tag_center",
+								"bh_tag_open",
+								"bh_tag_close",
+								"bh_double_quote",
+								"bh_double_quote_center",
+								"bh_double_quote_open",
+								"bh_double_quote_close",
+								"bh_curly",
+								"bh_curly_center",
+								"bh_curly_open",
+								"bh_curly_close",
+								"bh_regex",
+								"bh_regex_center",
+								"bh_regex_open",
+								"bh_regex_close",
+								"bh_single_quote",
+								"bh_single_quote_center",
+								"bh_single_quote_open",
+								"bh_single_quote_close",
+								"bh_angle",
+								"bh_angle_center",
+								"bh_angle_open",
+								"bh_angle_close",
+								"bh_default",
+								"bh_default_center",
+								"bh_default_open",
+								"bh_default_close",
+								"bh_round",
+								"bh_round_center",
+								"bh_round_open",
+								"bh_round_close",
+								"bh_unmatched",
+								"bh_unmatched_center",
+								"bh_unmatched_open",
+								"bh_unmatched_close"
+							],
+							"csslint_options":
+							{
+								"adjoining-classes": "warning",
+								"box-model": true,
+								"box-sizing": "warning",
+								"compatible-vendor-prefixes": "warning",
+								"display-property-grouping": true,
+								"duplicate-background-images": "warning",
+								"duplicate-properties": true,
+								"empty-rules": true,
+								"errors": true,
+								"fallback-colors": "warning",
+								"floats": "warning",
+								"font-faces": "warning",
+								"font-sizes": "warning",
+								"gradients": "warning",
+								"ids": "warning",
+								"import": "warning",
+								"important": "warning",
+								"known-properties": true,
+								"outline-none": "warning",
+								"overqualified-elements": "warning",
+								"qualified-headings": "warning",
+								"regex-selectors": "warning",
+								"rules-count": "warning",
+								"shorthand": "warning",
+								"star-property-hack": "warning",
+								"text-indent": "warning",
+								"underscore-property-hack": "warning",
+								"unique-headings": "warning",
+								"universal-selector": "warning",
+								"vendor-prefix": true,
+								"zero-units": "warning"
+							},
+							"gjslint_ignore":
+							[
+								110
+							],
+							"gjslint_options":
+							[
+							],
+							"javascript_linter": "jshint",
+							"jshint_options":
+							{
+								"browser": true,
+								"evil": true,
+								"regexdash": true,
+								"sub": true,
+								"trailing": true,
+								"wsh": true
+							},
+							"pep8": true,
+							"pep8_ignore":
+							[
+								"E501"
+							],
+							"perl_linter": "perlcritic",
+							"pyflakes_ignore":
+							[
+							],
+							"pyflakes_ignore_import_*": true,
+							"sublimelinter": true,
+							"sublimelinter_delay": 2,
+							"sublimelinter_disable":
+							[
+							],
+							"sublimelinter_executable_map":
+							{
+							},
+							"sublimelinter_fill_outlines": false,
+							"sublimelinter_gutter_marks": true,
+							"sublimelinter_gutter_marks_theme": "simple",
+							"sublimelinter_mark_style": "none",
+							"sublimelinter_notes": false,
+							"sublimelinter_objj_check_ascii": false,
+							"sublimelinter_popup_errors_on_save": false,
+							"sublimelinter_syntax_map":
+							{
+								"C++": "c",
+								"Python Django": "python",
+								"Ruby on Rails": "ruby"
+							},
+							"sublimelinter_wrap_find": true,
+							"syntax": "Packages/AAAPackageDev/Support/Sublime Settings.tmLanguage",
+							"translate_tabs_to_spaces": false
+						},
+						"translation.x": 0.0,
+						"translation.y": 0.0,
+						"zoom_level": 1.0
+					},
+					"stack_index": 5,
+					"type": "text"
+				}
+			]
+		}
+	],
+	"incremental_find":
+	{
+		"height": 24.0
+	},
+	"input":
+	{
+		"height": 32.0
+	},
+	"layout":
+	{
+		"cells":
+		[
+			[
+				0,
+				0,
+				1,
+				1
+			],
+			[
+				0,
+				1,
+				1,
+				2
+			]
+		],
+		"cols":
+		[
+			0.0,
+			1.0
+		],
+		"rows":
+		[
+			0.0,
+			1.0,
+			1.0
+		]
+	},
+	"menu_visible": true,
+	"output.exec":
+	{
+		"height": 344.0
+	},
+	"output.find_results":
+	{
+		"height": 0.0
+	},
+	"output.git-commit":
+	{
+		"height": 114.0
+	},
+	"output.legit-sprout":
+	{
+		"height": 114.0
+	},
+	"output.scope_viewer":
+	{
+		"height": 0.0
+	},
+	"project": "spot_ward.sublime-project",
+	"replace":
+	{
+		"height": 44.0
+	},
+	"save_all_on_build": true,
+	"select_file":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+			[
+				"dic",
+				"local/lib_phd/dictionary_fields.yml"
+			],
+			[
+				"dict",
+				"local/lib_phd/dictionary_fields.yml"
+			],
+			[
+				"mt_",
+				"vcode/mt_Programs.do"
+			],
+			[
+				"mt",
+				"local/lib_phd/mt_mysql_conn.do"
+			],
+			[
+				"fie",
+				"local/lib_phd/dictionary_fields.yml"
+			],
+			[
+				"field",
+				"local/lib_phd/dictionary_fields.yml"
+			],
+			[
+				"phys",
+				"vcode/an_tables_baseline_pt_physiology.do"
+			],
+			[
+				"ch",
+				"/Users/steve/Data/phd/writing/ch04_ward/ch_ward_text.md"
+			],
+			[
+				"cr",
+				"vcode/cr_preflight.do"
+			],
+			[
+				"dc",
+				"local/lib_phd/dictionary_tables.yml"
+			],
+			[
+				"cr_p",
+				"vcode/cr_preflight.do"
+			],
+			[
+				"writ",
+				"vcode/an_writing_chapter_ward.do"
+			],
+			[
+				"mys",
+				"local/lib_usr/myspot.py"
+			],
+			[
+				"",
+				"procMakeReports.sql"
+			],
+			[
+				"co",
+				"procMyCrCoreTables.sql"
+			],
+			[
+				"tin",
+				"procMyCrTailsInCurrent.sql"
+			],
+			[
+				"pro",
+				"procMyCrMyTails.sql"
+			]
+		],
+		"width": 0.0
+	},
+	"select_project":
+	{
+		"height": 500.0,
+		"selected_items":
+		[
+			[
+				"",
+				"~/analysis/spot_early/vcode/spot_early.sublime-project"
+			],
+			[
+				"stu",
+				"/Users/steve/Data/spot_study/vcode/spot_study.sublime-project"
+			]
+		],
+		"width": 380.0
+	},
+	"select_symbol":
+	{
+		"height": 0.0,
+		"selected_items":
+		[
+		],
+		"width": 0.0
+	},
+	"settings":
+	{
+		"fss_on_distraction_free": false,
+		"fss_on_full_screen": false
+	},
+	"show_minimap": true,
+	"show_open_files": true,
+	"show_tabs": true,
+	"side_bar_visible": true,
+	"side_bar_width": 262.0,
+	"status_bar_visible": true,
+	"template_settings":
+	{
+	}
+}

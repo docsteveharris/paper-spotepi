@@ -67,8 +67,8 @@ forvalues i = 1/3 {
 			) ///
 		xscale(noextend) ///
 		xlab(0(3)12) ///
-		ylab( `grand_mean' , custom add labgap(large) labcolor(black) ) ///
-		ylab(0(25)125) ///
+		/* ylab( `grand_mean' , custom add labgap(large) labcolor(black) ) */ ///
+		/* ylab(0(25)125) */ ///
 		ytitle( "Monthly referrals", size(large)) ///
 		xtitle("Study months observed", size(large)) ///
 		title("`risk'",  size(large)) ///

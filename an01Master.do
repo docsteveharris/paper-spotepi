@@ -1,4 +1,3 @@
-
 // Prep the data
 do cr_working.do
 // this saves ../data/working.dta

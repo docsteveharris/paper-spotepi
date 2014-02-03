@@ -50,6 +50,9 @@ local ymax 5
 
 replace ssresidual_max95 = `ymax' if ssresidual_max95 > `ymax' & !missing(ssresidual_max95)
 
+* stop plot at 21 days because noisy thereafter
+drop if _t > 21
+
 tw ///
 	(rarea ssresidual_max95 ssresidual_min95 _t, sort pstyle(ci)) ///
 	(line ssresidual_est _t, sort clpattern(solid)) ///
@@ -58,11 +61,11 @@ tw ///
 	ylabel(0 `beta' 5 `ymax', nogrid format(%9.2f)) ///
 	yscale(noextend) ///
 	ytitle("Hazard ratio") ///
-	xlabel(0(7)28) ///
+	xlabel(0(7)21) ///
 	xscale(noextend) ///
 	xtitle("Days following assessment") ///
 	legend(off) ///
-	ttext(`beta' 28 "Estimated (time-constant) hazard ratio" ///
+	ttext(`beta' 21 "Estimated (time-constant) hazard ratio" ///
 		, placement(nw) justification(right) size(small) ///
 		margin(small) ///
 		)

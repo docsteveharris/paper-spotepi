@@ -24,6 +24,7 @@ sts list, at(0/28)
 sts graph, ///
 	hazard ci kernel(rectangle) width(0.5) noboundary ///
 	ciopts(pstyle(ci)) ///
+	plotopts(lcolor(red)) ///
 	tscale(noextend) ///
 	tlabel(0 30 90 180 365) ///
 	ttitle("Days following bedside assessment", margin(medium)) ///
@@ -48,7 +49,7 @@ graph display hazard_all
 
 sts graph, surv ci ///
 	ciopts(color(gs12)) ///
-	plotopts(lwidth(thin)) ///
+	plotopts(lwidth(thin) lcolor(red)) ///
 	tscale(noextend) ///
 	tlabel(0 30 90 180 365) ///
 	ttitle("Days following bedside assessment", margin(medium)) ///
