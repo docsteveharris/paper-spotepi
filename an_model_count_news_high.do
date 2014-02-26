@@ -1,25 +1,42 @@
+* Steve Harris 
+* LOG
+* ===
+* 140226
+* - Cloned from spot_ward
+* 140226
+* - modify this to use lagged occupancy from week prior
+
 *  ============================
 *  = Incidence NEWS RISK HIGH =
 *  ============================
 
-GenericSetupSteveHarris spot_ward an_model_count_news_high, logon
+* CHANGED: 2014-02-26 - changed project reference
+GenericSetupSteveHarris spot_epi an_model_count_news_high, logon
 global table_name incidence_news_high
 set seed 3001
 
-local clean_run 1
+local clean_run 0
 if `clean_run' == 1 {
     clear
     use ../data/working.dta
     qui include cr_preflight.do
     save ../data/working_postflight, replace
 }
+
 use ../data/working_occupancy, clear
 keep icode icnno odate beds_none
 gen v_week = wofd(odate) 
 collapse (mean) beds_none_week = beds_none, by(icode v_week)
 // convert mean beds_none (occupancy) to a 10% change from 0 so can be interpreted
 replace beds_none_week = 100 * beds_none_week
-drop if missing(icode, v_week, beds_none)
+* CHANGED: 2014-02-26 - now create a lagged version of the same variable
+encode icode, gen(site)
+tsset site v_week
+gen beds_none_lag1 = L.beds_none_week
+list  in 1/10
+drop site
+
+drop if missing(icode, v_week, beds_none_week, beds_none_lag1)
 tempfile 2merge
 save `2merge', replace
 
@@ -29,6 +46,43 @@ label var v_week "Visit week"
 merge m:1 icode v_week using `2merge'
 drop if _merge  == 2
 drop _merge
+
+* Check this worked
+sort icode v_timestamp
+format v_week %tw
+list icode id v_timestamp v_week* beds_none_*  in 1/40, sepby(v_week)
+* NOTE: 2014-02-26 - seems OK?
+* but not sure how it has managed to get the lagged data for 05s 2010w52
+
+
+* CHANGED: 2014-02-26 - now merge in the specific occupancy details and the lag
+save ../data/scratch/scratch.dta, replace
+use ../data/working_occupancy, clear
+keep icode icnno odate ohrs free_beds_cmp beds_none beds_blocked
+collapse (min) beds_none_l0 = beds_none ///
+	beds_blocked_l0 = beds_blocked ///
+	(mean) free_beds_cmp_l0 = free_beds_cmp, by(icode odate)
+encode icode, gen(site)
+tsset site odate
+
+gen beds_none_l1 = L.beds_none_l0
+gen beds_blocked_l1 = L.beds_blocked_l0
+gen free_beds_cmp_l1 = L.free_beds_cmp_l0
+
+tempfile 2merge
+save `2merge', replace
+use ../data/scratch/scratch.dta, clear
+gen odate = dofC(v_timestamp)
+merge m:1 icode odate using `2merge'
+drop if _merge  == 2
+drop _merge
+
+* Check this worked
+sort icode odate
+format odate %td
+list icode id odate free_beds_cmp_l0 free_beds_cmp_l1 in 1/10, sepby(odate)
+
+
 est drop _all
 //NOTE: 2013-01-18 - gllamm does not like factor variables
 //so expand up your ccot_shift_pattern (leaving 24/7 as the reference)
@@ -71,7 +125,8 @@ global unit_vars ///
 
 global timing_vars ///
 	decjanfeb ///
-	beds_none_week
+	beds_none_week ///
+	beds_none_lag1
 
 global model_vars $site_vars $study_vars $unit_vars $timing_vars
 
@@ -145,6 +200,8 @@ forvalues i = 3/3 {
 	save ../outputs/tables/$table_name.dta, replace
 	local ++model_sequence
 }
+
+exit
 
 *  ===================================
 *  = Now produce the tables in latex =
