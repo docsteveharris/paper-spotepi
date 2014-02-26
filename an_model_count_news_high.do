@@ -58,7 +58,10 @@ global site_vars ///
 	hes_emergx_c ///
 	ccot_p_1 ///
 	ccot_p_2 ///
-	ccot_p_3 
+	ccot_p_3
+
+	* NOTE: 2014-02-21 - replace ib3 with below if you wish to calculate using <7 as baseline
+	* ib1.ccot_shift_pattern
 
 global study_vars ///
 	pts_hes_k1 pts_hes_k2 pts_hes_k3
@@ -258,7 +261,7 @@ listtab `cols' ///
 *  = Now draw the predicted values for the cubic spline =
 *  ======================================================
 use patients_perhesadmx using ../data/working_postflight, clear
-qui su patients_perhesadmx
+su patients_perhesadmx
 local patients_perhesadmx_mean = r(mean)
 use ../data/count_news_high_cubic, clear
 gen patients_perhesadmx = patients_perhesadmx_c + `patients_perhesadmx_mean'
@@ -279,12 +282,12 @@ running yhat patients_perhesadmx ///
 	xtitle("Ward referrals assessed by ICU" "(per week)") ///
 	xlabel(0(10)50) ///
 	xscale(noextend) ///
-	scatter(msymbol(oh) msize(tiny) mcolor(gs4) jitter(1)) ///
+	scatter(msymbol(oh) msize(vtiny) mcolor(gs4) jitter(2)) ///
 	xsize(6) ysize(6) ///
 	title("")
 
 if c(os) == "Unix" local gext eps
-if c(os) == "MaxOSX" local gext pdf
+if c(os) == "MacOSX" local gext pdf
 graph rename count_news_high_rcs, replace
 graph display count_news_high_rcs
 graph export ../outputs/figures/count_news_high_rcs.`gext' ///

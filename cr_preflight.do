@@ -273,6 +273,16 @@ gen rxlimits = inlist(v_disposal,2,6)
 label var rxlimits "Treatment limits at visit end"
 label values rxlimits truefalse
 
+gen dead2 = (date_trace - dofc(v_timestamp) <= 2 & dead)
+replace dead2 = . if missing(date_trace)
+label var dead2 "2d mortality"
+label values dead2 truefalse
+
+gen dead5 = (date_trace - dofc(v_timestamp) <= 5 & dead)
+replace dead5 = . if missing(date_trace)
+label var dead5 "5d mortality"
+label values dead5 truefalse
+
 gen dead7 = (date_trace - dofc(v_timestamp) <= 7 & dead)
 replace dead7 = . if missing(date_trace)
 label var dead7 "7d mortality"

@@ -3,6 +3,8 @@
 *  ======================================================
 
 * NEWS score
+set scheme shbw
+
 use ../data/working_postflight.dta, clear
 egen news_k20 = cut(news_score), at(0(1)20)
 
@@ -131,3 +133,7 @@ graph combine dead28_vs_news dead28_vs_sofa dead28_vs_icnarc0, ///
 graph export ../outputs/figures/dead28_vs_severity_all.pdf, replace
 
 
+* NOTE: 2014-02-18 - NEWS and SOFA only for paper
+graph combine dead28_vs_news dead28_vs_sofa , ///
+	ycommon cols(1) ysize(8) xsize(6)
+graph export ../outputs/figures/dead28_vs_severity_news_sofa.pdf, replace

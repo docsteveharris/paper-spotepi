@@ -1,445 +1,684 @@
 qui cd "/Users/steve/analysis/spot_ward/vcode"
- *  =========================
-*  = Missing severity data =
+ *  ==============================
+*  = Variable sort order and id =
+*  ==============================
+* NOTE: 2012-10-05 - quick code to be run after working has been created
+* Calling it pre-flight for now to distinguish it from the slower code that will
+* be needed to work out occupancy and ccot shift patterns
+
+
+cap label drop truefalse
+label define truefalse 0 "False" 1 "True"
+
+cap label drop quantiles
+label define quantiles 1 "1st"
+label define quantiles 2 "2nd", add
+label define quantiles 3 "3rd", add
+label define quantiles 4 "4th", add
+label define quantiles 5 "5th", add
+
+
+sort idvisit
+gen id=_n
+encode icode, gen(site)
+label var site "Study site"
+
+set seed 3001
+
+count if _valid_row == 0
+
+*  ============================================
+*  = Report data quality issues as a reminder =
+*  ============================================
+
+tab _valid_row
+cap duplicates example _list_unusual if _count_unusual > 0
+cap duplicates example _list_imposs if _count_imposs > 0
+
+* CHANGED: 2013-03-11 - keep these so you stay consistent with CONSORT
+* You may need to drop them from survival analyses
+* keep if _valid_row
+replace v_timestamp = . if strpos(_list_imposschks,"icu_admit_before_visit") > 0
+replace date_trace = . if strpos(_list_imposschks,"MRIS_ICNARC_death_mismatch") > 0
+
+*  ============================
+*  = Merge in site level data =
+*  ============================
+
+merge m:1 icode using ../data/sites.dta, ///
+	keepusing( ///
+		ccot ccot_days ccot_start ccot_hours ccot_shift_pattern ///
+		ccot_senior ccot_consultant ///
+		cmp_patients_permonth tails_othercc all_cc_in_cmp ///
+		hes_admissions hes_emergencies hes_daycase ///
+		tails_all_percent cmp_beds_persite studydays)
+
+drop if _m != 3
+drop _m
+
+* CHANGED: 2013-01-18 - so hes_admissions only refers to overnight
+gen hes_overnight = hes_admissions - hes_daycase
+replace hes_overnight = hes_overnight / 1000
+label var hes_overnight "HES (overnight) admissions (thousands)"
+
+egen hes_overnight_k = cut(hes_overnight), at(0,30,60,90, 200) icodes
+label var hes_overnight_k "Hospital admissions (thousands)"
+label define hes_overnight_k	0 	"0--30"
+label define hes_overnight_k	1 	"30--60", add
+label define hes_overnight_k	2 	"60--90", add
+label define hes_overnight_k	3 	"90+", add
+label values hes_overnight_k hes_overnight_k
+
+cap drop hes_emergx
+gen hes_emergx = round(hes_emergencies / (hes_admissions) * 100)
+label var hes_emergx "Emergency hospital admissions (as % of overnight)"
+
+egen hes_emergx_k = cut(hes_emergx), at(0,30,40,100) icodes
+label var hes_emergx_k "Hospital emergency workload (percent)"
+label define hes_emergx_k	0 	"0--30"
+label define hes_emergx_k	1 	"30--40", add
+label define hes_emergx_k	2 	"40+", add
+label values hes_emergx_k hes_emergx_k
+
+cap drop cmp_beds_perhesadmx
+gen cmp_beds_perhesadmx = cmp_beds_max / hes_overnight * 10
+label var cmp_beds_perhesadmx "Critical care beds per 10,000 admissions"
+
+egen cmp_beds_peradmx_k = cut(cmp_beds_perhesadmx), at(0,2,4,100) icodes
+label var cmp_beds_peradmx_k "Critical care beds per 10,000 admissions"
+label define cmp_beds_peradmx_k 0 "0--2"
+label define cmp_beds_peradmx_k 1 "2--4", add
+label define cmp_beds_peradmx_k 2 "4+", add
+label values cmp_beds_peradmx_k cmp_beds_peradmx_k
+
+gen small_unit = cmp_beds_max < 10
+label var small_unit "<10 beds"
+
+cap drop patients_perhesadmx
+* CHANGED: 2013-04-30 - previously had forgotten to standardise this
+/*
+Also count_patients is the monthly number of patients reported - not an average
+Better then to generate your own value
+And standardise this
+- study_patients <- number of patients per site
+- count_patients <- study_patients per month (standardised)
+*/
+preserve
+use ../data/working.dta, clear
+contract icode
+rename _freq study_patients
+tempfile 2merge
+save `2merge', replace
+restore
+merge m:1 icode using `2merge'
+drop _merge
+label var study_patients "Patient reported per site"
+
+cap drop count_patients
+gen count_patients = study_patients * 365 / studydays / 12
+label var count_patients "New ward referrals per month"
+su count_patients
+
+gen patients_perhesadmx = (count_patients * 12 / hes_overnight  ) 
+label var patients_perhesadmx "Ward referrals per 1000 admissions"
+qui su patients_perhesadmx
+cap drop patients_perhesadmx_c
+gen patients_perhesadmx_c = patients_perhesadmx - r(mean)
+label var patients_perhesadmx_c "Ward referrals per 1000 admission (centred)"
+
+
+xtile count_patients_q5 = count_patients, nq(5)
+
+
+* ==================================================================================
+* = Create study wide generic variables - that are not already made in python code =
+* ==================================================================================
+* Now inspect key variables by sample
+gen time2icu = floor(hours(icu_admit - v_timestamp))
+* TODO: 2012-10-02 - this should not be necessary!!
+count if time2icu < 0
+di as error "`=r(N)' patients found where ICU admission occured before ward visit"
+replace time2icu = 0 if time2icu < 0
+label var time2icu "Time to ICU (hrs)"
+
+*  ==========================
+*  = Patient flow variables =
+*  ==========================
+* - defaults to Level 0/1 if missing
+* What is being delivered
+tab v_ccmds
+cap drop cc_now
+gen cc_now = 0
+replace cc_now = 0 if inlist(v_ccmds, 0, 1)
+replace cc_now = 1 if inlist(v_ccmds, 2, 3)
+label var cc_now "Higher level of care - now"
+label values cc_now truefalse
+
+* What was recommended
+tab v_ccmds_rec, miss
+cap drop cc_recommended
+gen cc_recommended = 0
+replace cc_recommended = 0 if inlist(v_ccmds_rec,0,1)
+replace cc_recommended = 1 if inlist(v_ccmds_rec,2,3)
+label var cc_recommended "Higher level of care - recommended"
+label values cc_recommended truefalse
+tab cc_recommended
+
+gen ccmds_delta = .
+label var ccmds_delta "Recommended level of care"
+replace ccmds_delta = 1 if v_ccmds_rec < v_ccmds
+replace ccmds_delta = 2 if v_ccmds_rec == v_ccmds 
+replace ccmds_delta = 3 if v_ccmds_rec > v_ccmds
+label define ccmds_delta 1 "Downgrade"
+label define ccmds_delta 2 "No change", add
+label define ccmds_delta 3 "Upgrade", add
+label values ccmds_delta ccmds_delta
+tab ccmds_delta
+
+* What decison was made
+tab v_disp, miss
+cap drop cc_decision
+gen cc_decision = .
+replace cc_decision = 0 if inlist(v_disposal,5,6)
+replace cc_decision = 1 if inlist(v_disposal,1,2)
+replace cc_decision = 2 if inlist(v_disposal,3,4)
+label define cc_decision ///
+	0 "No ward follow-up planned" ///
+	1 "Ward follow-up planned" ///
+	2 "Accepted to Critical care"
+label values cc_decision cc_decision
+tab cc_decision
+
+tab cc_decision cc_recommended, col row
+
+cap drop icucmp
+gen icucmp = time2icu != .
+label var icucmp "Admitted to ICU in CMP"
+tab icucmp
+tab loca
+cap drop route_to_icu
+gen route_to_icu = .
+replace route_to_icu = .a if !missing(loca)
+replace route_to_icu = 0 if loca == 2
+replace route_to_icu = 1 if loca == 1
+replace route_to_icu = 2 if loca == 6
+replace route_to_icu = 3 if loca == 12
+replace route_to_icu = 4 if inlist(loca,7,11,13,4)
+
+* ICU admission pathway
+label define route_to_icu ///
+	.a "Other" ///
+	0 "Direct from ward" ///
+	1 "via theatre" ///
+	2 "via scan/imaging" ///
+	3 "via recovery as temporary critical care" ///
+	4 "via other intermediate care bed"
+label values route_to_icu route_to_icu
+label var route_to_icu "ICU admission pathway"
+
+* NOTE: 2012-09-27 - get more precise survival timing for those who die in ICU
+* Add one hour though else ICU discharge and last_trace at same time
+* this would mean these records being dropped by stset
+* CHANGED: 2012-10-02 - changed to 23:59:00 from 23:59:59 because of rounding errors
+gen double last_trace = cofd(date_trace) + hms(23,58,00)
+replace last_trace = icu_discharge if dead_icu == 1 & !missing(icu_discharge)
+format last_trace %tc
+label var last_trace "Timestamp last event"
+
+gen male=sex==1
+label var male "Sex"
+label define male 0 "Female" 1 "Male"
+label values male male
+
+cap drop sepsis1_b
+gen sepsis1_b = inlist(sepsis,3,4)
+label var sepsis1_b "Clinical sepsis"
+label define sepsis1_b 0 "Unlikely"
+label define sepsis1_b 1 "Likely", add
+label values sepsis1_b sepsis1_b
+
+cap drop sepsis_severity
+gen sepsis_severity = sepsis2001
+replace sepsis_severity = 4 if inlist(sepsis2001, 4,5,6)
+label var sepsis_severity "Sepsis severity"
+label copy sepsis2001 sepsis_severity
+label define sepsis_severity 0 "Neither SIRS nor sepsis", modify
+label define sepsis_severity 4 "Septic shock" 5 "" 6 "", modify
+label values sepsis_severity sepsis_severity
+tab sepsis_severity
+
+cap drop sepsis_dx
+gen sepsis_dx = 0
+replace sepsis_dx = 1 if sepsis1_b
+replace sepsis_dx = 2 if sepsis1_b & sepsis_site == 5
+replace sepsis_dx = 3 if sepsis1_b & sepsis_site == 3
+replace sepsis_dx = 4 if sepsis1_b & sepsis_site == 1
+label var sepsis_dx "Sepsis diagnosis"
+label define sepsis_dx 0 "Not septic" 1 "Unspecified sepsis" 2 "GU sepsis" 3 "GI sepsis" 4 "Chest sepsis"
+label values sepsis_dx sepsis_dx
+tab sepsis_dx
+
+cap drop periarrest
+gen periarrest = v_arrest == 1
+label values periarrest truefalse
+
+cap drop vitals1
+gen vitals1 = inlist(vitals,5,4)
+label var vitals1 "Intensive ward obs"
+label values vitals1 truefalse
+tab vitals1
+// Collapse vitals down into simple list
+replace vitals = 3 if inlist(vitals,1,2)
+
+gen rxlimits = inlist(v_disposal,2,6)
+label var rxlimits "Treatment limits at visit end"
+label values rxlimits truefalse
+
+gen dead2 = (date_trace - dofc(v_timestamp) <= 2 & dead)
+replace dead2 = . if missing(date_trace)
+label var dead2 "2d mortality"
+label values dead2 truefalse
+
+gen dead5 = (date_trace - dofc(v_timestamp) <= 5 & dead)
+replace dead5 = . if missing(date_trace)
+label var dead5 "5d mortality"
+label values dead5 truefalse
+
+gen dead7 = (date_trace - dofc(v_timestamp) <= 7 & dead)
+replace dead7 = . if missing(date_trace)
+label var dead7 "7d mortality"
+label values dead7 truefalse
+
+gen dead28 = (date_trace - dofc(v_timestamp) <= 28 & dead)
+replace dead28 = . if missing(date_trace)
+label var dead28 "28d mortality"
+label values dead28 truefalse
+
+gen dead90 = (date_trace - dofc(v_timestamp) <= 90 & dead)
+replace dead90 = . if missing(date_trace)
+label var dead90 "90d mortality"
+label values dead90 truefalse
+
+gen dead1y = (date_trace - dofc(v_timestamp) <= 365 & dead)
+replace dead1y = . if missing(date_trace)
+label var dead1y "1 year mortality"
+label values dead1y truefalse
+
+foreach i in 28 90 {
+	cap drop icufree_days`i'
+	tempvar day_`i' icu_days dead_days
+	gen `day_`i'' = dofc(v_timestamp) + `i'
+	gen `icu_days' = 0
+	replace `icu_days' = `i' - (dofc(icu_admit) - dofc(v_timestamp)) if dofc(icu_admit) < `day_`i''
+	// subtract an extra 1 means that you count the day of discharge as an ICU day
+	replace `icu_days' = `icu_days' - (`day_`i'' - dofc(icu_discharge) - 1) if dofc(icu_discharge) < `day_`i''
+	gen `dead_days' = 0
+	replace `dead_days' = `day_`i'' - date_trace if dead == 1 & date_trace < `day_`i''
+	// otherwise double counts the day of death if this occurs in ICU
+	replace `dead_days' = `dead_days' - 1 if dofc(icu_discharge) == date_trace
+	gen icufree_days`i' = `i' - `icu_days' - `dead_days'
+	label var icufree_days`i' "Days alive without ICU (of 1st `i')"
+	su icufree_days`i'
+}
+
+
+* Flag patients where so much physiology missing that associated with badness
+cap drop icnarc_miss
+egen icnarc_miss = rowmiss(hrate bpsys temperature rrate pao2 abgfio2 rxfio2 ph urea creatinine sodium urine_vol urine_period wcc gcst)
+tab icnarc_miss
+gen icnarc0 = icnarc_score
+replace icnarc0 = . if icnarc_miss > 10
+label var icnarc0 "ICNARC score (removing abnormal zeros)"
+
+xtile icnarc_q3 = icnarc0, nq(3)
+label var icnarc_q3 "ICNARC acute physiology tertiles"
+xtile icnarc_q4 = icnarc0, nq(4)
+label var icnarc_q4 "ICNARC acute physiology quartiles"
+xtile icnarc_q5 = icnarc0, nq(5)
+label var icnarc_q5 "ICNARC acute physiology quintiles"
+xtile icnarc_q10 = icnarc0, nq(10)
+label var icnarc_q10 "ICNARC acute physiology deciles"
+
+label values icnarc_q* quantiles
+
+egen time2icu_cat = cut(time2icu), at(0,4,12,24,36,72,168,672) label
+* CHANGED: 2013-02-08 - better to code this as per a spike at zero approach
+* replace time2icu_cat = 999 if time2icu == .
+
+gen abg = !missing(abgunit)
+label var abg "Arterial blood gas measurement"
+label values abg truefalse
+
+
+* CHANGED: 2013-03-01 - defaults to zero if missing (imputes)
+gen rxcvs	  = 0
+replace rxcvs = 1 if rxcvs_sofa == 1
+replace rxcvs = 2 if inlist(rxcvs_sofa,2,3,4,5)
+label var rxcvs "Cardiovascular support"
+label define rxcvs 0 "None" 1 "Volume resusciation" 2 "Vasopressor/Inotrope"
+label values rxcvs rxcvs
+
+gen pf = round(pf_ratio / 7.6)
+label var pf "PF ratio (kPa)"
+
+gen rx_resp = 0
+replace rx_resp = 1 if inlist(rxfio2,1,2,3)
+replace rx_resp = 2 if inlist(rxfio2,4,5)
+label var rx_resp "Respiratory support"
+label define rx_resp 0 "None" 1 "Supplemental oxygen" 2 "NIV"
+label values rx_resp rx_resp
+
+replace rxrrt = 0 if rxrrt == .
+*  =======================================
+*  = Defer and delay indicator variables =
+*  =======================================
+gen early4 = time2icu < 4
+label var early4 "Early admission to ICU"
+label define early 0 "Deferred" 1 "Early"
+label values early4 early
+
+gen defer4 = time2icu > 4
+gen defer12 = time2icu > 12
+gen defer24 = time2icu > 24
+label define defer 0 "Early" 1 "Deferred"
+label values defer4 defer12 defer24 defer
+
+gen delay4 = 0 if time2icu < 4
+replace delay4 = 1 if time2icu > 4 & !missing(time2icu)
+gen delay12 = 0 if time2icu < 12
+replace delay12 = 1 if time2icu > 12 & !missing(time2icu)
+gen delay24 = 0 if time2icu < 24
+replace delay24 = 1 if time2icu > 24 & !missing(time2icu)
+label define delay 0 "Early" 1 "Delayed"
+label values delay4 delay12 delay24 delay
+
+*  ========================
+*  = Time and period vars =
+*  ========================
+cap drop visit_tod
+gen visit_hour = hh(v_timestamp)
+label var visit_hour "Visitg (hour of day)"
+egen visit_tod = cut(visit_hour), at(0,4,8,12,16,20,24) icodes label
+label var visit_tod "Visit (time of day)"
+* tab visit_tod
+
+cap drop visit_dow
+gen visit_dow = dow(dofc(v_timestamp))
+label var visit_dow "Visit day of week"
+label define dow ///
+	0 "Sun" ///
+	1 "Mon" ///
+	2 "Tue" ///
+	3 "Wed" ///
+	4 "Thu" ///
+	5 "Fri" ///
+	6 "Sat"
+label values visit_dow dow
+tab visit_dow
+
+* NOTE: 2013-01-11 - not sure that can make much of this given incomplete annual data
+cap drop visit_month
+gen visit_month = month(dofC(v_timestamp))
+label var visit_month "Visit month of year"
+label define month ///
+	1 	"Jan" ///
+	2 	"Feb" ///
+	3 	"Mar" ///
+	4 	"Apr" ///
+	5 	"May" ///
+	6 	"Jun" ///
+	7 	"Jul" ///
+	8 	"Aug" ///
+	9 	"Sep" ///
+	10 	"Oct" ///
+	11 	"Nov" ///
+	12 	"Dec"
+label values visit_month month
+tab visit_month
+
+gen decjanfeb = inlist(visit_month,12,1,2)
+label var decjanfeb "Winter"
+
+cap drop weekend
+gen weekend = inlist(visit_dow, 0, 6)
+label var weekend "Day of week"
+label define weekend 0 "Monday--Friday"
+label define weekend 1 "Saturday--Sunday", add
+label values weekend weekend
+
+
+cap drop out_of_hours
+gen out_of_hours = !(visit_hour > 7 & visit_hour < 19)
+label var out_of_hours "Time of day"
+label define out_of_hours 0 "8am--6pm"
+label define out_of_hours 1 "6pm--8am", add
+label values out_of_hours out_of_hours
+
+
+*  ===============
+*  = CCOT shifts =
+*  ===============
+
+* NOTE: 2012-10-05 - depends on working and sites so be careful about code order
+
+* CHANGED: 2013-01-15 - commented out as merge now happens at beginning
+* merge m:1 icode using ../data/sites.dta, ///
+* 	keepusing(ccot ccot_days ccot_start ccot_hours ccot_shift_pattern)
+
+// CCOT senior - tidy
+replace ccot_senior = "" if ccot_senior == "0"
+replace ccot_senior = "8" if ccot_senior == "8b"
+
+* NOTE: 2012-10-05 - defaults to no ccot: seems sensible but a discussion point
+gen ccot_on = 0
+label var ccot_on "CCOT on-shift"
+label values ccot_on truefalse
+
+replace ccot_on = 1 if ccot_shift_pattern == 3
+* dow 0 = Sunday, 6 = Saturday
+replace ccot_on = 1 if ccot_days == 7 & hh(v_timestamp) >= ccot_start ///
+	& hh(v_timestamp) < ccot_start + ccot_hours
+replace ccot_on = 1 if ccot_days == 6 & hh(v_timestamp) >= ccot_start ///
+	& hh(v_timestamp) < ccot_start + ccot_hours ///
+	& dow(dofc(v_timestamp)) != 0
+replace ccot_on = 1 if ccot_days == 5 & hh(v_timestamp) >= ccot_start ///
+	& hh(v_timestamp) < ccot_start + ccot_hours ///
+	& inlist(dow(dofc(v_timestamp)), 1, 2, 3, 4, 5)
+
+tab ccot_shift_pattern ccot_on, row
+
+/*
+NOTE: 2013-01-14 - now work out if patient seen at beginning or end of CCOT provision
+- only relevant for sites <24/7 with CCOT
+*/
+
+label define ccot_shift_early 0 "Last 2 hours of shift" 1 "First 2 hours of shift"
+
+cap drop ccot_shift_early
+gen ccot_shift_early = .
+label var ccot_shift_early "Flag if visit at beginning or end of shift"
+replace ccot_shift_early = 1 if inlist(ccot_shift_pattern,2) ///
+	& (hh(v_timestamp) - ccot_start <= 2)
+replace ccot_shift_early = 1 if inlist(ccot_shift_pattern,1) ///
+	& (hh(v_timestamp) - ccot_start <= 2) & !inlist(visit_dow,0,6)
+replace ccot_shift_early = 0 if inlist(ccot_shift_pattern,1,2) ///
+	& ((ccot_start + ccot_hours) - hh(v_timestamp)  <= 2)
+label values ccot_shift_early ccot_shift_early
+tab ccot_shift_early
+
+
+gen ccot_hrs_perweek = 0
+label var ccot_hrs_perweek "CCOT hours covered per week (of 168)"
+replace ccot_hrs_perweek = ccot_hours * ccot_days if ccot
+su ccot_hrs_perweek, d
+
+cap drop ccot_shift_start
+gen ccot_shift_start = ccot_shift_early == 1
+* NOTE: 2013-01-30 - explored the monday morning effect but v few pts
+
+*  ========================
+*  = Broad patient groups =
+*  ========================
+
+gen org_ok = sofa_score <= 1
+gen healthy = org_ok & news_risk <= 1 & v_ccmds_rec <= 1 & rxlimits == 0
+cap drop pt_cat
+gen pt_cat = .
+replace pt_cat = 1 if rxlimits == 1 & pt_cat == .
+replace pt_cat = 3 if healthy == 1 & pt_cat == .
+replace pt_cat = 2 if pt_cat == .
+
+label var pt_cat "Patient type"
+label define pt_cat 1 "Treatment limits" 2 "At risk" 3 "Low risk"
+label values pt_cat pt_cat
+tab pt_cat
+
+cap drop v_decision
+gen v_decision = .
+replace v_decision = 0 if inlist(v_disposal,5,6)
+replace v_decision = 1 if inlist(v_disposal,1,2)
+replace v_decision = 2 if inlist(v_disposal,3)
+replace v_decision = 3 if inlist(v_disposal,4)
+label var v_decision "Decision after bedside assessment"
+label define v_decision ///
+	0 "No review planned" ///
+	1 "Ward review planned" ///
+	2 "Accepted to Level 2 bed" ///
+	3 "Accepted to Level 3 bed"
+label values v_decision v_decision
+
+gen icu_accept = inlist(v_disposal,3,4)
+label var icu_accept "Accepted to critical care"
+gen icu_recommend =  inlist(v_ccmds_rec,2,3)
+label var icu_recommend "Recommended for critical care"
+
+*  =============
+*  = Occupancy =
+*  =============
+
+/*
+Let's make the standard variable a 3 level var for full active beds
+CHANGED: 2013-01-31 - need to tidy this up
+NOTE: 2013-01-12 - makes sense to measure this as absolute beds not a percentage
+
+gen open_beds_cmp_pct = (cmp_beds_max - occupancy_active) / cmp_beds_max * 100
+label var open_beds_cmp_pct "Percent open beds with respect to CMP reported number"
+gen full_physically0 = free_beds_cmp <= 0
+label var full_physically0 "No available critical care beds"
+gen full_physically1 = free_beds_cmp <= 1
+label var full_physically1 "No more than 1 physically empty bed"
+gen beds_none = open_beds_cmp <= 0
+label var beds_none "Critical care beds"
+label define beds_none 0 "Available or can be made available"
+label define beds_none 1 "No empty beds and none pending discharge", add
+gen full_active1 = open_beds_cmp <= 1
+label var full_active1 "No more than 1 dischargeable patient"
+*/
+gen open_beds_cmp = (cmp_beds_max - occupancy_active)
+label var open_beds_cmp "Open beds with respect to CMP reported number"
+
+gen beds_none = open_beds_cmp <= 0
+label var beds_none "Critical care unit full"
+label values beds_none truefalse
+
+gen beds_blocked = cmp_beds_max - occupancy <= 0
+label var beds_blocked "Critical care unit unable to discharge"
+label values beds_blocked truefalse
+
+cap drop bed_pressure
+gen bed_pressure = 0
+label var bed_pressure "Bed pressure"
+replace bed_pressure = 1 if beds_blocked == 1
+replace bed_pressure = 2 if beds_none == 1
+label define bed_pressure 0 "Beds available"
+label define bed_pressure 1 "No beds but discharges pending", add
+label define bed_pressure 2 "No beds and no discharges pending", add
+label values bed_pressure bed_pressure
+*  ============================================
+*  = Prep vars in standardised way for models =
+*  ============================================
+/*
+As a general rule of thumb
+	- var with suffix _c = centred
+	- var with suffix _k = categorical version
+	- var with suffix _b = binary version
+	- var with suffix _q = quintiles (where q is followed by number)
+*/
+* Patient vars
+
+egen age_k = cut(age), at(18,40,60,80,200) icodes
+label var age_k "Age"
+label define age_k 0 "18-39"
+label define age_k 1 "40-59", add
+label define age_k 2 "60-79", add
+label define age_k 3 "80+", add
+label values age_k age_k
+gen age_c = age - 65
+label var age_c "Age (centred at 65yrs)"
+
+gen age10_c = age_c / 10
+label var age10_c "Age (per decade, centred at 65"
+
+gen delayed_referral = !v_timely
+label var delayed_referral "Delayed referral to ICU"
+label define delayed_referral 0 "Timely" 1 "Delayed"
+label values delayed_referral delayed_referral
+drop v_timely
+
+* Site vars
+cap drop referrals_permonth
+cap drop pickone_site
+egen pickone_site = tag(icode)
+bys icode: egen referrals_permonth = mean(count_patients)
+replace referrals_permonth = round(referrals_permonth)
+label var referrals_permonth "New ward referrals (per month)"
+
+egen referrals_permonth_k = cut(referrals_permonth), at(0,25,50,75,200) icodes
+label var referrals_permonth_k "New ward referrals (per month)"
+label define referrals_permonth_k 	0 "0--24"
+label define referrals_permonth_k 	1 "25--49", add
+label define referrals_permonth_k 	2 "50--74", add
+label define referrals_permonth_k 	3 "75+", add
+label values referrals_permonth_k referrals_permonth_k
+
+foreach var of varlist icnarc0 sofa_score news_score {
+	su `var', meanonly
+	gen `var'_c = `var' - r(mean)
+}
+
+su referrals_permonth, meanonly
+gen referrals_permonth_c = referrals_permonth - r(mean)
+
+su hes_overnight, meanonly
+gen hes_overnight_c = hes_overnight - r(mean)
+
+su hes_emergx, meanonly
+gen hes_emergx_c = hes_emergx - r(mean)
+
+su cmp_beds_max, meanonly
+gen cmp_beds_max_c = cmp_beds_max - r(mean)
+
+
+* Round all centred variables
+foreach var of varlist * {
+	if substr("`var'",-2,2) != "_c" {
+		continue
+	}
+	di as result "Rounding `var' to 1 decimal place"
+	replace `var' = round(`var', 0.1)
+}
+
 *  =========================
-
-use ../data/working_postflight.dta, clear
-
-// Prepare variables so appropriately labelled for severity scores
-cap drop hr1
-ren hrate hr1
-label var hr1 "Heart rate - SPOT"
-
-cap drop bps1
-rename bpsys bps1
-label var bps1 "SBP - SPOT"
-
-cap drop temp1 
-rename temperature temp1
-label var temp1 "Temp - SPOT"
-
-cap drop rr1
-rename rrate rr1
-label var rr1 "Resp rate - SPOT"
-
-cap drop pf1 
-replace pao2 = pao2 / 7.6 if abgunit == 2
-gen pf1 = pao2 / abgfio2 * 100
-label var pf1 "P:F ratio - SPOT"
-
-cap drop ph1 
-ren ph ph1
-label var ph1 "pH - SPOT"
-
-cap drop urea1 
-ren urea urea1
-label var urea1 "Urea - SPOT"
-
-cap drop cr1
-rename creatinine cr1
-label var cr1 "Creatinine - SPOT"
-
-ren sodium na1
-label var na1 "Sodium - SPOT"
-replace na1 = .a if na1 < 80
-
-cap drop urin1 
-rename uvol1h urin1
-
-cap drop yulos
-gen yulos = round(hours(cofd(ddicu) + tdicu - cofd(daicu) - taicu)) if dead_icu == 0
-replace yulos = round(hours(cofd(dod) + tod - cofd(daicu) - taicu)) if dead_icu == 1
-su yulos, d
-label var yulos "ICU LOS (hrs)"
-gen yulosd = round(yulos / 24, 0.1)
-label var yulosd "ICU LOS"
-
-replace urin1 = .a if urin1 > 250
-label var urin1 "Urine ml/hr - SPOT"
-
-cap drop wcc1
-ren wcc wcc1
-label var wcc1 "WCC - SPOT"
-
-cap drop gcs1 
-ren gcst gcs1
-label var gcs1 "GCS - SPOT"
-
-/* Lactate */
-cap drop lac1 
-ren lactate lac1
-label var lac1 "Lactate - SPOT"
-
-/* Platelets */
-ren platelets plat1
-label var plat1 "Platelets - SPOT"
-
-
-/* Heart rate */
-foreach var of varlist hr1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 14 if `var' <= 39
-    replace `var'_wt = 0 if `var' <= 109 & `var'_wt == .
-    replace `var'_wt = 1 if `var' <= 119 & `var'_wt == .
-    replace `var'_wt = 2 if `var' <= 139 & `var'_wt == .
-    replace `var'_wt = 3 if `var' > 139 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-
-/* BP systolic */
-foreach var of varlist bps1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 15 if `var' <= 49 & `var'_wt == .
-    replace `var'_wt = 9 if `var' <= 59 & `var'_wt == .
-    replace `var'_wt = 6 if `var' <= 69 & `var'_wt == .
-    replace `var'_wt = 4 if `var' <= 79 & `var'_wt == .
-    replace `var'_wt = 2 if `var' <= 99 & `var'_wt == .
-    replace `var'_wt = 0 if `var' <= 179 & `var'_wt == .
-    replace `var'_wt = 7 if `var' <= 219 & `var'_wt == .
-    replace `var'_wt = 16 if `var' > 219 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* Temperature */
-
-foreach var of varlist temp1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 12 if `var' <= 33.9 & `var'_wt == .
-    replace `var'_wt = 7 if `var' <= 35.9 & `var'_wt == .
-    replace `var'_wt = 1 if `var' <= 38.4 & `var'_wt == .
-    replace `var'_wt = 0 if `var' <= 41 & `var'_wt == .
-    replace `var'_wt = 1 if `var' > 41 & `var'_wt == . & `var' != .
-    // CHANGED: 2013-04-04 - replace missing and nonsense values with 0 weights
-    bys `var'_wt: su `var'
-}
-
-/* Respiratory rate */
-foreach var of varlist rr1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 1 if `var' <= 5 & `var'_wt == .
-    replace `var'_wt = 0 if `var' < 12 & `var'_wt == .
-    replace `var'_wt = 1 if `var' < 14 & `var'_wt == .
-    replace `var'_wt = 2 if `var' < 25 & `var'_wt == .
-    replace `var'_wt = 5 if `var' >= 25 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* P:F ratio */
-// NOTE: 2013-04-04 - replace with room air / unintubated to generate weights
-replace rxfio2 = 0 if rxfio2 == .
-foreach var of varlist pf1 {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 6 if `var' <=    13 & !inlist(rxfio2,1,2,3) & `var'_wt == .
-    replace `var'_wt = 3 if `var' <=    27 & !inlist(rxfio2,1,2,3) & `var'_wt == .
-    replace `var'_wt = 0 if `var' >     27 & !inlist(rxfio2,1,2,3) & `var'_wt == .
-    tab `var'_wt
-    replace `var'_wt = 8 if `var' <=    13 & inlist(rxfio2,1,2,3) & `var'_wt == .
-    replace `var'_wt = 5 if `var' <=    27 & inlist(rxfio2,1,2,3) & `var'_wt == .
-    replace `var'_wt = 3 if `var' >     27 & inlist(rxfio2,1,2,3) & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    tab `var'_wt
-    bys `var'_wt: su `var'
-}
-
-
-
-/* pH */
-foreach var of varlist ph1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 4 if `var' <= 7.14 & `var'_wt == .
-    replace `var'_wt = 2 if `var' <= 7.24 & `var'_wt == .
-    replace `var'_wt = 0 if `var' <= 7.32 & `var'_wt == .
-    replace `var'_wt = 1 if `var' <= 7.49 & `var'_wt == .
-    replace `var'_wt = 4 if `var' >  7.49 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* Urea */
-foreach var of varlist urea1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 0 if `var' <= 6.1 & `var'_wt == .
-    replace `var'_wt = 1 if `var' <= 7.1 & `var'_wt == .
-    replace `var'_wt = 3 if `var' <= 14.3 & `var'_wt == .
-    replace `var'_wt = 5 if `var' >  14.3 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* Creatinine */
-foreach var of varlist cr1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 0 if `var' <= 0.5 * 88.4 & `var'_wt == .
-    replace `var'_wt = 2 if `var' <= 1.5 * 88.4 & `var'_wt == .
-    replace `var'_wt = 4 if `var' >  1.5 * 88.4 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* Sodium */
-
-foreach var of varlist na1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 4 if `var' <= 129 & `var'_wt == .
-    replace `var'_wt = 0 if `var' <= 149 & `var'_wt == .
-    replace `var'_wt = 4 if `var' <= 154 & `var'_wt == .
-    replace `var'_wt = 7 if `var' <= 160 & `var'_wt == .
-    replace `var'_wt = 8 if `var' >  160 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* Urine */
-
-foreach var of varlist urin1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 7 if `var' <= 399 / 24 & `var'_wt == .
-    replace `var'_wt = 6 if `var' <= 599 / 24 & `var'_wt == .
-    replace `var'_wt = 5 if `var' <= 899 / 24 & `var'_wt == .
-    replace `var'_wt = 3 if `var' <= 1499 / 24 & `var'_wt == .
-    replace `var'_wt = 1 if `var' <= 1999 / 24 & `var'_wt == .
-    replace `var'_wt = 0 if `var' >  1999 / 24 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* White cell count */
-foreach var of varlist wcc1  {
-    cap drop `var'_wt
-    gen `var'_wt = .
-    replace `var'_wt = 6 if `var' <= 0.9 & `var'_wt == .
-    replace `var'_wt = 3 if `var' <= 2.9 & `var'_wt == .
-    replace `var'_wt = 0 if `var' <= 14.9 & `var'_wt == .
-    replace `var'_wt = 2 if `var' <= 39.9 & `var'_wt == .
-    replace `var'_wt = 4 if `var' >  39.9 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-/* GCS */
-* NOTE: -11-15 - does not include the weighting for sedated or paralysed
-foreach var of varlist gcs1  {
-    cap drop `var'_wt
-    // CHANGED: 2013-04-06 - default weight zero (but still missing if var is missing)
-    gen `var'_wt = 0
-    replace `var'_wt = 11 if `var' == 3 & `var'_wt == .
-    replace `var'_wt = 9 if `var' == 4 & `var'_wt == .
-    replace `var'_wt = 6 if `var' == 5 & `var'_wt == .
-    replace `var'_wt = 4 if `var' == 6 & `var'_wt == .
-    replace `var'_wt = 2 if `var' <= 13 & `var'_wt == .
-    replace `var'_wt = 1 if `var' <= 14 & `var'_wt == .
-    replace `var'_wt = 0 if `var' == 15 & `var'_wt == .
-    replace `var'_wt = . if `var' >= .
-    bys `var'_wt: su `var'
-}
-
-
-cap drop ims1_miss 
-egen ims1_miss = rowmiss(*1_wt)
-tab ims1_miss 
-
-// now generate variables to report where sofa and news weights are missing
-foreach var of varlist *1_wt {
-    gen `var'_miss = `var' == .
-}
-
-gen sofa_haem_wt = 1
-replace sofa_haem_wt = . if missing(plat1)
-gen sofa_liver_wt = 1
-replace sofa_liver_wt =. if missing(bili)
-
-gen news_spo2_wt = 1
-replace news_spo2_wt = . if missing(spo2)
-gen news_fio2_wt = 1
-replace news_fio2_wt = . if missing(fio2_std)
-
-gen news_neuro_wt = 1
-replace news_neuro_wt = . if missing(avpu) & missing(gcs1)
-
-egen news_miss = rowmiss(news_fio2_wt news_neuro_wt news_spo2_wt hr1_wt bps1_wt rr1_wt temp1_wt )
-egen sofa_miss = rowmiss(sofa_haem_wt sofa_liver_wt cr1_wt  gcs1_wt pf1_wt )
-
-save ../data/scratch/scratch.dta, replace
-
-* CHANGED: 2014-01-06 - 
-* - Figure 3.6: re-draw figures with adjusted x-axis: 
-* These plots will inevitably appear with a downward trend because you can only
-* get a higher severity score if you're not missing data; they should be
-* redrawn using the mean weight of the observed components not the overall total score.
-
-// Now plot the amount of missing data by the ICNARC score
-set scheme shbw
-use ../data/scratch/scratch.dta, clear
-foreach var of varlist *1_wt {
-    replace `var' = . if `var'_miss == 1
-}
-
-egen icnarc_mean_wt = rowtotal(*1_wt) 
-replace icnarc_mean_wt = icnarc_mean_wt / (13 - ims1_miss)
-su icnarc_mean_wt
-
-egen icnarc_k20 = cut(icnarc_mean_wt), at(0(0.5)10)
-tab icnarc_k20
-
-collapse (mean) ims1_miss (count) n = id, by(icnarc_k20)
-list
-* drop small categories and outliers
-drop if icnarc_k20 >= 10
-drop if n <= 20
-gen zero = 0
-gen x = icnarc_k20 + 0.25
-tostring n, gen(barlabel) format(%9.0fc) force
-tw ///
-    (rbar ims1_miss zero x, barwidth(0.4) color(gs12)) ///
-    (scatter ims1_miss x, msym(none) mlabel(barlabel) mlabpos(12) mlabcolor(gs2)) ///
-    , ///
-    ylabel(0(3)12) ///
-    xlabel(0(1)4) ///
-    ytitle("Number of missing components") ///
-    xtitle("ICNARC score - mean component weight") ///
-    subtitle("(C)", position(10) justification(left)) ///
-    legend(off)
-
-graph rename plot1, replace
-* NOTE: 2014-01-14 - note low scores more often missing data
-* and high scores (I assume GCS and non-vent RR)
-
-// Now plot the amount of missing data by the SOFA score
-use ../data/scratch/scratch.dta, clear
-lookfor sofa
-su sofa_score
-tab sofa_miss
-
-replace sofa_liver_wt = . if missing(bili)
-replace sofa_haem_wt = . if missing(plat1)
-gen sofa_resp_wt = sofa_r if !missing(pf1_wt)
-gen sofa_renal_wt = sofa_k if !missing(cr1_wt)
-gen sofa_neuro_wt = sofa_n if !missing(gcs1_wt)
-
-egen sofa_mean_wt = rowtotal(sofa_haem_wt sofa_liver_wt sofa_resp_wt sofa_renal_wt sofa_neuro_wt)
-su sofa_miss sofa_mean_wt
-replace sofa_mean_wt = sofa_mean_wt / (5 - sofa_miss)
-su sofa_mean_wt, d
-
-egen sofa_mean_wt_k12 = cut(sofa_mean_wt), at(0(0.5)4)
-
-collapse (mean) sofa_miss (count) n = id, by(sofa_mean_wt_k12)
-drop if n <= 20
-drop if sofa_mean_wt_k12 >= 3
-
-gen zero = 0
-gen x = sofa_mean_wt_k12 + 0.25
-tostring n, gen(barlabel) format(%9.0fc) force
-tw ///
-    (rbar sofa_miss zero x, barwidth(0.4) color(gs12)) ///
-    (scatter sofa_miss x, msym(none) mlabel(barlabel) mlabpos(12) mlabcolor(gs2)) ///
-    , ///
-    ylabel(0(1)6) ///
-    xlabel(0(0.5)3) ///
-    ytitle("Number of missing components") ///
-    xtitle("SOFA score - mean component weight") ///
-    subtitle("(B)", position(10) justification(left)) ///
-    legend(off)
-
-graph rename plot2, replace
-
-
-// now for the NEWS score
-use ../data/scratch/scratch.dta, clear
-lookfor news
-* Now manually calculate news weights
-gen news_resp_wt = .
-replace news_resp_wt = 0 if !missing(rr1)
-replace news_resp_wt = 1 if (rr1 <= 11 ) & !missing(rr1)
-replace news_resp_wt = 2 if (rr1 >= 21 ) & !missing(rr1)
-replace news_resp_wt = 3 if (rr1 <= 8 | rr1 >= 25) & !missing(rr1)
-su news_resp_wt
-
-
-gen news_temp_wt = .
-replace news_temp_wt = 0 if !missing(temp1)
-replace news_temp_wt = 1 if (temp1 <= 36 | temp1 >= 38.1) & !missing(temp1)
-replace news_temp_wt = 2 if (temp1 >= 39.1 ) & !missing(temp1)
-replace news_temp_wt = 3 if (temp1 <= 35 ) & !missing(temp1)
-su news_temp_wt
-
-gen news_bps_wt = .
-replace news_bps_wt = 0 if !missing(bps1)
-replace news_bps_wt = 1 if (bps1 >= 110 ) & !missing(bps1)
-replace news_bps_wt = 2 if (bps1 <= 100 ) & !missing(bps1)
-replace news_bps_wt = 3 if (bps1 <= 90 | bps1 >= 220) & !missing(bps1)
-su news_bps_wt
-
-gen news_hr_wt = .
-replace news_hr_wt = 0 if !missing(hr1)
-replace news_hr_wt = 1 if (hr1 <= 50 | hr1 >= 91) & !missing(hr1)
-replace news_hr_wt = 2 if (hr1 >= 111 ) & !missing(hr1)
-replace news_hr_wt = 3 if (hr1 <= 40 | hr1 >= 131) & !missing(hr1)
-su news_hr_wt
-
-cap drop news_spo2_wt
-gen news_spo2_wt = .
-replace news_spo2_wt = 0 if !missing(spo2)
-replace news_spo2_wt = 1 if (spo2 <= 95 ) & !missing(spo2)
-replace news_spo2_wt = 2 if (spo2 <= 93 ) & !missing(spo2)
-replace news_spo2_wt = 3 if (spo2 <= 91 ) & !missing(spo2)
-su news_spo2_wt
-
-cap drop news_avpu_wt
-gen news_avpu_wt = .
-replace news_avpu_wt = 0 if !missing(avpu)
-replace news_avpu_wt = 3 if inlist(avpu,2,3,4) & !missing(avpu)
-replace news_avpu_wt = 3 if gcs1 <= 13 & !missing(gcs1)
-su news_avpu_wt
-
-egen news_mean_wt = rowtotal(news_fio2_wt news_avpu_wt news_spo2_wt news_hr_wt news_bps_wt news_resp_wt news_temp_wt )
-cap drop news_miss
-egen news_miss = rowmiss(news_fio2_wt news_avpu_wt news_spo2_wt news_hr_wt news_bps_wt news_resp_wt news_temp_wt )
-replace news_mean_wt = news_mean_wt / (7 - news_miss)
-su news_mean_wt
-
-egen news_k2 = cut(news_mean_wt), at(0(0.25)3)
-collapse (mean) news_miss (count) n = id, by(news_k2)
-list
-drop if n <= 20
-drop if news_k2 >= 2.5
-gen zero = 0
-gen x = news_k2 + 0.125
-tostring n, gen(barlabel) format(%9.0fc) force
-tw ///
-    (rbar news_miss zero x, barwidth(0.2) color(gs12)) ///
-    (scatter news_miss x, msym(none) mlabel(barlabel) mlabpos(12) mlabcolor(gs2)) ///
-    , ///
-    ylabel(0(1)7) ///
-    xlabel(0(0.5)2.5) ///
-    ytitle("Number of missing components") ///
-    xtitle("NEWS score - mean component weight") ///
-    subtitle("(A)", position(10) justification(left)) ///
-    legend(off)
-
-graph rename plot3, replace
-
-graph combine plot3 plot2 plot1, cols(1) ysize(8) xsize(4)
-graph rename aps_missing, replace
-graph display aps_missing
-graph export ../outputs/figures/aps_missing.pdf ///
-    , name(aps_missing) replace
-
-
-// quick calcs for writing
-use ../data/scratch/scratch.dta, clear
-
+*  = Drop unused variables =
+*  =========================
+* drop modifiedat dob lite_open lite_close elgdate elgreport_heads ///
+* 	elgreport_tails elgprotocol allreferrals possible_duplicate ///
+* 	icnno adno response_tails_note response_heads response_heads_note ///
+* 	notes_light daicu taicu withinsh ddicu tdicu _list_unusualchks ///
+* 	_list_imposschks exclude3 included_sites included_months
+
+
+cap drop __*
+// CHANGED: 2013-05-17 - Don't save: 
+// that should be the responsibility of the calling code
+* save ../data/working_postflight.dta, replace
