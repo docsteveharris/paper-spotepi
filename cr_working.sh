@@ -1,6 +1,9 @@
+# CHANGED: 2014-02-27 - spot_early mentioned below should be a hangover from when 
+# this analysis was combined and used the same sites
 # Generic shell script to prepare all tables for spot_early
 
-cd ~/data/spot_early/vcode
+cd ~/analysis/spot-epi-paper/vcode
+
 # First of all prepare all the tables you need
 uuser="stevetm"
 ppass=""

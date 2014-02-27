@@ -10,7 +10,7 @@ local ppass ""
 *  =======================================
 *  = Log definitions and standard set-up =
 *  =======================================
-GenericSetupSteveHarris spot_ward cr_working, logon
+GenericSetupSteveHarris spot_epi cr_working, logon
 
 
 *  =======================================
@@ -62,14 +62,8 @@ GenericSetupSteveHarris spot_ward cr_working, logon
 		exit
 	}
 // }
+
 save ../data/working_raw.dta, replace
-
-*  ========================
-*  = Define analysis axes =
-*  ========================
-* TODO: 2012-10-01 - you may want to make the definitions more 'transportable'
-* i.e. move them back into the python codebase
-
 
 *  ===========================================================
 *  = Now run the include exclude code to produce working.dta =
@@ -112,9 +106,14 @@ count if included_months == 1 & include == 1
 CHANGED: 2013-01-07
 - permit through sites where the overall quality is good (late improvers) 
 */
+
 replace include = 0 if ///
 	(site_quality_q1 < 80 | site_quality_q1 == .) ///
 	& include == 1
+
+*  =====================================
+*  = Starting point of STROBE diagram  =
+*  =====================================
 
 cap drop included_sites
 egen included_sites = tag(icode) if include == 1
@@ -123,6 +122,10 @@ egen included_months = tag(icode studymonth) if include == 1
 count if include == 1
 count if included_sites == 1 & include == 1
 count if included_months == 1 & include == 1
+
+*  ==============================================
+*  = First branch of STROBE - exclude by design =
+*  ==============================================
 
 * Non-eligible patients (no risk of bias ... dropped by design)
 * What proportion of these were ineligible and for what reason?
@@ -148,6 +151,10 @@ count if include == 1 & exclude1 == 0
 count if included_sites == 1 & include == 1 & exclude1 == 0
 count if included_months == 1 & include == 1 & exclude1 == 0
 
+*  ===================================
+*  = Second branch of STROBE diagram =
+*  ===================================
+
 * Eligible patients not recruited (potential bias ... not dropped by design)
 * Lost to follow-up is not an exclusion
 count if include == 1 & exclude1 == 0 & site_quality_by_month < 80
@@ -164,6 +171,10 @@ count if include == 1 & exclude1 == 0 & exclude2 == 0
 count if included_sites == 1 & include == 1 & exclude1 == 0 & exclude2 == 0
 count if included_months == 1 & include == 1 & exclude1 == 0 & exclude2 == 0
 
+*  ==================================
+*  = Third branch of STROBE diagram =
+*  ==================================
+
 * Eligible - lost to follow-up
 gen exclude3 = 0
 label var exclude3 "Exclude - lost to follow-up"
@@ -174,6 +185,11 @@ cap drop included_sites
 egen included_sites = tag(icode) if include == 1 & exclude1 == 0 & exclude2 == 0 & exclude3 == 0
 cap drop included_months
 egen included_months = tag(icode studymonth) if include == 1 & exclude1 == 0 & exclude2 == 0 & exclude3 == 0
+
+*  ==========================
+*  = Final numbers analysed =
+*  ==========================
+
 count if include == 1 & exclude1 == 0 & exclude2 == 0 & exclude3 == 0
 count if included_sites == 1 & include == 1 & exclude1 == 0 & exclude2 == 0 & exclude3 == 0
 count if included_months == 1 & include == 1 & exclude1 == 0 & exclude2 == 0 & exclude3 == 0

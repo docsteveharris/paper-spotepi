@@ -100,6 +100,7 @@ gen pts_hes_k3 = patients_perhesadmx >= 15 & patients_perhesadmx != .
 su pts_hes_k* if pickone_site
 
 save ../data/scratch/scratch.dta, replace
+
 use ../data/scratch/scratch.dta, clear
 
 
@@ -125,8 +126,7 @@ global unit_vars ///
 
 global timing_vars ///
 	decjanfeb ///
-	beds_none_week ///
-	beds_none_lag1
+	beds_none_lag1 
 
 global model_vars $site_vars $study_vars $unit_vars $timing_vars
 
@@ -156,30 +156,30 @@ forvalues i = 3/3 {
 	gen new_patients = 1
 	label var new_patients "New patients (per week)"
 	collapse ///
-		(count) vperweek = new_patients ///
+		(count) vperday = new_patients ///
 		(firstnm) $site_vars patients_perhesadmx_c ///
 		(firstnm) pts_hes_k1 pts_hes_k2 pts_hes_k3 ///
 		(median) $unit_vars ///
 		(max) $timing_vars ///
 		(min) studymonth visit_month ///
-		, by(site v_week)
+		, by(site odate)
 	d 
-	xtset site v_week, weekly
+	xtset site odate, daily
 	// CHANGED: 2013-05-05 - allow patients_perhesadmx in as cubic spline
 	// first a model with a cubic spline for the patients_perhesadmx
 	mkspline2 pts_hes_rcs = patients_perhesadmx_c, cubic nknots(4) displayknots
 	* CHANGED: 2013-05-06 - now use xtgee to handle autocorrelation
-	xtgee vperweek $site_vars pts_hes_rcs* $unit_vars $timing_vars ///
-		, family(poisson) link(log) force corr(ar 1) eform i(site) t(v_week)
+	xtgee vperday $site_vars pts_hes_rcs* $unit_vars $timing_vars ///
+		, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 	est store news_high_cubic
 	est save ../data/estimates/news_high_cubic, replace
 	// save the data for use with estimates again, 'all' saves estimates
 	save ../data/count_news_high_cubic, replace all
 
 	// now the linear model for the table
-	xtgee vperweek $site_vars $unit_vars $timing_vars ///
+	xtgee vperday $site_vars $unit_vars $timing_vars ///
 	 	pts_hes_k1 pts_hes_k3 ///
-		, family(poisson) link(log) force corr(ar 1) eform i(site) t(v_week)
+		, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 	est store news_high_linear
 	est save ../data/estimates/news_high_linear, replace
 	// save the data for use with estimates again, 'all' saves estimates
@@ -207,7 +207,7 @@ exit
 *  = Now produce the tables in latex =
 *  ===================================
 use ../outputs/tables/$table_name.dta, clear
-cap drop if eq != "vperweek"
+cap drop if eq != "vperday"
 * rename medianIRR_1 medianIRRa
 // convert to wide
 tempfile working 2merge
