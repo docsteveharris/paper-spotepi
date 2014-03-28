@@ -76,6 +76,17 @@ tempfile 2merge
 save `2merge', replace
 * You don't need ICU survival as this is recorded now in 'dead'
 drop dead_icu
+
+* CHANGED: 2014-03-28 - save the data now before converting to long
+* use this for single record per patient survival
+cap restore, not
+preserve
+replace dt1 = floor(hours(dt1 - v_timestamp))/24
+replace dt4 = floor(hours(dt4 - v_timestamp))/24
+stset dt4, id(id) failure(dead) exit(time dt1+90) origin(time dt1)
+save ../data/working_survival_single.dta, replace
+restore
+
 reshape long dt, i(id) j(event)
 
 * CHANGED: 2013-01-29 - Changing this to work at the hours resolution vs days

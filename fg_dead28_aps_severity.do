@@ -137,3 +137,6 @@ graph export ../outputs/figures/dead28_vs_severity_all.pdf, replace
 graph combine dead28_vs_news dead28_vs_sofa , ///
 	ycommon cols(1) ysize(8) xsize(6)
 graph export ../outputs/figures/dead28_vs_severity_news_sofa.pdf, replace
+
+* NOTE: 2014-03-12 - you then hand colour the columns in iDraw
+

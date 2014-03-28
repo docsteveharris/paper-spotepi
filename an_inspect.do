@@ -2,7 +2,7 @@
 *  = Explore / inspect data =
 *  ==========================
 
-GenericSetupSteveHarris spot_ward an_inspect.do
+GenericSetupSteveHarris mas_spotepi an_inspect
 
 *  ========================
 *  = Study quality issues =

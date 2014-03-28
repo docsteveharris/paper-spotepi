@@ -135,9 +135,11 @@ gen new_patients = 1
 label var new_patients "New patients (per day)"
 
 * Collapse over site days
+* CHANGED: 2014-03-24 - add in ccot_shift_pattern so can re-run model with 
+* different baseline
 collapse ///
 	(count) vperday = new_patients ///
-	(firstnm) $site_vars patients_perhesadmx_c ///
+	(firstnm) $site_vars ccot_shift_pattern patients_perhesadmx_c ///
 	(firstnm) pts_hes_k1 pts_hes_k2 pts_hes_k3 ///
 	(median) $unit_vars ///
 	(min) studymonth visit_month ///
@@ -176,6 +178,8 @@ save ../data/scratch/scratch.dta, replace
 
 
 use ../data/scratch/scratch.dta, clear
+* Check missing model vars
+
 est drop _all
 xtset site odate, daily
 
@@ -207,6 +211,31 @@ est store news_high_linear
 est save ../data/estimates/news_high_linear, replace
 // save the data for use with estimates again, 'all' saves estimates
 save ../data/count_news_high_linear, replace all
+
+* CHANGED: 2014-03-19 - work out IRR for a week and a month
+lincom _cons, irr
+di "per week: " + 7 * r(estimate)
+di "L95CI: "  + 7 * (r(estimate) - 1.96 * r(se))
+di "U95CI: "  + 7 * (r(estimate) + 1.96 * r(se))
+* Per month
+di "per month: " + 365/12 * r(estimate)
+di "L95CI: "  + 365/12 * (r(estimate) - 1.96 * r(se))
+di "U95CI: "  + 365/12 * (r(estimate) + 1.96 * r(se))
+
+* NOTE: 2014-03-24 - run model with factor variable notation
+* Now use this to calculate the effect of 24/7 outreach on IRR cf 7 days
+preserve
+xtgee vperday ///
+	teaching_hosp ///
+	hes_overnight_c ///
+	hes_emergx_c ///
+	ib3.ccot_shift_pattern ///
+	$unit_vars $timing_vars ///
+ 	pts_hes_k1 pts_hes_k3 ///
+	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
+
+lincom 3.ccot_shift_pattern -  1.ccot_shift_pattern, irr
+restore
 
 parmest, ///
 	label list(parm label estimate min* max* p) ///
@@ -343,6 +372,7 @@ listtab `cols' ///
 * NOTE: 2014-03-13 - change scale to to per day vs per week
 
 use patients_perhesadmx using ../data/working_postflight, clear
+set scheme shbw
 su patients_perhesadmx
 local patients_perhesadmx_mean = r(mean)
 use ../data/count_news_high_cubic, clear
@@ -369,7 +399,7 @@ running yhat patients_perhesadmx ///
 	xlabel(0(10)50) ///
 	xscale(noextend) ///
 	scatter(msymbol(oh) msize(vtiny) mcolor(gs4) jitter(2)) ///
-	xsize(4) ysize(6) ///
+	xsize(6) ysize(6) ///
 	title("")
 
 if c(os) == "Unix" local gext eps

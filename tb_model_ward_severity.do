@@ -2,6 +2,8 @@
 *  = Determinants of severity within and across sites =
 *  ====================================================
 
+* NOTE: 2014-03-12 - originally called an_model_ward_severity_tables.do in spot_ward
+
 use ../data/working_postflight.dta, clear
 est drop _all
 xtset site
@@ -16,6 +18,8 @@ local all_vars ///
 	hes_overnight_c ///
 	hes_emergx_c ///
 	cmp_beds_max_c ///
+	teaching_hosp ///
+	cmp_throughput ///
 	decjanfeb ///
 	weekend ///
 	out_of_hours ///
@@ -167,9 +171,11 @@ replace tablerowlabel = "\textbf{Mean severity score}" if parm == "_cons"
 replace tablerowlabel = "Intra-class correlation" if parm == "icc"
 
 global table_order ///
+	teaching_hosp ///
 	hes_overnight ///
 	hes_emergx ///
 	cmp_beds_max ///
+	cmp_throughput ///
 	patients_perhesadmx ///
 	ccot_shift_pattern ///
 	gap_here ///

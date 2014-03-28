@@ -25,7 +25,7 @@ CHANGED: 2013-02-08 - now combined with visit outcome fields
 *  =========================
 *  = Define you table name =
 *  =========================
-GenericSetupSteveHarris spot_ward an_tables_baseline_pt_chars, logon
+GenericSetupSteveHarris mas_spotepi an_tables_baseline_pt_chars, logon
 global table_name baseline_pt_chars
 
 /*

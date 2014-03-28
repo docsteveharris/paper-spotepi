@@ -2,7 +2,7 @@
 *  = Baseline patient data =
 *  =========================
 
-GenericSetupSteveHarris spot_ward an_tables_baseline_pt_physiology, logon
+GenericSetupSteveHarris mas_spotepi an_tables_baseline_pt_physiology, logon
 global table_name baseline_pt_physiology
 
 /*

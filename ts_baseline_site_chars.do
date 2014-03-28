@@ -1,8 +1,12 @@
-*  ===================
-*  = Baseline tables =
-*  ===================
+* Steve Harris 
+* Created 140311
 
-GenericSetupSteveHarris spot_ward an_tables_baseline_sites, logon
+* Log
+* ===
+* 140311	- adatped from spot_ward/vcode/an_tables_baseline_sites
+
+
+GenericSetupSteveHarris mas_spotepi ts_tables_baseline_sites, logon
 
 *  ===========================================================
 *  = Pull together data from all patients at all study sites =
@@ -48,15 +52,52 @@ merge 1:1 icode using ../data/sites.dta
 sort dorisname
 drop _m
 
+* Now merge in patients and months used
+preserve
+use icode using ../data/working_postflight.dta, clear
+contract icode
+rename _freq n
+merge 1:1 icode using ../data/sites.dta
+keep if _merge == 3
+drop _merge
+
+* CHANGED: 2014-03-13 - add in a measure of ICU throughput
+gen cmp_throughput = cmp_patients_permonth / cmp_beds_persite
+label var cmp_throughput "CMP patients per bed per month"
+
+* Q: Patients per hospital
+gen hes_overnight = hes_admissions - hes_daycase
+gen n_per_hes_overnight = n / hes_overnight * 1000
+su n_per_hes_overnight
+
+tempfile 2merge
+save `2merge',replace
+restore
+
+merge 1:1 icode using `2merge'
+drop _merge
+
+preserve
+use icode studymonth using ../data/working_postflight.dta, clear
+contract icode studymonth
+drop _freq
+contract icode
+rename _freq studymonths
+su studymonths, d
+
+tempfile 2merge
+save `2merge',replace
+restore
+
+merge 1:1 icode using `2merge'
+drop _merge
+
+
 *  =============================
 *  = Now prepare summary table =
 *  =============================
 /*
 - 1 row per site
-- keep all sites for now
-- then the following columns
-	- hes_overnight
-	- proportion of these that are emergencies
 */
 
 cap drop hes_overnight
@@ -78,16 +119,29 @@ local table_vars icode dorisname hes_overnight_1000 ///
 	cmp_beds_persite ///
 	simple_site ///
 	cmp_patients_permonth ///
-	tails_all_percent
+	tails_all_percent ///
+	exclude1 exclude2 exclude3 ///
+	crf_completeness ///
+	valid_allfields ///
+	n n_per_hes_overnight  studymonths ///
+	cmp_throughput site_teaching
+
 
 order `table_vars'
 br `table_vars' if allreferrals_site == 1
+keep if allreferrals_site == 1
+save ../outputs/tables/$table_name.dta, replace
 
 * CHANGED: 2013-01-25 - now export directly to latex
-* cap restore, not
-* preserve
-keep if allreferrals_site == 1
-local vars icode hes_overnight_1000 hes_emergencies_percent ccot_shift_pattern cmp_beds_persite cmp_patients_permonth tails_all_percent
+
+cap restore, not
+preserve
+local vars icode ///
+	 hes_overnight_1000 ///
+	 hes_emergencies_percent ///
+	 ccot_shift_pattern cmp_beds_persite ///
+	 cmp_patients_permonth ///
+	 tails_all_percent
 keep `vars'
 sort icode
 * Convert to string var
@@ -146,8 +200,9 @@ listtab `vars' ///
 		"\normalfont" ///
 		"\normalsize")
 
-* restore
-* preserve
+save ../outputs/tables/baseline_sites_chars.dta, replace
+
+restore
 
 
 

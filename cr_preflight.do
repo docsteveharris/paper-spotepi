@@ -50,7 +50,7 @@ merge m:1 icode using ../data/sites.dta, ///
 		ccot_senior ccot_consultant ///
 		cmp_patients_permonth tails_othercc all_cc_in_cmp ///
 		hes_admissions hes_emergencies hes_daycase ///
-		tails_all_percent cmp_beds_persite studydays)
+		tails_all_percent cmp_beds_persite studydays site_teaching)
 
 drop if _m != 3
 drop _m
@@ -92,6 +92,12 @@ label values cmp_beds_peradmx_k cmp_beds_peradmx_k
 
 gen small_unit = cmp_beds_max < 10
 label var small_unit "<10 beds"
+
+* CHANGED: 2014-03-13 - add in a measure of ICU throughput
+gen cmp_throughput = cmp_patients_permonth / cmp_beds_persite
+label var cmp_throughput "CMP patients per bed per month"
+
+gen teaching_hosp = site_teaching == "university"
 
 cap drop patients_perhesadmx
 * CHANGED: 2013-04-30 - previously had forgotten to standardise this
