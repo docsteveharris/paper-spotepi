@@ -49,11 +49,15 @@ do tb_model_count_news_high.do
 * Supplemental table
 do ts_model_count_combine_news.do
 
+
+* ## Mortality
 * Create survival data
 use ../data/working_postflight.dta, clear
 include cr_survival.do
 save ../data/working_survival.dta, replace
 
+do wr06_mortality.do
+do tb_model_ward_survival_final.do
 
 
 

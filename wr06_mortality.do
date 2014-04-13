@@ -29,6 +29,53 @@ outcomes.todo
 <<}
 
 */
+*  =====================
+*  = Relative survival =
+*  =====================
+
+* Paragraph 1
+* Acknowledgement needed: http://www.lshtm.ac.uk/eph/ncde/cancersurvival/tools/acknowledgement/index.html
+
+insheet using "../data/life_tables_1971_2009_england.txt", comma clear
+save ../data/life_tables_1971_2009_england, replace
+* death rates by sex at age 67 for 2009: 67y is the mean age in the study
+li if age == 67 & calendar_year == 2009
+
+use ../data/working_survival.dta, clear
+stset dt1, id(id) failure(dead_st) exit(time dt0+365) origin(time dt0)
+* Estimate the number of deaths in the last 3 months
+sts list, at(0 275 365) enter by(sex)
+* For females: divide deaths by number at risk and scale to a year
+* then divide by the baseline population mortality above
+di 133/4247 * 4 / 0.010348
+* ditto for males
+di 162/4286 * 4 / 0.0170277
+
+* strel2 uses the dates in stset to define age
+use ../data/life_tables_1971_2009_england, clear
+rename sex fm
+encode fm, gen(sex)
+label list sex
+gen male = sex == 2
+* use the 2009 data
+drop if calendar_year != 2009
+save ../data/scratch/scratch.dta, replace
+
+
+use ../data/working_survival_single.dta, clear
+gen agediag = (dofc(v_timestamp) - dob)/365.25
+gen ageout = (dt4/365.25) + agediag
+su age agediag ageout
+rename age age_spotlight
+gen calendar_year = yofd(date_trace)
+list date_trace calendar_year in 1/5
+
+stset ageout, id(id) failure(dead) enter(time agediag)
+strel2 using ../data/scratch/scratch.dta, breaks(0(0.08333333)1) mergeby(male) eform rtable trace
+
+*  ===========================
+*  = Death in and out of ICU =
+*  ===========================
 
 use ../data/working_survival.dta, clear
 noi stset dt1, id(id) origin(dt0) failure(dead_st) exit(time dt0+365)
@@ -112,3 +159,23 @@ sts graph if icu_ever == 0 ///
 	name(dead_no_icu, replace)
 
 graph export ../outputs/figures/failure_no_icu.pdf, replace
+
+
+*  ================
+*  = Frailty term =
+*  ================
+use ../data/working_survival.dta, clear
+stset dt1, id(id) failure(dead_st) exit(time dt0+90) origin(time dt0)
+stsplit tb, at(1 4 28)
+label var tb "Analysis time blocks"
+est use ../data/estimates/survival_full3
+est replay
+estimates esample: `=e(datasignaturevars)'
+local theta_ll = e(theta) - invnormal(0.975) * e(se_theta)
+local theta_ul = e(theta) + invnormal(0.975) * e(se_theta)
+di "Theta `=e(theta)' (95%CI `theta_ll', `theta_ul')"
+
+*  ======================
+*  = Median Hazard Rate =
+*  ======================
+

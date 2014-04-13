@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_ward an_model_ward_survival_final, logon
+GenericSetupSteveHarris mas_spotepi tb_model_ward_survival_final, logon
 
 *  =======================================================================
 *  = Produce a table showing coefficients from final ward survival model =
@@ -12,6 +12,9 @@ Change log
 CHANGED: 2013-05-15 - work with 90 day survival, and add time-varying effect for severity at 28d
 CHANGED: 2013-07-17 - file duplicated and adjustment with NEWS instead of ICNARC
 	- see an_model_ward_survival_news.do
+CHANGED: 2014-03-29 - modified for spot-epi paper
+	- added in code to estimate median hazard ratio
+	- added in teaching_hospital and cmp_throughput variables
 
 
 Consider the following models
@@ -44,21 +47,15 @@ local timing_vars ///
 global timing_vars `timing_vars'
 
 local site_vars ///
+		teaching_hosp ///
 		hes_overnight_c ///
 		hes_emergx_c ///
 		cmp_beds_max_c ///
+		cmp_throughput ///
 		patients_perhesadmx_c ///
-		ib3.ccot_shift_pattern ///
+		ib3.ccot_shift_pattern
 
-* Must use R. when specifing factor variable in random effects eqn
-
-global site_vars ///
-		hes_overnight_c ///
-		hes_emergx_c ///
-		cmp_beds_max_c ///
-		patients_perhesadmx_c ///
-		R.ccot_shift_pattern
-
+global site_vars `site_vars'
 
 *  ===============================================
 *  = Model variables assembled into single macro =
@@ -68,16 +65,6 @@ global all_vars ///
 	`timing_vars' ///
 	`patient_vars'
 
-
-local clean_run 1
-if `clean_run' == 1 {
-    clear
-    use ../data/working.dta
-    qui include cr_preflight.do
-    save ../data/working_postflight, replace
-    qui include cr_survival.do
-    save ../data/working_survival, replace
-}
 
 global table_name ward_survival_final_est
 
@@ -156,6 +143,40 @@ parmest, ///
 	escal(theta se_theta theta_chi2) ///
 	format(estimate min* max* %9.2f p %9.3f) ///
 	saving(`estimates_file', replace)
+
+*  =========================================
+*  = Now estimate the median hazard ratios =
+*  =========================================
+
+preserve
+
+* Run now with all vars
+* stcox $all_vars icnarc0_c, nolog shared(site) noshow
+di "Variance of random effects is e(theta) = " + `=e(theta)'
+* So to estimate the MHR you now need to
+local twoinvtheta2 = 2 / (e(theta)^2)
+local mhr = exp(sqrt(2*e(theta))*invF(`twoinvtheta2',`twoinvtheta2',0.75))
+di "MHR: `mhr'"
+
+* Run now without patient level effects
+stcox $site_vars $timing_vars, nolog shared(site) noshow
+di "Variance of random effects is e(theta) = " + `=e(theta)'
+* So to estimate the MHR you now need to
+local twoinvtheta2 = 2 / (e(theta)^2)
+local mhr = exp(sqrt(2*e(theta))*invF(`twoinvtheta2',`twoinvtheta2',0.75))
+di "MHR: `mhr'"
+
+* Run first with null model
+stcox, estimate nolog shared(site) noshow
+di "Variance of random effects is e(theta) = " + `=e(theta)'
+* So to estimate the MHR you now need to
+local twoinvtheta2 = 2 / (e(theta)^2)
+local mhr = exp(sqrt(2*e(theta))*invF(`twoinvtheta2',`twoinvtheta2',0.75))
+di "MHR: `mhr'"
+
+restore
+
+// go back to estimates from final model and add to table
 use `estimates_file', clear
 gen table_order = _n
 save `estimates_file', replace
@@ -194,7 +215,11 @@ foreach var of local uni_vars {
 * so you don't need to re-run the models when debugging
 est restore full3
 gen theta_chi2 = e(chi2_c) if strpos(idstr, "full_frailty")
+
+
+
 save ../data/scratch/scratch_survival_final.dta, replace
+exit
 
 *  ======================
 *  = Now produce tables =

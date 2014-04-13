@@ -7,7 +7,11 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 Log
 ===
 
+140413
+- sometime away from the project: reviewing the old notes
+
 140328
+
 - created a single record per patient survival data set by modifying cr_survival
     + see working_survival_single.dta
     + tried then running the laplace command in stata; nice because it directly estimates percentile survival; but I can't seem to pull out a random effect estimate for the site effect (fixed only)
@@ -17,6 +21,15 @@ Log
     + need to transform the above equation to work with the gamma distribution since this is used for the random effects in stata
         + frailty in stata has mean 1 (assumed) and variance \theta (which is estimated from the data)
     + the invnormal(0.75) term now needs to be replaced with the upper quartile from the an F distribution which has a numerator and denominator (2V,2V) (see ref [Bengtsson and Dribe, 2010, #60939] appendix) 
+
+    * So to estimate the MHR you now need to
+    local twoinvtheta2 = 2 / (e(theta)^2)
+    local mhr = exp(sqrt(2*e(theta))*invF(`twoinvtheta2',`twoinvtheta2',0.75))
+    di "MHR: `mhr'" 
+
+- produced relative survival estimates using strel2 from LSHTM
+- combined all this code into wr06_mortality.do
+
 
 140324
 
