@@ -202,6 +202,13 @@ listtab `vars' ///
 
 save ../outputs/tables/baseline_sites_chars.dta, replace
 
+* Export to excel then import this as a 'raw' table into the master tables spreadsheet
+* For each raw table, derive a formatted final table for publication
+export excel using "../outputs/tables/ts_$table_name.xls", ///
+	 firstrow(variables) replace
+
+outsheet using "../outputs/tables/ts_$table_name.csv", ///
+	 replace comma
 restore
 
 

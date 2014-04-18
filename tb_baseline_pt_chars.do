@@ -593,5 +593,5 @@ listtab tablerowlabel `nonrowvars' vmiss_percent  ///
 
 outsheet using "../outputs/tables/ts_$table_name.csv", ///
      replace comma
-     
+
 cap log off

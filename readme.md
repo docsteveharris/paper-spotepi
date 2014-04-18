@@ -8,7 +8,12 @@ Log
 ===
 
 140413
-- sometime away from the project: reviewing the old notes
+- added outsheet commands to table files in order that I can generate tables for publication from data
+    - table 1a completed
+    - table 1b completed
+    - supp table 1 - site chars - completed
+    - supp table 2 - incidence by news risk class - completed
+- replaced all spot_ward references with mas_spotepi (incl those in vcode/spot_ward) so that I don't forget when working in the future with new transfers
 
 140328
 

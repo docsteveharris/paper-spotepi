@@ -19,8 +19,11 @@
 	for there to be a zero day. These days are not represented in your data.
 	Need to start out using the occupancy data and then merge in the admissions
 	and other site details.
-
 	*/
+* 140418
+* - added outsheet command
+
+
 
 
 *  ============================
@@ -364,6 +367,8 @@ listtab `cols' ///
 		"\normalfont" ///
 		"\normalsize")
 
+outsheet using "../outputs/tables/tb_$table_name.csv", ///
+     replace comma
 
 *  ======================================================
 *  = Now draw the predicted values for the cubic spline =

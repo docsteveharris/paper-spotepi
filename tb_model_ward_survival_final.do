@@ -15,7 +15,8 @@ CHANGED: 2013-07-17 - file duplicated and adjustment with NEWS instead of ICNARC
 CHANGED: 2014-03-29 - modified for spot-epi paper
 	- added in code to estimate median hazard ratio
 	- added in teaching_hospital and cmp_throughput variables
-
+CHANGED: 2014-04-18 -
+	- added in outsheet line so that I can generate tables for paper
 
 Consider the following models
 - individual univariate hazard ratio estimates
@@ -219,7 +220,6 @@ gen theta_chi2 = e(chi2_c) if strpos(idstr, "full_frailty")
 
 
 save ../data/scratch/scratch_survival_final.dta, replace
-exit
 
 *  ======================
 *  = Now produce tables =
@@ -279,7 +279,7 @@ spot_label_table_vars
 replace tablerowlabel = "\textit{--- with modifier of Day 0 effect}" if varname == "icnarc0_timev"
 
 // replace var_level_lab = "Days 0 effect"  if varname == "icnarc0_timev" & var_level == 0
-replace var_level_lab = "Days 1--2"  if varname == "icnarc0_timev" & var_level == 1
+replace var_level_lab = "Days 1--3"  if varname == "icnarc0_timev" & var_level == 1
 replace var_level_lab = "Days 4--28"  if varname == "icnarc0_timev" & var_level == 4
 replace var_level_lab = "Days 28+" if varname == "icnarc0_timev" & var_level == 28
 
@@ -458,6 +458,9 @@ listtab `cols' ///
 		"\bottomrule" ///
 		"\end{tabu}  " ///
 		"\label{tab: $table_name} ")
+
+outsheet using "../outputs/tables/tb_$table_name.csv", ///
+     replace comma
 
 
 *  =====================================
