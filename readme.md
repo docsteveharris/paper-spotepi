@@ -14,6 +14,7 @@ Log
     - supp table 1 - site chars - completed
     - supp table 2 - incidence by news risk class - completed
 - replaced all spot_ward references with mas_spotepi (incl those in vcode/spot_ward) so that I don't forget when working in the future with new transfers
+- created wr08_sensitivity analysis
 
 140328
 

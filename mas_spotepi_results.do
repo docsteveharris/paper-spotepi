@@ -12,6 +12,7 @@
 140311 	- convert to sweave style
 140313	- added in line to create and save working_postflight.dta
 		- added in site level vars for teaching and CMP unit throughput
+140418	- added in wr06_icu_admission and re-numbered wr06_mortality to wr07_mortality
 
 */
 
@@ -49,6 +50,8 @@ do tb_model_count_news_high.do
 * Supplemental table
 do ts_model_count_combine_news.do
 
+* ## ICU admission
+do wr06_icu_admission.do
 
 * ## Mortality
 * Create survival data
@@ -56,7 +59,7 @@ use ../data/working_postflight.dta, clear
 include cr_survival.do
 save ../data/working_survival.dta, replace
 
-do wr06_mortality.do
+do wr07_mortality.do
 do tb_model_ward_survival_final.do
 
 
