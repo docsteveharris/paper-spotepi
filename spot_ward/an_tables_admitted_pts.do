@@ -2,7 +2,7 @@
 * = Analyse admitted patients =
 * =============================
 
-* GenericSetupSteveHarris spot_ward an_tables_admitted_pts, logon
+* GenericSetupSteveHarris mas_spotepi an_tables_admitted_pts, logon
 use ../data/working_tails.dta, clear
 count
 icmsplit raicu1

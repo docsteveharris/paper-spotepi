@@ -2,7 +2,7 @@
 *  = Plot the relationship between incidence, referrals and severity =
 *  ===================================================================
 
-GenericSetupSteveHarris spot_ward an_fig_count_news_by_refs, logon
+GenericSetupSteveHarris mas_spotepi an_fig_count_news_by_refs, logon
 set seed 3001
 
 local clean_run 1

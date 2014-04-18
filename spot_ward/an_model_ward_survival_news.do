@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_ward an_model_ward_survival_final, logon
+GenericSetupSteveHarris mas_spotepi an_model_ward_survival_final, logon
 
 *  =======================================================================
 *  = Produce a table showing coefficients from final ward survival model =

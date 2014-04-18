@@ -13,7 +13,7 @@ i.e.
 CHANGED: 2013-05-21 - uses working_all and included_sites and included_months
 */
 
-GenericSetupSteveHarris spot_ward cr_admitted_pts, logon
+GenericSetupSteveHarris mas_spotepi cr_admitted_pts, logon
 
 * Now pull the tailsfinal data
 local ddsn mysqlspot

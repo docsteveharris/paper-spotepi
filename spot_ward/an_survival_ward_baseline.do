@@ -7,7 +7,7 @@ This code focuses on using piece-wise exponential to understand baseline surviva
 See the an_survival.do code for a more traditional approach that sticks with the Cox method
 */
 
-GenericSetupSteveHarris spot_ward an_survival_ward_baseline
+GenericSetupSteveHarris mas_spotepi an_survival_ward_baseline
 * qui include cr_survival.do
 
 use ../data/working_survival.dta, clear

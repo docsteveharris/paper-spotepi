@@ -2,7 +2,7 @@
 *  = Incidence of Severe sepsis =
 *  ==============================
 
-GenericSetupSteveHarris spot_ward an_model_count_severe_sepsis, logon
+GenericSetupSteveHarris mas_spotepi an_model_count_severe_sepsis, logon
 global table_name incidence_severe_sepsis
 set seed 3001
 

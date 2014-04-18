@@ -3,7 +3,7 @@
 *  ==================================
 
 
-GenericSetupSteveHarris spot_ward an_inspect_outcome.do
+GenericSetupSteveHarris mas_spotepi an_inspect_outcome.do
 
 *  =====================
 *  = Set up local vars =

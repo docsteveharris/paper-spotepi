@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_ward an_model_ward_survival_sens, logon
+GenericSetupSteveHarris mas_spotepi an_model_ward_survival_sens, logon
 
 *  =================================================================
 *  = Produce table comparing survival model across match qualities =

@@ -7,7 +7,7 @@ If you code this correctly then should be easy to re-do
 - for probability of prompt admission (for the early chapter)
 */
 
-GenericSetupSteveHarris spot_ward an_table_binary_outcomes, logon
+GenericSetupSteveHarris mas_spotepi an_table_binary_outcomes, logon
 
 global table_name binary_outcomes
 local patient_vars age_k sex sepsis_b delayed_referral icnarc_q5

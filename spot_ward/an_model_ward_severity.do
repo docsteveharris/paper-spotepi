@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_ward an_model_ward_severity, logon
+GenericSetupSteveHarris mas_spotepi an_model_ward_severity, logon
 
 
 use ../data/working.dta, clear

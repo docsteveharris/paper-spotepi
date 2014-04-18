@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_ward an_model_count_news_sens, logon
+GenericSetupSteveHarris mas_spotepi an_model_count_news_sens, logon
 
 *  =================================================================
 *  = Produce table comparing incidence model across match qualities =

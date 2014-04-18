@@ -1,4 +1,4 @@
-GenericSetupSteveHarris spot_ward an_model_severity_sens, logon
+GenericSetupSteveHarris mas_spotepi an_model_severity_sens, logon
 *  =================================================================
 *  = Produce table comparing severity model across match qualities =
 *  =================================================================

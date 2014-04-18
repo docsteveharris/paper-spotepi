@@ -6,7 +6,7 @@ clear
 /*
 NOTE: 2013-01-08 - less strict (uses a 70% quality threshold)
 */
-GenericSetupSteveHarris spot_ward cr_working_sensitivity, logon
+GenericSetupSteveHarris mas_spotepi cr_working_sensitivity, logon
 
 
 

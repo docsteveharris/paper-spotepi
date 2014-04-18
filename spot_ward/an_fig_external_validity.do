@@ -6,7 +6,7 @@ global uuser stevetm
 global ppass ""
 ******************
 
-GenericSetupSteveHarris spot_ward an_external_validity, logon
+GenericSetupSteveHarris mas_spotepi an_external_validity, logon
 
 *  =======================================
 *  = Site level data with respect to HES =

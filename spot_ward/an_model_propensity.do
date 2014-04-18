@@ -1,7 +1,7 @@
 *  ===========================================================
 *  = Use propensity score data and estimate treatment effect =
 *  ===========================================================
-GenericSetupSteveHarris spot_ward an_model_propensity, logon
+GenericSetupSteveHarris mas_spotepi an_model_propensity, logon
 
 local clean_run 0
 if `clean_run' == 1 {

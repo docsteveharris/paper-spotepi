@@ -2,7 +2,7 @@
 *  = Understand patient flow through the study =
 *  =============================================
 
-GenericSetupSteveHarris spot_ward an_figure_pt_flow, logon
+GenericSetupSteveHarris mas_spotepi an_figure_pt_flow, logon
 
 use ../data/working.dta, clear
 include cr_preflight.do
