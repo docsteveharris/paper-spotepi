@@ -7,6 +7,9 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 Log
 ===
 
+140506
+- Thought about include occupancy of ICU in severity models (at least to show that this _doesn't_ have an effect)? **No** -- leave this out for now: this should go into the survival and delay paper
+
 140505
 - ts_model_ward_severity.do previously called tb_model_ward_severity.do: renamed
 - modified ts_model_ward_severity.do so that it writes to a csv file which is then linked to the tables spreadsheet
