@@ -7,6 +7,10 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 Log
 ===
 
+140505
+- ts_model_ward_severity.do previously called tb_model_ward_severity.do: renamed
+- modified ts_model_ward_severity.do so that it writes to a csv file which is then linked to the tables spreadsheet
+
 140413
 - added outsheet commands to table files in order that I can generate tables for publication from data
     - table 1a completed

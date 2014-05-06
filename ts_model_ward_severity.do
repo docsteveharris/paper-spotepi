@@ -199,8 +199,9 @@ sort table_order var_level
 forvalues i = 1/3 {
 	gen est_raw_`i' = estimate_`i'
 	sdecode estimate_`i', format(%9.2fc) replace
-	replace stars_`i' = "\textsuperscript{" + stars_`i' + "}"
-	replace estimate_`i' = estimate_`i' + stars_`i'
+	* CHANGED: 2014-05-05 - drop the latex formatting
+	* replace stars_`i' = "\textsuperscript{" + stars_`i' + "}"
+	* replace estimate_`i' = estimate_`i' + stars_`i'
 	// replace reference categories
 	replace estimate_`i' = "{--}" if parm == "3b.ccot_shift_pattern"
 	replace estimate_`i' = "{--}" if parm == "0b.sepsis_dx"
@@ -264,3 +265,7 @@ listtab `cols' ///
 		"\end{tabu}  " ///
 		"\label{tab:$table_name} ") 
 
+
+
+outsheet using "../outputs/tables/ts_$table_name.csv", ///
+     replace comma

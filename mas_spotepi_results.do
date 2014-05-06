@@ -42,7 +42,7 @@ do tb_baseline_pt_physiology.do
 do wr04_severity.do
 do fg_dead28_aps_severity.do
 * Need to hand colour the columns in iDraw
-do tb_model_ward_severity.do
+do ts_model_ward_severity.do
 
 * ## Incidence and case finding
 do wr05_incidence.do
