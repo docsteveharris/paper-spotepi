@@ -10,7 +10,6 @@ Log
 140506
 TRY - drop survival errors early so that you have the same number of patients in the initial analyses as you do in the survival analysis
 
-
 140506
 - Thought about include occupancy of ICU in severity models (at least to show that this _doesn't_ have an effect)? **No** -- leave this out for now: this should go into the survival and delay paper
 - converted output of ts_model_count_combine_news.do from xls to csv

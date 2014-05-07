@@ -12,6 +12,8 @@ Log
 - now merged with tb_baseline_pt_chars.do from spot_early which adds p-values
 140507
 - compare age and SOFA directly
+140507
+- re-defined so that dead7 uses < not <=
 
 */
 GenericSetupSteveHarris mas_spotepi ts_ward_vs_icu_deaths, logon
@@ -56,7 +58,16 @@ label define location_limits ///
     3 "Treatment limitation order"
 label values location_limits location_limits
 
-collapse (max) location_limits icu_ever , by(id)
+* Redefine dead7 using survival data set-up 
+* NOTE: 2014-05-07 - previously dead7 included deaths on day 7 (i.e. <= not <)
+tempvar x
+gen `x' = _t < 7 & _d == 1
+cap drop dead7lt
+bys id: egen dead7lt = max(`x')
+label var dead7lt "within 7d mortality"
+label values dead7lt truefalse
+
+collapse (max) location_limits icu_ever dead7lt , by(id)
 tab location_limits, missing
 tempfile 2merge
 save `2merge', replace
@@ -70,8 +81,8 @@ use ../data/scratch/scratch.dta, clear
 
 gen ward_death = .
 label var ward_death "Ward death"
-replace ward_death = 0 if dead7 & icu_ever == 1 & rxlimits == 0
-replace ward_death = 1 if dead7 & icu_ever == 0 & rxlimits == 0
+replace ward_death = 0 if dead7lt & icu_ever == 1 & rxlimits == 0
+replace ward_death = 1 if dead7lt & icu_ever == 0 & rxlimits == 0
 tab ward_death
 keep if ward_death != .
 

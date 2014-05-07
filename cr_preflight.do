@@ -281,6 +281,11 @@ replace dead5 = . if missing(date_trace)
 label var dead5 "5d mortality"
 label values dead5 truefalse
 
+gen dead7lt = (date_trace - dofc(v_timestamp) < 7 & dead)
+replace dead7lt = . if missing(date_trace)
+label var dead7lt "within 7d mortality"
+label values dead7lt truefalse
+
 gen dead7 = (date_trace - dofc(v_timestamp) <= 7 & dead)
 replace dead7 = . if missing(date_trace)
 label var dead7 "7d mortality"
