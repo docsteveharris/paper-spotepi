@@ -44,7 +44,14 @@ tab v_ccmds rx_organ_support
 gen ward_unsupported = rx_organ_support & v_ccmds <= 1
 tab ward_unsupported
 
+tab rx_resp ward_unsupported, row
+
 * Q: Sepsis status
+tab sepsis
+gen sepsis_likely = inlist(sepsis,3,4)
+tab sepsis_likely
+tab sepsis_site if sepsis_likely
+
 tab sepsis2001
 tab sepsis_severity
 

@@ -10,7 +10,7 @@ local ppass ""
 *  =======================================
 *  = Log definitions and standard set-up =
 *  =======================================
-GenericSetupSteveHarris spot_epi cr_working, logon
+GenericSetupSteveHarris mas_spotepi cr_working, logon
 
 
 *  =======================================
@@ -186,6 +186,8 @@ egen included_sites = tag(icode) if include == 1 & exclude1 == 0 & exclude2 == 0
 cap drop included_months
 egen included_months = tag(icode studymonth) if include == 1 & exclude1 == 0 & exclude2 == 0 & exclude3 == 0
 
+
+
 *  ==========================
 *  = Final numbers analysed =
 *  ==========================
@@ -203,6 +205,74 @@ drop if exclude3 == 1
 
 * No point keeping these vars since they don't mean anything now
 drop include exclude1 exclude2
+
+*  ====================================================
+*  = Fourth exclusion - errors in timing and survival =
+*  ====================================================
+gen exclude4 = 0
+label var exclude3 "Exclude - irreconcilable errors"
+
+
+tab dead, missing
+drop if dead == .
+* TODO: 2012-09-27 - mismatch between icu outcome and dates and MRIS data
+sort dorisname
+di as error "NOTE: 2013-01-29 - 23 ICU deaths not found in MRIS"
+tab dead dead_icu
+list dorisname dead_icu dead if dead_icu == 1 & dead == 0, sepby(dorisname)
+
+* TODO: 2013-01-29 - check for mismatched dates of death
+list dorisname dead_icu ddicu date_trace ///
+	if icu_discharge != date_trace  & ddicu != . & dead_icu == 1 & dead == 1
+
+* mark to be dropped
+replace exclude4 = 1 if dead_icu == 1 & dead == 0
+
+* TODO: 2013-01-29 - missing ICU icu_discharge
+* of which one has a mismatched death
+list dorisname dead dead_icu ddicu date_trace ///
+	if dofC(icu_discharge) != date_trace & dead_icu == 1 & dead !=. ///
+	, sepby(dorisname)
+* replace ddicu with date_trace + 23hrs and 59mins in these patients
+replace icu_discharge = dhms(date_trace,0,0,0) ///
+	if dofc(icu_discharge) == . & dead_icu == 1 & dead !=.
+
+* NOTE: 2012-09-27 - get more precise survival timing for those who die in ICU
+* Add one hour though else ICU discharge and last_trace at same time
+* this would mean these records being dropped by stset
+* CHANGED: 2012-10-02 - changed to 23:59:00 from 23:59:59 because of rounding errors
+cap drop last_trace
+gen double last_trace = cofd(date_trace) + hms(23,58,00)
+replace last_trace = icu_discharge if dead_icu == 1 & !missing(icu_discharge)
+format last_trace %tc
+label var last_trace "Timestamp last event"
+
+* TODO: 2013-01-29 - this should really be moved to validation level checks
+* count problem dates and times
+count if floor(hours(icu_admit))		> floor(hours(icu_discharge)) 	& !missing(icu_admit, icu_discharge)
+count if floor(hours(v_timestamp))		> floor(hours(icu_admit)) 		& !missing(v_timestamp, icu_admit)
+list icode v_timestamp icu_admit ///
+	if floor(hours(v_timestamp))		> floor(hours(icu_admit)) 		& !missing(v_timestamp, icu_admit) ///
+	, sepby(icode)
+count if floor(hours(v_timestamp)) 		> floor(hours(icu_discharge)) 	& !missing(v_timestamp, icu_discharge)
+count if floor(hours(icu_admit)) 		> floor(hours(last_trace)) 		& !missing(icu_admit, last_trace)
+count if floor(hours(icu_discharge))	> floor(hours(last_trace)) 		& !missing(icu_discharge, last_trace)
+list icode icu_discharge last_trace ///
+	if floor(hours(icu_discharge))	> floor(hours(last_trace)) 		& !missing(icu_discharge, last_trace) ///
+	, sepby(icode)
+count if floor(hours(v_timestamp)) 		> floor(hours(last_trace)) 		& !missing(v_timestamp, last_trace)
+
+* NB all done at the at hours resolution
+replace exclude4 = 1 if floor(hours(icu_admit))		> floor(hours(icu_discharge)) 	& !missing(icu_admit, icu_discharge)
+replace exclude4 = 1 if floor(hours(v_timestamp))	> floor(hours(icu_admit)) 		& !missing(v_timestamp, icu_admit)
+replace exclude4 = 1 if floor(hours(v_timestamp)) 	> floor(hours(icu_discharge)) 	& !missing(v_timestamp, icu_discharge)
+replace exclude4 = 1 if floor(hours(icu_admit)) 	> floor(hours(last_trace)) 		& !missing(icu_admit, last_trace)
+replace exclude4 = 1 if floor(hours(icu_discharge)) > floor(hours(last_trace)) 		& !missing(icu_discharge, last_trace)
+replace exclude4 = 1 if floor(hours(v_timestamp)) 	> floor(hours(last_trace)) 		& !missing(v_timestamp, last_trace)
+
+tab exclude4
+drop if exclude4 == 1
+count
 
 save ../data/working.dta, replace
 

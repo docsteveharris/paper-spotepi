@@ -47,6 +47,7 @@ do ts_model_ward_severity.do
 * ## Incidence and case finding
 do wr05_incidence.do
 do tb_model_count_news_high.do
+* 24/7 provision vs 7/7 provision comparison comes from lincom command in do file above
 * Supplemental table
 do ts_model_count_combine_news.do
 

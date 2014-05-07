@@ -35,3 +35,6 @@ di `median_daycase' / (`median_daycase' + `median_overnight')
 
 su cmp_beds_max,d
 
+* NEWS High risk incidence per 1000 overnight admissions
+di 22 * 12 / 53.8
+* Equivalent to 22 per month x 12 months / 53.8k overnight admissions/year

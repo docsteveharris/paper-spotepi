@@ -22,6 +22,7 @@
 	*/
 * 140418
 * - added outsheet command
+* NOTE: 2014-05-06 - lincom command in around line 241 estimates effect of 24/7 vs 7/7 incidence
 
 
 
@@ -403,7 +404,7 @@ running yhat patients_perhesadmx ///
 	xtitle("Ward referrals assessed by ICU" "(per month)") ///
 	xlabel(0(10)50) ///
 	xscale(noextend) ///
-	scatter(msymbol(oh) msize(vtiny) mcolor(gs4) jitter(2)) ///
+	scatter(msymbol(p) msize(vtiny) mcolor(gs4) jitter(2)) ///
 	xsize(6) ysize(6) ///
 	title("")
 

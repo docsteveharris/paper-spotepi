@@ -1,8 +1,8 @@
 * Steve Harris
 * Created 140324
 
-* Results - Section - Incidence and case-finding
-* ==============================================
+* Results - Section - Mortality and ICU admission
+* ===============================================
 
 * Log
 * ===
@@ -35,6 +35,10 @@ outcomes.todo
 
 * Paragraph 1
 * Acknowledgement needed: http://www.lshtm.ac.uk/eph/ncde/cancersurvival/tools/acknowledgement/index.html
+* NOTE: 2014-05-06 - very crude calculation below using mean age only
+* - you could improve on this by calculating for each age
+* and then weighting by the number of patients in an age band?
+* Something to think about?
 
 insheet using "../data/life_tables_1971_2009_england.txt", comma clear
 save ../data/life_tables_1971_2009_england, replace
@@ -80,15 +84,19 @@ strel2 using ../data/scratch/scratch.dta, breaks(0(0.08333333)1) mergeby(male) e
 use ../data/working_survival.dta, clear
 noi stset dt1, id(id) origin(dt0) failure(dead_st) exit(time dt0+365)
 sts list, at(0 1 7 30 365)
+sts list, at(0 1 7 30 365) fail
 
 * Plot a cumulative hazard function
-sts graph, failure name(dead, replace) 
+sts graph, failure name(dead, replace)
 
 * Generate alternative failure markers
 * ====================================
 
 * Marker for ICU admission or death
 sort id event
+cap drop icu_ever
+gen icu_ever = icu_in < _t
+order icu_ever, after(icu)
 cap drop icu_or_dead
 gen icu_or_dead = 0
 order icu_or_dead dead_st, after(icu)
@@ -104,7 +112,6 @@ order dead_no_icu, after(icu)
 replace dead_no_icu = 1 if _d == 1 & icu_in == .
 noi stset dt1, id(id) origin(dt0) failure(dead_no_icu) exit(time dt0+365)
 sts graph, by(rxlimits) failure ci xsize(4) ysize(6) name(dead_no_icu, replace)
-
 
 noi stset dt1, id(id) origin(dt0) failure(dead_no_icu) exit(time dt0+7)
 sts graph ///
@@ -140,26 +147,72 @@ sts list, at(0 7) by(icu_ever rxlimits icu_accept)
 
 sts list, at(0 365) by(icu_ever rxlimits)
 
+* CHANGED: 2014-05-06 - re-draw graph with 3 categories
+/*
+- died on the ward (no Rx limits)
+- died in ICU
+- died on the ward (with Rx limits)
+*/
+cap drop location_limits
+gen location_limits = .
+replace location_limits = 1 if rxlimits == 0 & icu_ever == 0
+replace location_limits = 2 if icu_ever == 1
+replace location_limits = 3 if rxlimits == 1 & icu_ever == 0
+cap label drop location_limits
+label define location_limits ///
+	1 "Remained on the ward without treatment limits" ///
+	2 "Admitted to ICU" ///
+	3 "Treatment limitation order" 
+label values location_limits location_limits
+
+* Use missing option else the percentages won't be correct
+* NOTE: 2014-05-06 - dropped the following b/c ppsample will not work with time-varying data
+* tab location_limits if ppsample, missing
+cap restore, not
+preserve
+collapse (max) location_limits rxlimits icu_ever , by(id)
+count
+tab location_limits, missing
+restore
+
+
+sts list, at(0 7 365) by(icu_ever rxlimits)
+sts list, at(0 7 365) by(location_limits)
+sts list, at(0 7 365) by(location_limits) fail
+
 * Plot the risk over the first 7 days
-sts graph if icu_ever == 0 ///
+* don't plot day 0 because you don't have accurate times of death for ward pts
+sts graph ///
 	, ///
-	by(rxlimits) failure ci ///
-	title("Patients not admitted to ICU") ///
+	by(location_limits) failure ci ///
+	title("") ///
 	ytitle("Mortality") ///
 	ylab(0 "0%" 0.10 "10%" 0.20 "20%" 0.30 "30%" 0.40 "40%" 0.5 "50%", ///
 		nogrid) ///
 	ttitle("Days following ward visit") ///
 	xsize(4) ysize(6) ///
+	tmin(1) ///
 	tlab(0(1)7) ///
 	tmax(7) ///
-	risktable(0 1 3 7, failevent size(vsmall)  ///
-		title("Number at risk (Deaths)", size(small) justification(left)) ///
-		order(1 "No treatment limits" 2 "Treatment limits")) ///
+	plot1opts(lpattern(solid) lcolor(red)) ///
+	plot2opts(lpattern(solid) lcolor(gs8)) ///
+	plot3opts(lpattern(solid) lcolor(black)) ///
+	ci1opts(lpattern(blank) color(gs12)) ///
+	ci2opts(lpattern(blank) color(gs12)) ///
+	ci3opts(lpattern(blank) color(gs12)) ///
 	legend(off) ///
 	name(dead_no_icu, replace)
 
-graph export ../outputs/figures/failure_no_icu.pdf, replace
+graph export ../outputs/figures/location_limits.pdf, replace
 
+*  ===============================================================
+*  = Characteristics of the patients dying without ICU admission =
+*  ===============================================================
+collapse (max) location_limits, by(id)
+tempfile 2merge
+save `2merge', replace
+use ../data/working_postflight.dta, clear
+merge 1:1 id using `2merge'
 
 *  ================
 *  = Frailty term =

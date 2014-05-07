@@ -2,12 +2,13 @@
 *  = Plot baseline survival and hazard =
 *  =====================================
 /*
-- re-run using piecewise expoential poisson 
+Log
+===
+- re-run using piecewise expoential poisson
+140506
+- moved and renamed from an_fig_hazard_and_survival_all.do
+
 */
-local clean_run 0
-if `clean_run' == 1 {
-	include cr_survival.do
-}
 
 *  ===============================
 *  = Simple non-parametric plots =
@@ -70,6 +71,6 @@ sts graph, surv ci ///
 
 graph rename survival_all, replace
 graph display survival_all
-graph combine hazard_all survival_all, cols(2) ysize(6) xsize(8) 
+graph combine hazard_all survival_all, cols(2) ysize(6) xsize(8)
 graph export ../outputs/figures/hazard_and_survival_all.pdf, replace
 

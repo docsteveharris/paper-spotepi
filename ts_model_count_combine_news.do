@@ -10,8 +10,8 @@
 * - estimates daily instead of weekly incidence
 
 
-GenericSetupSteveHarris mas_spotepi tb_model_count_news_high, logon
-global table_name combine_news
+GenericSetupSteveHarris mas_spotepi ts_model_count_combine_news, logon
+global table_name model_count_combine_news
 set seed 3001
 
 * Occupancy by day (lagged and direct)
@@ -216,6 +216,6 @@ forvalues i = 1/3 {
 
 * Export to excel then import this as a 'raw' table into the master tables spreadsheet
 * For each raw table, derive a formatted final table for publication
-export excel using "../outputs/tables/ts_model_count_combine_news.xls", ///
-	 firstrow(variables) replace
+outsheet using "../outputs/tables/ts_$table_name.csv", ///
+     replace comma
 
