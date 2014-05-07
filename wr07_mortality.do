@@ -138,6 +138,7 @@ order icu_ever, after(icu)
 sts list, at(0 7) by(icu_ever)
 
 * Q: How many of the deaths out of ICU were in patients w/o treatment limits
+sts list if rxlimits == 0, at(0 7) by(icu_ever)
 sts list, at(0 7) by(icu_ever rxlimits)
 
 * Q: How many deaths occured in patients accepted to ICU while waiting
