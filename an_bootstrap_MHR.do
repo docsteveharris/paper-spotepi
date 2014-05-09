@@ -92,8 +92,9 @@ egen ppsample = tag(id)
 You must cluster on id because the data is survival and stsplit.
 You would otherwise risk removing observations from within a patient.
 More difficult to decide is whether or not you should include site as a cluster.
-
 */
+
+* CHANGED: 2014-05-09 - added id to cluster - although probably redundant
 set seed 3001
-bootstrap r(mhr) , reps(5) nowarn noisily cluster(site): est_mhr
+bootstrap r(mhr) , reps(5) nowarn noisily cluster(site id): est_mhr
 

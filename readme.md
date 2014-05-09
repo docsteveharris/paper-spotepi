@@ -7,6 +7,10 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 Log
 ===
 
+140509
+- there are patients in the sample that were admitted to ICU after one week (because they were permitted during the match) but I think my original intention was to match them but then replace their ICU admission time as missing
+    + done this today (70 patients) and corrected the text and the ICU admission numbers
+
 140506
 TRY - drop survival errors early so that you have the same number of patients in the initial analyses as you do in the survival analysis
 
