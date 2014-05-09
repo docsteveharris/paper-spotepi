@@ -141,6 +141,10 @@ xtile count_patients_q5 = count_patients, nq(5)
 * Now inspect key variables by sample
 gen time2icu = floor(hours(icu_admit - v_timestamp))
 * TODO: 2012-10-02 - this should not be necessary!!
+* CHANGED: 2014-05-09 - set time2icu to missing if > 168
+count if time2icu > 168 & time2icu != .
+di as error "`=r(N)' patients found where ICU admission occured after 1 week"
+replace time2icu = . if time2icu > 168
 count if time2icu < 0
 di as error "`=r(N)' patients found where ICU admission occured before ward visit"
 replace time2icu = 0 if time2icu < 0
@@ -198,7 +202,7 @@ tab cc_decision cc_recommended, col row
 
 cap drop icucmp
 gen icucmp = time2icu != .
-label var icucmp "Admitted to ICU in CMP"
+label var icucmp "CMP ICU within 1 week"
 tab icucmp
 tab loca
 cap drop route_to_icu

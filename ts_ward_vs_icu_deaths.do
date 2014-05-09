@@ -90,6 +90,10 @@ ttest age, by(ward_death)
 ttest sofa_score, by(ward_death)
 ranksum sofa_score, by(ward_death)
 
+* NOTE: 2014-05-09 - use this in the abstract
+tab dead7lt if icu_ever == 0 & rxlimits == 0
+tab dead7lt if icu_ever == 1 & rxlimits == 0
+
 *  ======================================
 *  = Define column categories or byvars =
 *  ======================================
