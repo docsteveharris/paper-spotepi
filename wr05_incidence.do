@@ -38,3 +38,33 @@ su cmp_beds_max,d
 * NEWS High risk incidence per 1000 overnight admissions
 di 22 * 12 / 53.8
 * Equivalent to 22 per month x 12 months / 53.8k overnight admissions/year
+
+*  ====================================================
+*  = Precise estimate of NEWS high risk per admission =
+*  ====================================================
+
+/*
+You need 
+- number of NEWS High risk patients per site
+- number of study months
+- number of admissions (daycase and/or overnight)
+
+Then study_months/12 x admissions gives you admissions during study
+*/
+
+use ../data/working_postflight.dta, clear
+tab news_risk, gen(news_cat)
+collapse (sum) news_cat* (count) n=id (firstnm) icode, by(site)
+merge 1:1 icode using ../data/sites.dta
+keep if _merge == 3
+drop _merge
+gen hes_overnight = hes_admissions - hes_daycase
+keep icode site n news_cat* hes_overnight studymonth_allreferrals_analysed
+forvalues i=1/4 {
+	cap drop news1000_`i'
+	gen news1000_`i' = 1000 * news_cat`i' / (studymonth_allreferrals_analysed / 12 * hes_overnight)
+	ci news1000_`i'
+}
+
+gen news1000_all = 1000 * n / (studymonth_allreferrals_analysed / 12 * hes_overnight)
+	ci news1000_all

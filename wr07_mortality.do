@@ -196,7 +196,3 @@ local theta_ll = e(theta) - invnormal(0.975) * e(se_theta)
 local theta_ul = e(theta) + invnormal(0.975) * e(se_theta)
 di "Theta `=e(theta)' (95%CI `theta_ll', `theta_ul')"
 
-*  ======================
-*  = Median Hazard Rate =
-*  ======================
-
