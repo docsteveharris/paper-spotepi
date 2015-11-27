@@ -26,17 +26,17 @@ def build(ctx):
         ]
     )
 
-    # NOTE: 2015-07-13 - [ ] using waf then these run in parallel but both 
-    # but given that they use the same labelling file then errors occur
-    # Prepare sites
-    # -------------
-    ctx(
-        features='run_do_script',
-        source='cr_sites.do',
-        target=[
-            ctx.path_to(ctx, 'DATA', 'sites.dta')
-            ]
-    )
+    # # NOTE: 2015-07-13 - [ ] using waf then these run in parallel but both 
+    # # but given that they use the same labelling file then errors occur
+    # # Prepare sites
+    # # -------------
+    # ctx(
+    #     features='run_do_script',
+    #     source='cr_sites.do',
+    #     target=[
+    #         ctx.path_to(ctx, 'DATA', 'sites.dta')
+    #         ]
+    # )
     # # Prepare units
     # # -------------
     # ctx(
@@ -89,44 +89,44 @@ def build(ctx):
     #     ]
     # )
 
-    # # Prepare working_postflight
-    # ctx(
-    #     features='run_do_script',
-    #     source='results_spotearly.do',
-    #     target=[
-    #         ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
-    #         ],
-    #     deps=[
-    #         ctx.path_to(ctx, 'DATA', 'working_merge.dta')
-    #     ]
-    # )
+    # Prepare working_postflight
+    ctx(
+        features='run_do_script',
+        source='results_spotearly.do',
+        target=[
+            ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'working_merge.dta')
+        ]
+    )
 
-    # # Prepare survival (single record and long)
-    # ctx(
-    #     name='cr_survival.do',
-    #     features='run_do_script',
-    #     source='cr_survival.do',
-    #     target=[
-    #         ctx.path_to(ctx, 'DATA', 'working_survival_single.dta'),
-    #         ctx.path_to(ctx, 'DATA', 'working_survival.dta')
-    #         ],
-    #     deps=[
-    #         ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
-    #     ]
-    # )
+    # Prepare survival (single record and long)
+    ctx(
+        name='cr_survival.do',
+        features='run_do_script',
+        source='cr_survival.do',
+        target=[
+            ctx.path_to(ctx, 'DATA', 'working_survival_single.dta'),
+            ctx.path_to(ctx, 'DATA', 'working_survival.dta')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
+        ]
+    )
 
-    # # TODO: 2015-07-21 - [ ] prepare to run results_spotearly.R
-    # ctx(
-    #     name='results_spotearly.R',
-    #     features='run_r_script',
-    #     source='results_spotearly.R',
-    #     target=[
-    #         ctx.path_to(ctx, 'DATA', 'paper-spotearly.RData')
-    #         ],
-    #     deps=[
-    #         ctx.path_to(ctx, 'DATA', 'sites.dta'),
-    #         ctx.path_to(ctx, 'DATA', 'unitsFinal.dta'),
-    #         ctx.path_to(ctx, 'DATA', 'working_occupancy.dta'),
-    #         ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
-    #     ]
-    # )
+    # TODO: 2015-07-21 - [ ] prepare to run results_spotearly.R
+    ctx(
+        name='results_spotearly.R',
+        features='run_r_script',
+        source='results_spotearly.R',
+        target=[
+            ctx.path_to(ctx, 'DATA', 'paper-spotepi.RData')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'sites.dta'),
+            ctx.path_to(ctx, 'DATA', 'unitsFinal.dta'),
+            ctx.path_to(ctx, 'DATA', 'working_occupancy.dta'),
+            ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
+        ]
+    )

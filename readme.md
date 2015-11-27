@@ -4,9 +4,19 @@ Readme
 Todo
 ====
 
-- switch to waf or make file structure
+- switch to waf or make file structure @done(2015-11-27)
+- use data set up structure from paper-spotearly @now
+    + copied data folder and made the same @done(2015-11-27)
+    + symlinked the project_paths files from bld 
+    + copied the prep folder and made the same
 - re-run analysis working with the 48 sites so can comment on pathways
 - add in delay to admission info
+
+FIXME
+=====
+
+FIXME: 2015-11-27 - [ ] problem with stata connecting via ODBC; seems to hang; for now all prep files drop this and just copied in completed work
+FIXME: 2015-11-27 - [ ] problem with waf; seem to need to run it twice for it to work
 
 Log
 ===

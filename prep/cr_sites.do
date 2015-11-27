@@ -22,7 +22,6 @@ local ppass "[po-09"
 
 odbc query "`ddsn'", user("`uuser'") pass("`ppass'") verbose
 
-clear
 timer on 1
 * odbc load, exec("SELECT * FROM spot_early.sites_early")  dsn("`ddsn'") user("`uuser'") pass("`ppass'") lowercase sqlshow clear
 odbc load, exec("SELECT * FROM spotlight.sites_early")  dsn("`ddsn'") user("`uuser'") pass("`ppass'") lowercase sqlshow clear

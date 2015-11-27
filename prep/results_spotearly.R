@@ -31,7 +31,7 @@
 
 # Waf set-up
 rm(list=ls(all=TRUE))
-setwd('/Users/steve/aor/academic/paper-spotearly/src/prep')
+setwd('/Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi/prep')
 source("project_paths.r")
 
 # Load variables / set options
@@ -138,7 +138,7 @@ if (clean.run) {
         )
     # save(list = ls(all = TRUE)) should be equivalent to save.image
     save(list = ls(all = TRUE),
-        file = paste0(PATH_DATA, "/paper-spotearly.RData"),
+        file = paste0(PATH_DATA, "/paper-spotepi.RData"),
         precheck = FALSE)
 }
 

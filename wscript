@@ -94,6 +94,19 @@ def configure(ctx):
     # ctx.load('sphinx_build')
     ctx.load('write_project_headers')
 
+def build(ctx):
+    ctx.env.PROJECT_PATHS = set_project_paths(ctx)
+    ctx.path_to = path_to
+    # Generate header file with project paths in 'bld' directory
+    # Now add project paths for each language you might be using
+    ctx(features='write_project_paths', target='project_paths.r')
+    ctx(features='write_project_paths', target='project_paths.do')
+    ctx(features='write_project_paths', target='project_paths.py')
+
+    # Now create data set and information needed for CONSORT diagram
+    ctx.recurse('prep') 
+
+
 
 # 	 ______           _          __    __ _ _      
 # 	|  ____|         | |        / _|  / _(_) |     
