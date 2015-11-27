@@ -19,3 +19,16 @@ def build(ctx):
     #     ]
     # )
 
+    # # Hazard and survival plot
+    # # ----------------------------
+    # ctx(
+    #     name='fg_hazard_and_survival_all',
+    #     features='run_do_script',
+    #     source='fg_hazard_and_survival_all.do',
+    #     target=[
+    #         ctx.path_to(ctx, 'FIGURES', 'hazard_and_survival_all.eps')
+    #         ],
+    #     deps=[
+    #         ctx.path_to(ctx, 'DATA', 'working_survival.dta')
+    #     ]
+    # )

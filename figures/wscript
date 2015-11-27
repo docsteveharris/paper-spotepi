@@ -1,0 +1,34 @@
+#! python
+# Data analysis
+
+
+def build(ctx):
+
+    # Severity score vs 7 day mortality
+    # ---------------------------------
+    ctx(
+        features='run_r_script',
+        source='fg_dead7_aps_severity.R',
+        target=[
+            ctx.path_to(ctx, 'FIGURES', 'fg_dead7_imscore.pdf'),
+            ctx.path_to(ctx, 'FIGURES', 'fg_dead7_sofa.pdf'),
+            ctx.path_to(ctx, 'FIGURES', 'fg_dead7_news.pdf')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'paper-spotepi.RData')
+        ]
+    )
+
+    # Hazard and survival plot
+    # ----------------------------
+    ctx(
+        name='fg_hazard_and_survival_all',
+        features='run_do_script',
+        source='fg_hazard_and_survival_all.do',
+        target=[
+            ctx.path_to(ctx, 'FIGURES', 'hazard_and_survival_all.eps')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'working_survival.dta')
+        ]
+    )
