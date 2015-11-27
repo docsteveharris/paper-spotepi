@@ -31,7 +31,7 @@
 
 # Waf set-up
 rm(list=ls(all=TRUE))
-setwd('/Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi/prep')
+# setwd('/Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi/prep')
 source("project_paths.r")
 
 # Load variables / set options

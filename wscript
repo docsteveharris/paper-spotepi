@@ -49,8 +49,8 @@ def set_project_paths(ctx):
     pp['DATA'] = 'data'
     pp['DATA_ORIGINAL'] = 'data/original'
     pp['LOGS'] = 'logs'
-    pp['FIGURES'] = 'figures'
-    pp['TABLES'] = 'tables'
+    pp['FIGURES'] = 'out/fig'
+    pp['TABLES'] = 'out/tbl'
 
     # Convert the directories into Waf nodes.
     for key, val in pp.items():
@@ -105,6 +105,7 @@ def build(ctx):
 
     # Now create data set and information needed for CONSORT diagram
     ctx.recurse('prep') 
+    ctx.recurse('analysis') 
 
 
 
