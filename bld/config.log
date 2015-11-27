@@ -1,0 +1,38 @@
+# project  configured on Fri Nov 27 16:38:49 2015 by
+# waf 1.8.16 (abi 98, python 2070af0 on darwin)
+# using ./waf configure
+#
+----------------------------------------
+Setting top to
+/Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi
+----------------------------------------
+Setting out to
+/Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi/bld
+----------------------------------------
+Checking for program 'python'
+/usr/bin/python
+find program=['python'] paths=['/usr/local/mysql/support-files', '/usr/local/mysql/bin', '/usr/local/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin'] var='PYCMD' -> ['/usr/bin/python']
+----------------------------------------
+Checking for program 'RScript, Rscript'
+/usr/local/bin/RScript
+find program=['RScript', 'Rscript'] paths=['/usr/local/mysql/support-files', '/usr/local/mysql/bin', '/usr/local/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin'] var='RCMD' -> ['/usr/local/bin/RScript']
+-----------------------------------------------------------------------------
+Checking for program 'Stata64MP, StataMP, Stata64SE, StataSE, Stata64, Stata'
+not found
+find program=['Stata64MP', 'StataMP', 'Stata64SE', 'StataSE', 'Stata64', 'Stata'] paths=['/usr/local/mysql/support-files', '/usr/local/mysql/bin', '/usr/local/bin', '/usr/bin', '/bin', '/usr/sbin', '/sbin'] var='STATACMD' -> None
+from /Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi: 
+
+No Stata executable found!
+
+
+If Stata is needed:
+
+	1) Check the settings of your system path.
+	2) Note we are looking for Stata executables called: ['Stata64MP', 'StataMP', 'Stata64SE', 'StataSE', 'Stata64', 'Stata']
+	   If yours has a different name, please report to hmgaudecker [at] gmail
+
+Else:
+
+	Do not load the 'run_do_script' tool in the main wscript.
+
+
