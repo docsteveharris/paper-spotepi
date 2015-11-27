@@ -1,11 +1,19 @@
-Steve Harris
-Created 140227
-These are notes on the analysis to be performed for the spot-epi paper.
-The code here will largely come from the code used for spot_ward. In fact, it the directory is a branch published from the spot_ward repo.
-For now, I have moved _all_ files into a subfolder called spot_ward so that I have a fresh start. I will then move the relevant files out one-by-one.
+Readme
+======
+
+Todo
+====
+
+- switch to waf or make file structure
+- re-run analysis working with the 48 sites so can comment on pathways
+- add in delay to admission info
 
 Log
 ===
+
+2015-11-27
+- now rewriting as per BMJ submission
+- maybe introduce the ideas of patient groups to follow as per the rewrite in progress for paper-spotearly
 
 140509
 - there are patients in the sample that were admitted to ICU after one week (because they were permitted during the match) but I think my original intention was to match them but then replace their ICU admission time as missing
@@ -90,4 +98,8 @@ TRY - drop survival errors early so that you have the same number of patients in
 - I have not actually re-created all the data via SQL and Python code in /ccode
 - source table in SQL is spot_early.working_early - connecting and downloading this table creates `working_raw.dta`
 - STROBE diagram data checked and all working up to cr_working.do
+
+These are notes on the analysis to be performed for the spot-epi paper.
+The code here will largely come from the code used for spot_ward. In fact, it the directory is a branch published from the spot_ward repo.
+For now, I have moved _all_ files into a subfolder called spot_ward so that I have a fresh start. I will then move the relevant files out one-by-one.
 
