@@ -107,6 +107,7 @@ def build(ctx):
     # Now create data set and information needed for CONSORT diagram
     ctx.recurse('prep') 
     ctx.recurse('figures') 
+    ctx.recurse('tables') 
 
 
 
