@@ -183,12 +183,12 @@ m.xt.fmt$star   <- ifelse(as.numeric(as.character(m.xt.fmt$p)) < 0.001, '***', m
 m.xt.fmt$p      <- sprintf("%.3f", round(as.numeric(as.character(m.xt.fmt$p)), 3))
 m.xt.fmt$p      <- ifelse(m.xt.fmt$p == '0.000', '<0.001', m.xt.fmt$p)
 
-# head(m.xt.fmt)
+head(m.xt.fmt)
 # Be careful with this order: if you change it then the columns in the excel sheet will be out of order
-m.xt.fmt        <- m.xt.fmt[ ,c(1,2,7,6,8,4,5)]
+names(m.xt.fmt)
+m.xt.fmt <- m.xt.fmt[ ,c(1,2,8,7,9,3:6)]
 m.xt.fmt
 
-str(m.xt)
 
 # Now export to excel
 # -------------------
