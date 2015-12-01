@@ -32,3 +32,20 @@ def build(ctx):
             ctx.path_to(ctx, 'DATA', 'working_survival.dta')
         ]
     )
+
+    # Restrcited cubic splines for NEWS High risk incidence
+    # ----------------------------
+    ctx(
+        name='fg_count_news_high',
+        features='run_do_script',
+        source='fg_count_news_high_rcs.do',
+        target=[
+            ctx.path_to(ctx, 'FIGURES', 'count_news_high.eps')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'working_postflight.dta'),
+            ctx.path_to(ctx, 'DATA', 'count_news_high_cubic.dta'),
+            ctx.path_to(ctx, 'DATA', 'estimates/news_high_cubic.ster')
+        ]
+    )
+

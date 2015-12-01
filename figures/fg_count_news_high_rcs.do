@@ -24,7 +24,7 @@
 clear
 include project_paths.do
 cap log close
-log using ${PATH_LOGS}results_spotearly.txt,  text replace
+log using ${PATH_LOGS}fg_count_news_high_rcs.txt,  text replace
 pwd
 
 * NOTE: 2014-03-13 - change scale to to per day vs per week

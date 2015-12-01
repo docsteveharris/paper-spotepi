@@ -18,3 +18,19 @@ def build(ctx):
             ctx.path_to(ctx, 'DATA', 'paper-spotepi.RData')
         ]
     )
+
+    # 
+    # ----------------------------------------
+    ctx(
+        name='tb_model_count_news_high',
+        features='run_do_script',
+        source='tb_model_count_news_high.do',
+        target=[
+            ctx.path_to(ctx, 'TABLES', 'tb_incidence_news_high.csv'),
+            ctx.path_to(ctx, 'TABLES', 'tb_incidence_news_high.dta')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'working_occupancy.dta'),
+            ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
+        ]
+    )
