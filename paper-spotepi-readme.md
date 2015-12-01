@@ -1,14 +1,21 @@
 Readme
 ======
 
-Todo
-====
+Todo:
+=====
 
 - switch to waf or make file structure @done(2015-11-27)
 - use data set up structure from paper-spotearly @now
-    + copied data folder and made the same @done(2015-11-27)
-    + symlinked the project_paths files from bld 
+	+ copied data folder and made the same @done(2015-11-27)
+	  + symlinked the project_paths files from bld 
     + copied the prep folder and made the same
+- fix tb_model_count_news_high
+	- problem with number of sites @done(2015-12-01)
+	- check constant for IRR @done(2015-12-01)
+    - place under waf control
+* - [ ] TODO(2015-12-01): test code for figure count_news_high
+    - place under waf control
+
 - re-run analysis working with the 48 sites so can comment on pathways
 - add in delay to admission info
 
