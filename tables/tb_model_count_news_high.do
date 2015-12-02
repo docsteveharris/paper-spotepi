@@ -38,7 +38,7 @@
 clear
 include project_paths.do
 cap log close
-log using ${PATH_LOGS}results_spotearly.txt,  text replace
+log using ${PATH_LOGS}tb_model_count_news_high.txt,  text replace
 pwd
 
 * CHANGED: 2014-02-26 - changed project reference

@@ -237,8 +237,8 @@ which 15158 (96.1%) completed follow-up without error and were available for
 analysis ([Figure FFF][figureFFF]). Final data linkage (ward visits to critical
 care admissions) was 93% complete.
 
-Hospitals (and epidemiology)
-----------------------------
+Hospitals
+---------
 
 The participating hospitals comprised 10 teaching and 38 general hospitals that
 each collected data between September 2010 and December 2011 for a median of 8
@@ -259,6 +259,14 @@ Level 2 --- typically intensive monitoring or single organ support, and Level 3
 location (45 hospitals). These units admitted a median 20 (IQR 14--26) unplanned
 admissions from the ward per month which represented 36% of all critical care
 admissions (IQR 31-43%).
+
+### Critical care occupancy
+
+There were 1198 (8%) patients assessed when the unit was full, 3757 (25%)
+assessed when there were either one or two beds available, and 10197 (67%)
+assessed when there were more than two beds available (Table TTT). Critical care
+occupancy fluctuated with time of the day, day of the week, and season of the
+year.([Supplementary Figure FFF](<sfigureFFF>)).
 
 Patients
 --------
@@ -312,24 +320,10 @@ with referral incidence but may have begun to plateau for the hospitals with
 referral rates in the highest quartile ([sFigure
 FFF](<../out/figures/count_news_high_rcs.jpg>)).
 
-For every extra 10,000 overnight admissions, there was approximately a 15%
-increase in NEWS High Risk referrals (1·16, 95%CI 1·15--1·17, [Table
-3](<tb02_incidence_news_high.ods>)). Medium and Low Risk patients were less
-frequently referred to, and assessed by critical care (around 10 patients per
-month per class) ([supplementary Table
-3](<stb03_model_count_combine_news.ods>)).
+Occupancy
+---------
 
-Referral patterns also affected the incidence of NEWS High Risk referrals. As
-the number of patients referred to, and assessed by, the critical care team
-increased the number of NEWS High Risk patients also increased. In [Table
-3](<tb02_incidence_news_high.ods>), this is reported after categorising the
-number of referrals per 1,000 hospital overnight admissions into a low (0--5),
-medium (5--15), and high (\>=15) groups. The categorisation was necessary
-because the association between total ward referrals and the number of NEWS High
-Risk patients identified at those ward referrals was not linear (Figure
-fig:count\_news\_high\_rcs). There was a steeper increase in the 'yield' for the
-37 hospitals reporting less than 10 referrals per week, and a more shallow
-increase thereafter ([Figure 3][figure3]).
+ 
 
 ICU admission
 -------------

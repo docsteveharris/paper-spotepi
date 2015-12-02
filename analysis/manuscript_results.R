@@ -43,12 +43,11 @@ library(boot)
 library(dplyr)
 
 source(paste0(PATH_SHARE, "/functions4rmd.R"))    # Rmd functions
-source("../share/derive.R")
+source(paste0(PATH_SHARE, "/derive.R"))
 
 # Load data
 # NOTE: 2015-11-05 - [ ] removed from waf control
-# load(paste0(PATH_DATA, '/paper-spotearly.RData'))
-load('../data/paper-spotearly.RData')
+load(paste0(PATH_DATA, '/paper-spotepi.RData'))
 wdt.original <- wdt
 tt <- list()                            # empty list to store rmd vars
 
@@ -106,10 +105,34 @@ tails_all
 tails_p <- ff.mediqr('tails_all_percent', data=wdt.sites, dp=0)
 tails_p
 
+#  ======================================
+#  = Effects of critical care occupancy =
+#  ======================================
+
+with(wdt, CrossTable(room_cmp2, prop.chisq=F, prop.t=F, chisq = T))
+
+# Occupancy and effects on Rx
+with(wdt,
+     CrossTable(room_cmp2, rxlimits,
+                prop.chisq=F, prop.t=F, chisq = T))
+
+with(wdt[rxlimits==0],
+     CrossTable(room_cmp2, icu_recommend,
+                prop.chisq=F, prop.t=F, chisq = T))
+
+
+# Report model effect to compare ims_delta with baseline
+# Using this as a factor loses the advantage of the ordered trend assessment
+with(wdt[rxlimits==0 & recommend==1], tapply(ims_delta, room_cmp2, summary))
+wdt[, room_cmp2 := relevel(room_cmp2, ref="[ 3,21]")]
+m <- lm(ims_delta ~ room_cmp2, data=wdt[rxlimits==0 & recommend==1])
+summary(m)
+
 
 #  ===========================
 #  = Patient characteristics =
 #  ===========================
+summary(wdt$age)
 tt$sepsis <- data.table(sepsis = wdt[,ifelse(sepsis %in% c(3,4),1,0)])
 sepsis <- ff.np('sepsis', data=tt$sepsis, dp=0)
 ssite <- ff.np('sepsis_site', data=wdt[sepsis %in% c(3,4)], dp=0)
@@ -132,16 +155,52 @@ tt$shock <- data.table(shock = wdt[,
             | (!is.na(rxcvs_sofa) & rxcvs_sofa > 1)
             ,1,0)])
 shock <- ff.np('shock', data=tt$shock, dp=0)
+describe(wdt$sepsis_severity)
+  # fname: sepsis_severity
+  # sqltype: tinyint
+  # varlab: Sepsis status
+  # tablerowlabel:
+  #   latex: Sepsis status
+  # vallab:
+  #   0: Neither SIRS nor sepsis
+  #   1: SIRS
+  #   2: Sepsis
+  #   3: Severe sepsis
+  #   4: Septic shock
+describe(wdt[sepsis_severity==4]$sepsis2001)
+  # vallab:
+  #   0: No
+  #   1: SIRS
+  #   2: Sepsis
+  #   3: Severe sepsis
+  #   4: Septic shock - hypotension alone
+  #   5: Septic shock - hypoperfusion alone
+  #   6: Septic shock - hypotension and hypoperfusion
 
 
 wdt[, osupp := ifelse( rxrrt==1 | rx_resp==2 | rxcvs == 2,1,0)]
 osupp <- ff.np('osupp', data=wdt, dp=0)
+
+#  =======================
+#  = Severity of illness =
+#  =======================
+                     
+aps.news <- ff.mediqr('news_score')
+aps.news
+aps.sofa <- ff.mediqr('sofa_score')
+aps.sofa
+aps.icnarc <- ff.mediqr('icnarc_score')
+aps.icnarc
+
+describe(wdt$news_risk)
 
 dead2 <- ff.np('dead2', dp=1)
 dead7.d2 <- ff.np('dead2', dp=1, data=wdt[dead7==1])
 dead7 <- ff.np('dead7', dp=1)
 dead1y <- ff.np('dead1y', dp=1)
 dead90.wk1 <- ff.np('dead7', dp=1, data=wdt[dead90==1])
+
+# Associations with severity
 
 #  =================================
 #  = Pathways following assessment =
@@ -209,7 +268,7 @@ dead7noicu.rec1.acc0 <- ff.np('dead7noICU', dp=1, data=wdt[recommend==1 & accept
 #  =======================================
 #  = Delay to admission to critical care =
 #  =======================================
-TODO: 2015-11-12 - [ ] redo below after excluding deaths at assesment and theatre admissions
+# TODO: 2015-11-12 - [ ] redo below after excluding deaths at assesment and theatre admissions
 
 wdt[,.N,by=elgthtr]
 wdt[,.N,by=v_disposal]
@@ -235,26 +294,7 @@ time2icu.ward
 early4.ward <- ff.np('early4', wdt.timing[icucmp==1 & ward==1])
 
 
-#  ======================================
-#  = Effects of critical care occupancy =
-#  ======================================
 
-# Occupancy and effects on Rx
-with(wdt,
-     CrossTable(room_cmp2, rxlimits,
-                prop.chisq=F, prop.t=F, chisq = T))
-
-with(wdt[rxlimits==0],
-     CrossTable(room_cmp2, icu_recommend,
-                prop.chisq=F, prop.t=F, chisq = T))
-
-
-# Report model effect to compare ims_delta with baseline
-# Using this as a factor loses the advantage of the ordered trend assessment
-with(wdt[rxlimits==0 & recommend==1], tapply(ims_delta, room_cmp2, summary))
-wdt[, room_cmp2 := relevel(room_cmp2, ref="[ 3,21]")]
-m <- lm(ims_delta ~ room_cmp2, data=wdt[rxlimits==0 & recommend==1])
-summary(m)
 
 
 
