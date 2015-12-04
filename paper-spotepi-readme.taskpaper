@@ -4,20 +4,18 @@ Readme
 Todo:
 =====
 
-- switch to waf or make file structure @done(2015-11-27)
 - use data set up structure from paper-spotearly @now
-	+ copied data folder and made the same @done(2015-11-27)
-	  + symlinked the project_paths files from bld 
-    + copied the prep folder and made the same
-- fix tb_model_count_news_high
-	- problem with number of sites @done(2015-12-01)
-	- check constant for IRR @done(2015-12-01)
-    - place under waf control
-* - [ ] TODO(2015-12-01): test code for figure count_news_high
-    - place under waf control
+	+ copied the prep folder and made the same
+- writing
+	- include occupancy
+		- basic summary in text @done(2015-12-02)
+        ✔ descriptive figure @done (15-12-02 13:38)
+	- include description of patient groups as per draft from paper spot early
+	- comment on relationship  between occupancy and pathways
+	- summarise overall variability between pathways by site
+	- summarise occupancy effect on pathways by site
 
-- re-run analysis working with the 48 sites so can comment on pathways
-- add in delay to admission info
+
 
 FIXME
 =====
@@ -120,3 +118,14 @@ These are notes on the analysis to be performed for the spot-epi paper.
 The code here will largely come from the code used for spot_ward. In fact, it the directory is a branch published from the spot_ward repo.
 For now, I have moved _all_ files into a subfolder called spot_ward so that I have a fresh start. I will then move the relevant files out one-by-one.
 
+
+Archive:
+	- switch to waf or make file structure @done(2015-11-27)
+	+ copied data folder and made the same @done(2015-11-27)
+		+ symlinked the project_paths files from bld 
+	- fix tb_model_count_news_high @done(2015-12-01)
+		- problem with number of sites @done(2015-12-01)
+		- check constant for IRR @done(2015-12-01)
+	    - place under waf control @done(2015-12-01)
+	* - [ ] TODO(2015-12-01): test code for figure count_news_high @done(2015-12-01)
+	    - place under waf control @done(2015-12-01)

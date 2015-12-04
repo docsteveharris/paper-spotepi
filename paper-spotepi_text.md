@@ -320,8 +320,44 @@ with referral incidence but may have begun to plateau for the hospitals with
 referral rates in the highest quartile ([sFigure
 FFF](<../out/figures/count_news_high_rcs.jpg>)).
 
-Occupancy
----------
+Patient pathways following referral to critical care
+----------------------------------------------------
+
+### Patients with treatment limits
+
+2141 (14%) patients, who were refused critical care admission, remained on the
+ward with a treatment limitation order in place. These patients were older (77
+vs 65 years, 95%CI for difference 11--12 years), and more acutely unwell (3.6 vs
+3.1 SOFA points, 95%CI for difference 0.4--0.6). Both 7-day and 90-day
+mortalities were substantial (41% (881 deaths), and 65% (1402 deaths)
+respectively), but more than a fifth of patients (24%, 506 patients) survived a
+year despite the treatment limitation order.
+
+### Patients recommended ward care
+
+8041 (53%) patients were recommended for ward care without treatment limits.
+Those recommended ward care were older (66 vs 65 years, 95%CI for difference
+0.7-1.9 years), less acutely unwell (2.7 vs 3.9 SOFA points, 95%CI for
+difference 1.1-1.3) and had a lower 7-day mortality (11% vs 20%, p\<0.0001).
+
+6116 (76%) of those recommended ward care survived that week without critical
+care admission. However, 1303 patients (16%) went on to receive later critical
+care, and 622 patients (8%) died during the next 7 days without admission to
+critical care.
+
+### Patients recommended critical care
+
+4976 (33%) were recommended for critical care at the initial assessment. Of
+these, 3375 (68%) were offered admission. Those offered admission were
+marginally younger (by 1 year, 95%CI 0--2), more acutely unwell (4.1 vs 3.5 SOFA
+points, 95%CI 0.5-0.7), and had a higher 7-day mortality of (21% vs 18%,
+p=0.0121). 40 deaths (6%) occured on the ward before admission could be
+arranged.
+
+Of the 1601 (32%) of the patients recommended to critical care but not offered
+admission, 842 (53%) survived the subsequent week without critical care. 580
+(36%) were offered critical care later, and 179 (11%) died on the ward within
+the week, and without critical care.
 
  
 
