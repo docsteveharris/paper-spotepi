@@ -9,16 +9,25 @@ Todo:
 - writing
 	- include occupancy
 		- basic summary in text @done(2015-12-02)
-        ✔ descriptive figure @done (15-12-02 13:38)
-	- include description of patient groups as per draft from paper spot early
+			✔ descriptive figure @done (15-12-02 13:38)
+	- include description of patient groups as per draft from paper spot early  @done(2015-12-04)
+		- show differences via stream graph which allows inspection of mortality  @done(2015-12-04)
+		- facet stream graph by occupancy
+		- repeat for those recommended for critical care
+	- 
 	- comment on relationship  between occupancy and pathways
 	- summarise overall variability between pathways by site
 	- summarise occupancy effect on pathways by site
+	- finish with mortality model for decision to admit 
+		- for all patients 
+		- for patients recommended to critical care
+		show similar outcomes, in discussion then comment on incomplete adjustment which sets up next paper
+	- table comparing the three pathways
 
 
 
-FIXME
-=====
+FIXME:
+======
 
 FIXME: 2015-11-27 - [ ] problem with stata connecting via ODBC; seems to hang; for now all prep files drop this and just copied in completed work
 FIXME: 2015-11-27 - [ ] problem with waf; seem to need to run it twice for it to work
@@ -32,7 +41,7 @@ Log
 
 140509
 - there are patients in the sample that were admitted to ICU after one week (because they were permitted during the match) but I think my original intention was to match them but then replace their ICU admission time as missing
-    + done this today (70 patients) and corrected the text and the ICU admission numbers
+	+ done this today (70 patients) and corrected the text and the ICU admission numbers
 
 140506
 TRY - drop survival errors early so that you have the same number of patients in the initial analyses as you do in the survival analysis
