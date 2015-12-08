@@ -22,17 +22,19 @@
 # ===
 # 2015-11-27
 # - file created (duplicated from paper-spotearly)
+# 2015-12-08
+# - removed the requirement for MySQL to be running
 
 print("*****: STARTING WAF: Welcome to paper-spotepi")
 
 # Load python libs
-import os, sys
+import os #, sys
 
 # Check MySQL server is running
 shell_cmd = 'mysql.server status | grep -i success'
 if len(os.popen(shell_cmd).read()) == 0:
-    print("!!!!!: ERROR: Is MySQL running?")
-    sys.exit(1)
+    print("!!!!!: WARNING: Is MySQL running?")
+    # sys.exit(1)
 
 # Standard waf architecture starts here
 # The project root directory and the build directory.

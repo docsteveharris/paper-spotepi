@@ -1,0 +1,306 @@
+# author: Steve Harris
+# date: 2014-10-17
+# subject: ICU accept model in R
+
+# Readme
+# ======
+
+
+# Todo
+# ====
+
+
+# Log
+# ===
+
+# Stata log
+# ---------
+# 140607
+# - basic structure adapted fr thesis_spot_early/an_model_propensity_logistic.do
+# - variable definitions fr thesis_spot_early/cr_preflight.do
+# - variables then merged with those in spotepi tb_model_ward_survival_final.do
+
+# 140616
+# - focus on time2icu and include site and timing level vars
+# 140624
+# - switch to using room_cmp fr beds_none
+# 140625
+# - duplicated from tb_model_time2icu.do
+# - uses identical structure but xtlogit and icu_accept
+
+# R log
+# -----
+# 2014-10-17
+# - file created by duplicating from stata file of the same name
+# - mixed effects modelling in R done
+# - exports model to excel
+# 2014-10-20
+# - corrected confidence interval estimates: now uses Wald limits
+# 2014-11-06
+# - considered addin in ccmds_now but so completely dominates that the model becomes meaningless
+# 2014-11-07
+# - updated to mirror recommend/early4 etc
+# 2015-07-21
+# - moved under waf control
+# 2015-12-08
+# - duplicated from paper-spotearly
+
+# Notes
+# =====
+
+
+# // spotepi tb_model_ward_survival_final variables
+# local patient_vars ///
+#   ib1.age_k ///
+#   male ///
+#   ib0.sepsis_dx ///
+#   delayed_referral ///
+#   ib1.v_ccmds ///
+#   icnarc_score ///
+#   ib2.room_cmp
+
+# global patient_vars `patient_vars'
+
+# local timing_vars ///
+#   out_of_hours ///
+#   weekend ///
+#   winter
+
+# global timing_vars `timing_vars'
+
+# local site_vars ///
+#   teaching_hosp ///
+#   hes_overnight_c ///
+#   hes_emergx_c ///
+#   cmp_beds_max_c ///
+#   cmp_throughput ///
+#   patients_perhesadmx_c ///
+#   ib3.ccot_shift_pattern
+
+# global site_vars `site_vars'
+
+
+# * NOTE: 2014-06-25 - use this data to ensure comparability with time2icu
+# use ../data/working_survival_single.dta, clear
+# xtset site
+# xtlogit icu_accept $all_vars, or
+
+# // now produce table order
+# global table_order ///
+#   hes_overnight hes_emergx ccot_shift_pattern patients_perhesadmx ///
+#   ccot_shift_pattern small_unit cmp_beds_max ///
+#   gap_here ///
+#   weekend out_of_hours room_cmp ///
+#   gap_here ///
+#   age male sepsis_dx v_ccmds periarrest icnarc0
+
+rm(list=ls(all=TRUE))
+# setwd('/Users/steve/aor/p-academic/paper-spotearly/src/analysis')
+source("project_paths.r")
+
+library(Hmisc)
+library(ggplot2)
+library(data.table)
+library(lme4)
+library(XLConnect)
+library(assertthat)
+
+load(paste0(PATH_DATA, '/paper-spotepi.RData'))
+wdt.original <- wdt
+wdt$sample_N <- 1
+names(wdt)
+nrow(wdt)
+
+# Redefine working data
+# ---------------------
+wdt <- wdt[rxlimits==0]
+
+# Define file name
+table.name <- 'model_icu_accept'
+table.path <- paste0(PATH_TABLES, '/')
+table.file <- paste(table.path, 'tb_', table.name, '.xlsx', sep='')
+table.file
+table.R <- paste(table.path, table.name, '.R', sep='')
+table.R
+
+# Inspect the data
+# ----------------
+gg.age <- qplot(age, icu_accept, data=wdt, geom = c('smooth') )
+gg.age  +
+    geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
+    geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
+    coord_cartesian(ylim=c(0,1))
+
+gg.icnarc <- qplot(icnarc0, icu_accept, data=wdt, geom = c('smooth') )
+gg.icnarc   +
+    geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
+    geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
+    coord_cartesian(ylim=c(0,1))
+
+
+# Redefine new vars
+# -----------------
+wdt[, room_cmp2 := cut2(open_beds_cmp, c(1,3), minmax=T )]
+
+# Define your variables
+# ---------------------
+vars.patient    <- c('age_k', 'male', 'sepsis_dx', 'v_ccmds', 'delayed_referral', 'periarrest', 'icnarc_score')
+vars.timing     <- c('out_of_hours', 'weekend', 'winter', 'room_cmp2')
+vars.site       <- c('teaching_hosp', 'hes_overnight_c', 'hes_emergx_c',
+                    'cmp_beds_max_c', 'cmp_throughput', 'patients_perhesadmx_c',
+                    'ccot_shift_pattern')
+vars            <- c(vars.site, vars.timing, vars.patient)
+
+# Model specification
+# -------------------
+wdt[, `:=`(
+    age_k               = relevel(factor(age_k), 2),
+    v_ccmds             = relevel(factor(v_ccmds), 2),
+    sepsis_dx           = relevel(factor(sepsis_dx), 1),
+    room_cmp2            = relevel(factor(room_cmp2), 3),
+    ccot_shift_pattern  = relevel(factor(ccot_shift_pattern), 4),
+    icode               = factor(icode)
+    )]
+
+library(Hmisc)
+describe(wdt$age_k)
+
+f.accept <- reformulate(termlabels = vars, response = 'icu_accept')
+f.accept
+
+# Run your model
+# --------------
+m <- glm(f.accept ,
+    family = 'binomial', data = wdt)
+summary(m)
+
+# Display your results
+m.eform <- cbind(
+    exp(cbind(OR = coef(m), confint(m))),
+    z = summary(m)[['coefficients']][,3],
+    p = summary(m)[['coefficients']][,4]
+    )
+m.eform
+
+# Run a formula with site level effects
+# -------------------------------------
+f.accept.xt <- update(f.accept, . ~ . + (1|icode))
+f.accept.xt
+m.xt <- glmer(f.accept.xt , family = 'binomial', data = wdt)
+summary(m.xt)
+# NOTE: 2015-07-22 - [ ] model fails to converge
+# Checks as per CrossValidated post
+# http://stats.stackexchange.com/questions/110004/how-scared-should-we-be-about-convergence-warnings-in-lme4
+relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
+max(abs(relgrad))
+# So maybe OK if < 0.001
+
+# TODO: 2014-10-19 - [ ] different results in stata xtlogit therefore explore glmer
+# NB: Stata xtlogit uses Gauss-Hermite adaptive quadrature
+# NB: glmer uses the Laplace transform - ?less accurate but faster?
+# m.xt.nAGQ7 <- glmer(f.accept.xt , family = 'binomial', data = wdt, nAGQ=7)
+# summary(m.xt.nAGQ7)
+
+# Display your results
+# NOTE: 2014-10-20 - [ ] this does not converge so switch to using Wald estimator?
+# The default method is via the likelihood profile
+# m.xt.eform <- cbind(
+#   exp(cbind(OR = coef(m.xt), confint.glm(m.xt))),
+#   z = summary(m.xt)[['coefficients']][,3],
+#   p = summary(m.xt)[['coefficients']][,4]
+#   )
+# method must be one of 'profile' (default), 'Wald', or 'bootstrap'
+
+
+# NOTE: 2015-07-22 - [ ] first term below has extra row that should be dropped
+assert_that(
+    nrow(exp(confint(m.xt, method='Wald'))[-1,]) == nrow(exp(coef(summary(m.xt))[,1:2]))
+)
+m.xt.eform <- cbind(exp(coef(summary(m.xt))[,1:2]),
+    exp(confint(m.xt, method='Wald'))[-1,], # drop the first row
+    z = summary(m.xt)[['coefficients']][,3],
+    p = summary(m.xt)[['coefficients']][,4])
+m.xt.eform # this is a matrix not a dataframe
+
+
+# Quick inspection of predictions
+# -------------------------------
+
+# TIP: 2014-10-18 - [ ] include na.action=na.exclude to pad NA rows from the data.frame
+wdt[,yhat.xt := predict(m.xt, type='response', na.action=na.exclude)]
+describe(wdt[,yhat.xt])
+
+qplot(icnarc_score, yhat.xt, data=wdt, geom = c('smooth') )
+qplot(age_k, yhat.xt, data=wdt, geom = c('boxplot'), notch=TRUE, ylim=c(0,1))
+
+# Format results table
+# --------------------
+m.xt.fmt <- data.frame(cbind(vars = row.names(m.xt.eform), m.xt.eform))
+m.xt.fmt$z <- NULL
+colnames(m.xt.fmt)[2] <- 'OR'
+colnames(m.xt.fmt)[4] <- 'L95'
+colnames(m.xt.fmt)[5] <- 'U95'
+
+m.xt.fmt$OR     <- sprintf("%.2f", round(as.numeric(as.character(m.xt.fmt$OR)), 2))
+
+m.xt.fmt$L95    <- sprintf("%.2f", round(as.numeric(as.character(m.xt.fmt$L95)), 2))
+m.xt.fmt$U95    <- sprintf("%.2f", round(as.numeric(as.character(m.xt.fmt$U95)), 2))
+m.xt.fmt$CI     <- paste('(', m.xt.fmt$L95, '--', m.xt.fmt$U95, ')', sep='')
+
+m.xt.fmt$star   <- ifelse(as.numeric(as.character(m.xt.fmt$p)) < 0.05, '*', '')
+m.xt.fmt$star   <- ifelse(as.numeric(as.character(m.xt.fmt$p)) < 0.01, '**', m.xt.fmt$star)
+m.xt.fmt$star   <- ifelse(as.numeric(as.character(m.xt.fmt$p)) < 0.001, '***', m.xt.fmt$star)
+m.xt.fmt$p      <- sprintf("%.3f", round(as.numeric(as.character(m.xt.fmt$p)), 3))
+m.xt.fmt$p      <- ifelse(m.xt.fmt$p == '0.000', '<0.001', m.xt.fmt$p)
+
+# head(m.xt.fmt)
+# Be careful with this order: if you change it then the columns in the excel sheet will be out of order
+m.xt.fmt        <- m.xt.fmt[ ,c(1,2,7,6,8,4,5)]
+# head(m.xt.fmt)
+
+# Calculate the median odds ratio
+# -------------------------------
+MOR <- function(my.var, digits = 2)
+          { # MOR arguments: my.var = variance associated with level 2 clustering variable
+            # digits = number of decimal places to which MOR value will be rounded.
+
+            Median.OR <- round(exp(sqrt(2*my.var)*qnorm(.75)), digits)
+            paste("Median Odds-Ratio (MOR) = ", Median.OR)  }
+
+
+
+# Now export to excel
+# -------------------
+
+wb <- loadWorkbook(table.file, create = TRUE)
+setStyleAction(wb, XLC$"STYLE_ACTION.NONE") # no formatting applied
+
+sheet1 <-'model_details'
+removeSheet(wb, sheet1)
+createSheet(wb, name = sheet1)
+sheet1.df <- rbind(
+    c('table name', table.name),
+    c('observations', nrow(wdt)),
+    c('observations analysed', length(m.xt@resp$n))
+    )
+writeWorksheet(wb, sheet1.df, sheet1)
+
+sheet2 <- 'raw'
+removeSheet(wb, sheet2)
+createSheet(wb, name = sheet2)
+writeWorksheet(wb, cbind(vars = row.names(m.xt.eform), m.xt.eform), sheet2)
+
+sheet3 <- 'results'
+removeSheet(wb, sheet3)
+createSheet(wb, name = sheet3)
+writeWorksheet(wb, m.xt.fmt, sheet3)
+
+saveWorkbook(wb)
+
+# Save the formatted table for use in Rmarkdown
+# ---------------------------------------------
+model_icu_accept <- m.xt
+model_icu_accept.fmt <- m.xt.fmt
+save(model_icu_accept, model_icu_accept.fmt, file=table.R)
+
+

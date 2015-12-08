@@ -34,3 +34,16 @@ def build(ctx):
             ctx.path_to(ctx, 'DATA', 'working_postflight.dta')
         ]
     )
+
+    # Model decision to accept to critical care
+    ctx(
+        name='tb_model_icu_accept',
+        features='run_r_script',
+        source='tb_model_icu_accept.R',
+        target=[
+            ctx.path_to(ctx, 'TABLES', 'tb_model_icu_accept.xlsx')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'paper-spotepi.RData')
+        ]
+    )   
