@@ -78,3 +78,32 @@ ff.np <- function(var, data=wdt, dp=1) {
     # Return as list so you can use $ for subsetting
     return(list(n=v.n,p=v.p))
 }
+
+prop.test.format <- function(var, byvar, data=wdt, dp=1) {
+    data <- data[,c(var, byvar),with=FALSE]
+    fmt <- paste("%.", dp, "f", sep="")
+    byvar.var <- prop.test(with(data, table(data[[2]], data[[1]])))
+
+    byvar.var.d     <- byvar.var$estimate[1] - byvar.var$estimate[2]
+
+    est1            <- sprintf(fmt, 100*byvar.var$estimate[1])
+    est2            <- sprintf(fmt, 100*byvar.var$estimate[2])
+    l95             <- sprintf(fmt, 100*abs(byvar.var$conf.int[1]))
+    u95             <- sprintf(fmt, 100*abs(byvar.var$conf.int[2]))
+
+    # get order right
+    if (abs(byvar.var$conf.int[1])>abs(byvar.var$conf.int[2])) {
+        x   <- l95
+        l95 <- u95
+        u95 <- x
+    }
+
+    byvar.var.d     <- sprintf(fmt, abs(byvar.var.d))
+    byvar.var.ci    <- paste(l95, '--', u95, sep='')
+
+    return(list(
+        est1 = est1,
+        est2 = est2,
+        d = byvar.var.d, 
+        ci = byvar.var.ci))
+}
