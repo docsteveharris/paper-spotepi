@@ -10,8 +10,8 @@
 # ===
 # 2015-10-09
 # - duplicated from 150803
-# 2015-11-05# 
-# - moved from labbooks and renamed 
+# 2015-11-05#
+# - moved from labbooks and renamed
 # - will now use this to keep track of numbers for the results
 # 2015-11-27
 # - cloned from paper-spotearly
@@ -26,7 +26,7 @@
 # - redefine room_cmp as encourage with broader bands
 # - use full population and focus on decision making
 
-# Set-up 
+# Set-up
 # ======
 rm(list=ls(all=TRUE))
 setwd('/Users/steve/aor/academic/paper-spotepi/src/analysis')
@@ -57,6 +57,10 @@ wdt[, recommend := ifelse(icu_recommend==1 & rxlimits==0,1,0)]
 wdt[, ward := ifelse(icu_recommend==0 & rxlimits==0,1,0)]
 wdt[, accept := ifelse(icu_recommend==1 & rxlimits==0 & icu_accept,1,0)]
 wdt[, room_cmp2 := cut2(open_beds_cmp, c(1,3), minmax=T )]
+wdt[, beds_none2 := cut2(open_beds_cmp, c(1), minmax=T )]
+wdt[, bedside.decision :=
+  ifelse(rxlimits == 1, "rxlimits",
+  ifelse(icu_accept == 0, "ward", "icu"))]
 
 #  ===================
 #  = Results - intro =
@@ -184,7 +188,7 @@ osupp <- ff.np('osupp', data=wdt, dp=0)
 #  =======================
 #  = Severity of illness =
 #  =======================
-                     
+
 aps.news <- ff.mediqr('news_score')
 aps.news
 aps.sofa <- ff.mediqr('sofa_score')
@@ -205,6 +209,15 @@ dead90.wk1 <- ff.np('dead7', dp=1, data=wdt[dead90==1])
 #  =================================
 #  = Pathways following assessment =
 #  =================================
+with(wdt, CrossTable(bedside.decision))
+with(wdt, CrossTable(dead7, bedside.decision))
+with(wdt, CrossTable(icucmp, bedside.decision))
+with(wdt[bedside.decision=="ward"], CrossTable(dead7, icucmp))
+with(wdt[bedside.decision=="ward"], CrossTable(icu_recommend))
+with(wdt[bedside.decision=="ward" & icu_recommend==1], CrossTable(dead7, icucmp))
+with(wdt, CrossTable(beds_none2, bedside.decision))
+with(wdt, CrossTable(beds_none, bedside.decision))
+with(wdt[icu_recommend==1], CrossTable(beds_none, bedside.decision))
 
 
 #  ==================================

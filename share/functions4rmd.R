@@ -8,15 +8,20 @@
 
 # Todo
 # ====
+# - [ ] TODO(2015-12-08): create a repo and publish
 
 
 # Log
 # ===
 # 2015-01-10
 # - file created
+# 2015-12-08
+# - added ff.prop.test
+# - renamed ff.t.test (from t.test.format) to be consistent
+
 require(data.table)
 
-t.test.format <- function(data=wdt, var, byvar, dp=1) {
+ff.t.test <- function(data=wdt, var, byvar, dp=1) {
     # Run a t-test and return formatted difference and CI
     data <- data[,c(var, byvar),with=FALSE]
     fmt <- paste("%.", dp, "f", sep="")
@@ -79,10 +84,12 @@ ff.np <- function(var, data=wdt, dp=1) {
     return(list(n=v.n,p=v.p))
 }
 
-prop.test.format <- function(var, byvar, data=wdt, dp=1) {
+ff.prop.test <- function(var, byvar, data=wdt, dp=1) {
+    # returns differences as percentages
     data <- data[,c(var, byvar),with=FALSE]
     fmt <- paste("%.", dp, "f", sep="")
-    byvar.var <- prop.test(with(data, table(data[[2]], data[[1]])))
+    t <- with(data, table(data[[2]], data[[1]]))
+    byvar.var <- prop.test(t)
 
     byvar.var.d     <- byvar.var$estimate[1] - byvar.var$estimate[2]
 
@@ -98,10 +105,11 @@ prop.test.format <- function(var, byvar, data=wdt, dp=1) {
         u95 <- x
     }
 
-    byvar.var.d     <- sprintf(fmt, abs(byvar.var.d))
+    byvar.var.d     <- sprintf(fmt, 100*abs(byvar.var.d))
     byvar.var.ci    <- paste(l95, '--', u95, sep='')
 
     return(list(
+        table = t,
         est1 = est1,
         est2 = est2,
         d = byvar.var.d, 
