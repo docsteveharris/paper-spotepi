@@ -186,7 +186,7 @@ m.eform
 # -------------------------------------
 f.accept.xt <- update(f.accept, . ~ . + (1|icode))
 f.accept.xt
-m.xt <- glmer(f.accept.xt , family = 'binomial', data = wdt)
+m.xt <- glmer(f.accept.xt , family = 'binomial', data = wdt) # original or default
 summary(m.xt)
 # NOTE: 2015-07-22 - [ ] model fails to converge
 # Checks as per CrossValidated post
@@ -267,6 +267,77 @@ MOR <- function(my.var, digits = 2)
             Median.OR <- round(exp(sqrt(2*my.var)*qnorm(.75)), digits)
             paste("Median Odds-Ratio (MOR) = ", Median.OR)  }
 
+# via http://biostat.mc.vanderbilt.edu/wiki/Main/HowToBootstrapCorrelatedData
+resample <- function(dat, cluster, replace) {
+  
+  # exit early for trivial data
+  if(nrow(dat) == 1 || all(replace==FALSE))
+      return(dat)
+  
+  # sample the clustering factor
+  cls <- sample(unique(dat[[cluster[1]]]), replace=replace[1])
+  
+  # subset on the sampled clustering factors
+  sub <- lapply(cls, function(b) subset(dat, dat[[cluster[1]]]==b))
+  
+  # sample lower levels of hierarchy (if any)
+  if(length(cluster) > 1)
+    sub <- lapply(sub, resample, cluster=cluster[-1], replace=replace[-1])
+  
+  # join and return samples
+  do.call(rbind, sub)
+  
+}
+f.accept.xt
+vars
+tdt <- wdt[, c(vars, "id", "icode", "icu_accept"), with=FALSE]
+
+MOR.boot <- function(data=tdt) {
+    # structure = character vector of vars for model descending down the hierarchy
+    t <- resample(tdt, c("icode", "id"), c(TRUE, TRUE))
+    # optimised for speed (for bootstrapping)
+    m.xt.boot <- glmer(f.accept.xt , family = 'binomial', data = t, nAGQ = 0)
+    print(summary(m.xt.boot))
+    re.variance <- m.xt.boot@theta^2
+    Median.OR <- exp(sqrt(2*re.variance)*qnorm(.75))
+}
+MOR.bsample <- replicate(2, MOR.boot(data=tdt))
+MOR.bsample
+
+# Use boot
+MOR4boot <- function(data, indices) {
+    d <- data[indices,] # allows boot to subset the data
+    m.xt.boot <- glmer(f.accept.xt , family = 'binomial', data = d, nAGQ = 0)
+    # print(summary(m.xt.boot))
+    re.variance <- m.xt.boot@theta^2
+    Median.OR <- exp(sqrt(2*re.variance)*qnorm(.75))
+    return(Median.OR)
+}
+MOR4boot(tdt)
+b <- boot(data=tdt, statistic=MOR4boot, R=2)
+getOption("boot.parallel")
+system.time(b <- boot(data=tdt, statistic=MOR4boot, R=20, strata=tdt$icode, parallel="no"))
+system.time(b <- boot(data=tdt, statistic=MOR4boot, R=20, strata=tdt$icode, parallel="multicore"))
+str(b)
+
+# - [ ] NOTE(2015-12-10): use the bootMer option of lme4
+?bootMer
+f.accept.xt
+m.xt.boot <- glmer(f.accept.xt , family = 'binomial', data = tdt, nAGQ = 0)
+MOR4boot <- function(m) {
+    re.variance <- m@theta^2
+    Median.OR <- exp(sqrt(2*re.variance)*qnorm(.75))
+    return(Median.OR)
+}
+MOR4boot(m.xt.boot)
+system.time(bMer <- bootMer(m.xt.boot, MOR4boot, nsim=10))
+bMer
+str(bMer)
+head(as.data.frame(bMer))
+boot.ci(bMer, type=c("basic", "norm"))
+
+
+
 
 
 # Now export to excel
@@ -281,7 +352,8 @@ createSheet(wb, name = sheet1)
 sheet1.df <- rbind(
     c('table name', table.name),
     c('observations', nrow(wdt)),
-    c('observations analysed', length(m.xt@resp$n))
+    c('observations analysed', length(m.xt@resp$n)),
+    c('Median Odds Ratio', MOR(m.xt@theta))
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
