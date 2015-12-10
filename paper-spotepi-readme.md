@@ -4,20 +4,25 @@ Readme
 Todo:
 =====
 
-- use data set up structure from paper-spotearly @now
-	+ copied the prep folder and made the same
 - writing
-	- include occupancy
-		- basic summary in text @done(2015-12-02)
-			✔ descriptive figure @done (15-12-02 13:38)
-	- include description of patient groups as per draft from paper spot early  @done(2015-12-04)
-		- show differences via stream graph which allows inspection of mortality  @done(2015-12-04)
-		- facet stream graph by occupancy
-		- repeat for those recommended for critical care
-	- 
-	- comment on relationship  between occupancy and pathways
-	- summarise overall variability between pathways by site
-	- summarise occupancy effect on pathways by site
+	- model decision to admit as binary excluding patients with a treatment limitation order
+		- tidying tasks
+			- extract MOR @done(2015-12-10)
+			- re-run with SOFA score to keep severity adjustment consistent
+			- exclude patients with level 3 support  and replace v_ccmds_now with organ_support (soup)
+			- redo exact OR in text after updating model
+			- redo MOR excluding patient level factors
+		- sensitivity models
+			- full cohort without rxlimit exclusion
+			- sensitivity using time2icu as the dependent var	
+			- early admission as the dependent var instead
+			- within subgroup with a recommendation for critical care
+		- comment in text on
+			- effect of occupancy
+				- number of additional patients who would be predicted to be admitted were occupancy OK (overall, and amongst those recommended) 
+			- inter site variability via MOR
+				- translate into predicted admissions too?
+	
 	- finish with mortality model for decision to admit 
 		- for all patients 
 		- for patients recommended to critical care
@@ -56,7 +61,7 @@ TRY - drop survival errors early so that you have the same number of patients in
 
 140413
 - added outsheet commands to table files in order that I can generate tables for publication from data
-    - table 1a completed
+	- table 1a completed
     - table 1b completed
     - supp table 1 - site chars - completed
     - supp table 2 - incidence by news risk class - completed
@@ -129,6 +134,17 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 
 
 Archive:
+	- use data set up structure from paper-spotearly @now @done(2015-12-10)
+		+ copied the prep folder and made the same @done(2015-12-10)
+	- include occupancy @done(2015-12-08)
+	- convert from room_cmp to room_cmp2 @done(2015-12-08)
+	- exclude patients with Rx limits @done(2015-12-08)
+	- basic summary in text @done(2015-12-02)
+		✔ descriptive figure @done (15-12-02 13:38)
+	- include description of patient groups as per draft from paper spot early  @done(2015-12-04)
+		- show differences via stream graph which allows inspection of mortality  @done(2015-12-04)
+		- facet stream graph by occupancy
+		- repeat for those recommended for critical care
 	- switch to waf or make file structure @done(2015-11-27)
 	+ copied data folder and made the same @done(2015-11-27)
 		+ symlinked the project_paths files from bld 

@@ -2,6 +2,17 @@
 	"folders":
 	[
 		{
+			"file_exclude_patterns":
+			[
+				".RData",
+				".Rapp.history",
+				".lock-waf_darwin_build",
+				".Rhistory"
+			],
+			"folder_exclude_patterns":
+			[
+				".Rproj.user"
+			],
 			"path": "."
 		}
 	]
