@@ -270,70 +270,96 @@ warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", m
 m.xt.boot <- glmer(f.accept.xt , family = 'binomial', data = tdt, nAGQ = 0)
 relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
 warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", max(abs(relgrad))) )
-MOR4boot <- function(m) {
+# - [ ] NOTE(2015-12-11): boot function now returns MOR and predictions
+table(m.xt.boot@frame$room_cmp2)
+rBoot <- function(m) {
+
+    # Median Odds Ratio
     re.variance <- m@theta^2
     Median.OR <- exp(sqrt(2*re.variance)*qnorm(.75))
-    return(Median.OR)
-}
-MOR4boot(m.xt.boot)
-system.time(bMer <- bootMer(m.xt.boot, MOR4boot, nsim=100))
-boot.ci(bMer, type=c("basic", "norm"))
-MOR.95ci <- boot.ci(bMer, type=c("norm"))
-MOR.95ci <- c(MOR.95ci$t0, MOR.95ci$normal[,2:3])
-str(MOR.95ci)
-MOR.95ci
+    # return(Median.OR)
 
-# Predictions
-tdt <- wdt[, c(vars, "id", "icode", "icu_accept"), with=FALSE]
-table(tdt$room_cmp2)
-# Create 2 counterfactual data sets
-tdt.beds1 <- tdt
-tdt.beds1$room_cmp2 <- 1L
-head(tdt.beds1)
-tdt.beds0 <- tdt
-tdt.beds0$room_cmp2 <- 2L
-head(tdt.beds0)
-assert_that(nrow(tdt.beds1)==nrow(tdt.beds0))
-summary(p.beds1 <- predict(m.xt.boot, type="response", newdata=tdt.beds1))
-summary(p.beds0 <- predict(m.xt.boot, type="response", newdata=tdt.beds0))
-
-boot.beds0 <- function(m) {
+    # Predicting extra admissions
     # Extract the data
     tdt.beds1 <- m@frame
-    tdt.beds0 <- m@frame
+    tdt.beds2 <- m@frame
+    tdt.beds3 <- m@frame
 
+    table(m@frame$room_cmp2)
+    # Generate counterfactual data sets
     # replace with baseline (below capacity)
-    # tdt.beds1$room_cmp2 <- 1L
     tdt.beds1$room_cmp2 <- factor(levels(m@frame$room_cmp2)[1], levels=levels(m@frame$room_cmp2))
-    # replcae with extreme (at or above capacity)
-    # tdt.beds0$room_cmp2 <- 2L
-    tdt.beds0$room_cmp2 <- factor(levels(m@frame$room_cmp2)[2], levels=levels(m@frame$room_cmp2))
+    # replace with extreme (at or above capacity)
+    tdt.beds2$room_cmp2 <- factor(levels(m@frame$room_cmp2)[2], levels=levels(m@frame$room_cmp2))
+    # replace with extreme (near capacity)
+    tdt.beds3$room_cmp2 <- factor(levels(m@frame$room_cmp2)[3], levels=levels(m@frame$room_cmp2))
+
     # Make the predictions
     (p.beds1 <- mean(predict(m, type="response", newdata=tdt.beds1), na.rm=TRUE))
-    (p.beds0 <- mean(predict(m, type="response", newdata=tdt.beds0), na.rm=TRUE))
-    # Calculate the difference
-    (p.extra <- p.beds1 - p.beds0)
+    (p.beds2 <- mean(predict(m, type="response", newdata=tdt.beds2), na.rm=TRUE))
+    (p.beds3 <- mean(predict(m, type="response", newdata=tdt.beds3), na.rm=TRUE))
+
+    # Calculate the difference (level 2 vs level 1)
+    (p.extra2v1 <- p.beds1 - p.beds2)
     # Scale to the number of patients
-    n.beds0 <- sum(m@frame$room_cmp2=="[-5, 1)")
-    (n0.extra <- round(p.extra*n.beds0))
-    return(c(p.beds0, p.beds1, p.extra, n0.extra))
+    n.beds2 <- sum(m@frame$room_cmp2=="[-5, 1)")
+    (n2.extra <- round(p.extra2v1*n.beds2))
+
+    # Calculate the difference (level 3 vs level 1)
+    (p.extra3v1 <- p.beds1 - p.beds3)
+    # Scale to the number of patients
+    n.beds3 <- sum(m@frame$room_cmp2=="[ 1, 3)")
+    (n3.extra <- round(p.extra3v1*n.beds3))
+
+    n.extra <- n2.extra + n3.extra
+
+    return(c(Median.OR,
+        p.beds1, p.beds2, p.beds3,
+        p.extra2v1, n2.extra,
+        p.extra3v1, n3.extra,
+        n.extra
+        ))
 }
-boot.beds0(m.xt.boot)
-system.time(bMer.beds0 <- bootMer(m.xt.boot, boot.beds0, nsim=2))
-str(bMer.beds0)
-bMer.beds0$t
-library(boot)
-(bMer.beds0.n0.95ci <- boot.ci(bMer.beds0, type=c("norm"), index=4))
-(bMer.beds0.p.extra.95ci <- boot.ci(bMer.beds0, type=c("norm"), index=3))
+# rBoot(m.xt.boot)
+# system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=2))
+system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=100))
+
+names(bMer$t0) <-     
+        c("Median.OR",
+        "p.beds1", "p.beds2", "p.beds3",
+        "p.extra2v1", "n2.extra",
+        "p.extra3v1", "n3.extra", "n.extra"
+        )
+# bMer$t0
+rBoot95ci <- function(b, this.i=1) {
+    b95ci <- boot.ci(b, type=c("norm"), index=this.i)
+    return(c(
+        parm = names(b$t0[this.i]), 
+        est = b$t0[this.i], 
+        l95 = b95ci$normal[,2],
+        u95 = b95ci$normal[,3])
+    )
+}
+rBoot95ci(bMer, 2)
+(rBoot <- data.frame(t(sapply(c(1:length(bMer$t0)), rBoot95ci, b=bMer))))
 
 
+
+# Calculate MOR excluding patient level vars
 f.accept.xt
 f.accept.xt.nopt <- reformulate(termlabels = c(vars.timing, vars.site),
     response = 'icu_accept')
 f.accept.xt.nopt <-  update(f.accept.xt.nopt, . ~ . + (1|icode))
 f.accept.xt.nopt
 m.xt.nopt.boot <- glmer(f.accept.xt.nopt , family = 'binomial', data = tdt, nAGQ = 0)
-system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=10))
+MOR4boot <- function(m) {
+
+    # Median Odds Ratio
+    re.variance <- m@theta^2
+    Median.OR <- exp(sqrt(2*re.variance)*qnorm(.75))
+    return(Median.OR)
+}
+system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=100))
 MOR.nopt.95ci <- boot.ci(bMer, type=c("norm"))
 MOR.nopt.95ci <- c(MOR.nopt.95ci$t0, MOR.nopt.95ci$normal[,2:3])
 str(MOR.nopt.95ci)
@@ -343,6 +369,7 @@ MOR.nopt.95ci
 # Now export to excel
 # -------------------
 
+ls()
 wb <- loadWorkbook(table.file, create = TRUE)
 setStyleAction(wb, XLC$"STYLE_ACTION.NONE") # no formatting applied
 
@@ -353,7 +380,7 @@ sheet1.df <- rbind(
     c('table name', table.name),
     c('observations', nrow(wdt)),
     c('observations analysed', length(m.xt@resp$n)),
-    c('Median Odds Ratio (95%CI)', MOR.95ci)
+    c('Median Odds Ratio (95%CI) (patients excluded)', MOR.nopt.95ci)
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
@@ -366,6 +393,11 @@ sheet3 <- 'results'
 removeSheet(wb, sheet3)
 createSheet(wb, name = sheet3)
 writeWorksheet(wb, m.xt.fmt, sheet3)
+
+sheet4 <- 'boot'
+removeSheet(wb, sheet4)
+createSheet(wb, name = sheet4)
+writeWorksheet(wb, rBoot, sheet4)
 
 saveWorkbook(wb)
 
