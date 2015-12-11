@@ -95,6 +95,7 @@
 #   age male sepsis_dx v_ccmds periarrest icnarc0
 
 rm(list=ls(all=TRUE))
+ls()
 # setwd('/Users/steve/aor/p-academic/paper-spotearly/src/analysis')
 source("project_paths.r")
 
@@ -162,7 +163,6 @@ wdt[, `:=`(
     icode               = factor(icode)
     )]
 
-library(Hmisc)
 describe(wdt$age_k)
 
 f.accept <- reformulate(termlabels = vars, response = 'icu_accept')
@@ -258,10 +258,18 @@ m.xt.fmt$p      <- ifelse(m.xt.fmt$p == '0.000', '<0.001', m.xt.fmt$p)
 m.xt.fmt        <- m.xt.fmt[ ,c(1,2,7,6,8,4,5)]
 # head(m.xt.fmt)
 
-# - [ ] NOTE(2015-12-10): using nAGQ=0 to spped this process up 
+# - [ ] NOTE(2015-12-10): using nAGQ=0 to spped this process up
 #       also only doing 100 replicates at present
+# first model with adjustment for patient level factors
 tdt <- wdt[, c(vars, "id", "icode", "icu_accept"), with=FALSE]
+f.accept.xt <- update(f.accept, . ~ . + (1|icode))
+f.accept.xt
+# m.xt <- glmer(f.accept.xt , family = 'binomial', data = wdt) # original or default
+relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
+warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", max(abs(relgrad))) )
 m.xt.boot <- glmer(f.accept.xt , family = 'binomial', data = tdt, nAGQ = 0)
+relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
+warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", max(abs(relgrad))) )
 MOR4boot <- function(m) {
     re.variance <- m@theta^2
     Median.OR <- exp(sqrt(2*re.variance)*qnorm(.75))
@@ -274,6 +282,63 @@ MOR.95ci <- boot.ci(bMer, type=c("norm"))
 MOR.95ci <- c(MOR.95ci$t0, MOR.95ci$normal[,2:3])
 str(MOR.95ci)
 MOR.95ci
+
+# Predictions
+tdt <- wdt[, c(vars, "id", "icode", "icu_accept"), with=FALSE]
+table(tdt$room_cmp2)
+# Create 2 counterfactual data sets
+tdt.beds1 <- tdt
+tdt.beds1$room_cmp2 <- 1L
+head(tdt.beds1)
+tdt.beds0 <- tdt
+tdt.beds0$room_cmp2 <- 2L
+head(tdt.beds0)
+assert_that(nrow(tdt.beds1)==nrow(tdt.beds0))
+summary(p.beds1 <- predict(m.xt.boot, type="response", newdata=tdt.beds1))
+summary(p.beds0 <- predict(m.xt.boot, type="response", newdata=tdt.beds0))
+
+boot.beds0 <- function(m) {
+    # Extract the data
+    tdt.beds1 <- m@frame
+    tdt.beds0 <- m@frame
+
+    # replace with baseline (below capacity)
+    # tdt.beds1$room_cmp2 <- 1L
+    tdt.beds1$room_cmp2 <- factor(levels(m@frame$room_cmp2)[1], levels=levels(m@frame$room_cmp2))
+    # replcae with extreme (at or above capacity)
+    # tdt.beds0$room_cmp2 <- 2L
+    tdt.beds0$room_cmp2 <- factor(levels(m@frame$room_cmp2)[2], levels=levels(m@frame$room_cmp2))
+    # Make the predictions
+    (p.beds1 <- mean(predict(m, type="response", newdata=tdt.beds1), na.rm=TRUE))
+    (p.beds0 <- mean(predict(m, type="response", newdata=tdt.beds0), na.rm=TRUE))
+    # Calculate the difference
+    (p.extra <- p.beds1 - p.beds0)
+    # Scale to the number of patients
+    n.beds0 <- sum(m@frame$room_cmp2=="[-5, 1)")
+    (n0.extra <- round(p.extra*n.beds0))
+    return(c(p.beds0, p.beds1, p.extra, n0.extra))
+}
+boot.beds0(m.xt.boot)
+system.time(bMer.beds0 <- bootMer(m.xt.boot, boot.beds0, nsim=2))
+str(bMer.beds0)
+bMer.beds0$t
+library(boot)
+(bMer.beds0.n0.95ci <- boot.ci(bMer.beds0, type=c("norm"), index=4))
+(bMer.beds0.p.extra.95ci <- boot.ci(bMer.beds0, type=c("norm"), index=3))
+
+
+f.accept.xt
+f.accept.xt.nopt <- reformulate(termlabels = c(vars.timing, vars.site),
+    response = 'icu_accept')
+f.accept.xt.nopt <-  update(f.accept.xt.nopt, . ~ . + (1|icode))
+f.accept.xt.nopt
+m.xt.nopt.boot <- glmer(f.accept.xt.nopt , family = 'binomial', data = tdt, nAGQ = 0)
+system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=10))
+MOR.nopt.95ci <- boot.ci(bMer, type=c("norm"))
+MOR.nopt.95ci <- c(MOR.nopt.95ci$t0, MOR.nopt.95ci$normal[,2:3])
+str(MOR.nopt.95ci)
+MOR.nopt.95ci
+
 
 # Now export to excel
 # -------------------
