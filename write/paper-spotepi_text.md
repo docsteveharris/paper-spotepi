@@ -1,58 +1,60 @@
 \<!-- pandoc -o mas\_spotepi.odt paper-spotepi\_text.md --smart --\>
 
-Title page
-==========
+# Title page
 
-Working title
--------------
+## Working title
 
 Mortality among deteriorating ward patients referred to critical care: a
-prospective observational cohort study in 49 NHS hospitals
+prospective observational cohort study in 48 NHS hospitals
 
-Authors
--------
+## Authors
 
--   Steve Harris
+- Steve Harris
+- Mervyn Singer
+- Colin Sanderson
+- David Harrison
+- Kathy Rowan
 
--   Mervyn Singer
+# Abstract
 
--   Colin Sanderson
-
--   David Harrison
-
--   Kathy Rowan
-
-Abstract
-========
-
-Background
-----------
+## Background
 
 Recent policy has placed emphasis identifying and responding to deterioration
-among ward patients, and providing early access to critical care. However, the
-data underpinning this policy comes from small retrospective studies and
-qualitative work. The incidence, disposition, and outcomes of these patients is
-not known.
+among ward patients, and providing early access to critical care. However, critical care provision in the NHS is constrained, and existing data on the outcomes of deteriorating ward patients is sparse. We sought to define the incidence, disposition during the week following assessment, and outcomes of these patients.
 
-Methods
--------
+## Methods
 
 We conducted a prospective cohort study of consecutive deteriorating ward
-patients assessed for consideration of admission to critical care in 49 NHS
-hospitals (1 November 2010 --- 31 December 2011). We linked to a national
-critical care audit database to define fact and timing of admission in the
-subsequent week, and death registrations for survival to one year. Incidence
-models were stratified by the NHS National Early Warning Score (NEWS) risk
-class, and used generalised estimating equations. Cox proportional hazards with
-a shared hospital frailty were used for survival.
+patients referred to critical care in 48 NHS hospitals (1 November 2010 --- 31 December 2011). We used the SOFA score to define organ failure at ward assessment, and captured both the assessor's recommendation for critical care, and the decision to admit. Admission to critical care in the subsequent week was defined by linking to the national critical care audit database, and survival to one year by linking to national death registrations. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression, and Cox proportional hazards respectively. 
 
-Findings
---------
+## Findings
 
-We included 15,602 patients. Nearly half of patients (7022 patients, 45·0%) met
-criteria for the highest NEWS risk class with an incidence of 4·6 (95%CI
-3·6--5·5) patients per 1,000 overnight admissions, or 22 patients per month
-(95%CI 18--26). About a third of patients (5,326, 34·1%) were admitted to
+We included 15,158 patients of whom 6759 (45%) were in the highest NEWS risk class --- equivalent to 17 (95%CI 13--20) per hospital per month. Sepsis was reported in 9296 (61%), and 1427 patients (9%) were in respiratory failure, 2931 (19%) in renal failure, and 4636 (31%) who were shocked. The critical care unit was full at the time of 1221 (8%) referrrals.
+
+2141 (14%) patients were refused critical care with a treatment limitation order of whom 506 (24%) survived 1-year.
+
+Critical care was recommended for 5321 (35%) patients of whom 3375 (63%) were offered admission. A decision to admit was less likely for the elderly (OR 0.71, 95%CI 0.57--0.88 if age > 80 years) and when the unit was full (OR 0.56, 95%CI 0.42--0.75).
+
+<!-- 
+	                                    
+	                                    
+	 _ __ ___  ___ _   _ _ __ ___   ___ 
+	| '__/ _ \/ __| | | | '_ ` _ \ / _ \
+	| | |  __/\__ \ |_| | | | | | |  __/
+	|_|  \___||___/\__,_|_| |_| |_|\___|
+	                                    
+	                                    
+ -->
+
+
+
+
+Patients recommended but refused had a higher 7-day mortality (17.6% versus 10.4%, risk difference 7.1% 95%CI 5.1-9.1%) than those not recommended.
+
+
+
+
+About a third of patients (5,326, 34·1%) were admitted to
 critical care. There were 2,787 (17·9%), and 6,989 (44·8%) deaths at 1-week, and
 1-year respectively (Kaplan-Meier failure function). A greater proportion of
 deaths occurred amongst those admitted to ICU during the subsequent week (959,
@@ -240,8 +242,7 @@ responsibility for the integrity of the data and the accuracy of the data
 analysis; and takes final responsibility for the decision to submit for
 publication.
 
-Results
-=======
+# Results
 
 48 hospitals reported 20893 visits over 435 months. 2694 visits (12.9%) did not
 meet the inclusion criteria including 1860 (8.9%) repeat rather than first
@@ -252,8 +253,7 @@ which 15158 (96.1%) completed follow-up without error and were available for
 analysis ([Figure FFF][figureFFF]). Final data linkage (ward visits to critical
 care admissions) was 93% complete.
 
-Hospitals (and epidemiology)
-----------------------------
+## Hospitals (and epidemiology)
 
 The participating hospitals comprised 10 teaching and 38 general hospitals that
 each collected data between September 2010 and December 2011 for a median of 8
@@ -271,9 +271,7 @@ with CCOT nonetheless saw 8 patients per 1,000 overnight admissions.
 There was a median of 12 (IQR 9--18) critical care beds per hospital (mixed
 Level 2 --- typically intensive monitoring or single organ support, and Level 3
 --- ventilated or multiple organ support), most often in a single physical
-location (45 hospitals). These units admitted a median 20 (IQR 14--26) unplanned
-admissions from the ward per month which represented 36% of all critical care
-admissions (IQR 31-43%).
+location (45 hospitals). These units admitted a median 20 (IQR 14--26) unplanned admissions from the ward per month which represented 36% of all critical care admissions (IQR 31-43%).
 
 ### Critical care occupancy
 
@@ -283,8 +281,7 @@ assessed when there were more than two beds available (Table TTT). Critical care
 occupancy fluctuated with time of the day, day of the week, and season of the
 year.([Supplementary Figure FFF](<sfigureFFF>)).
 
-Patient characteristics
------------------------
+## Patient characteristics
 
 Table TTT shows the baseline data for all ward patients assessed. Sepsis was
 reported in (9296, 61%) patients; of these, the respiratory system was
@@ -312,21 +309,13 @@ care at the bedside assessment, 3375 (63%) were accepted immediately, 345 (7%)
 were refused with treatment limits, and 1601 (30%) were refused without
 treatment limits.
 
-### Patients initially refused critical care without treatment limits
+### Patients without treatment limits initially refused critical care
 
-Patients referred to, but then refused, critical care (without treatment
-limitations) had a 7-day mortality of 12% (1102 deaths); 799 (67%) of these
-deaths occurred on the ward, and 303 (33%) deaths followed late admission.
-Overall, the initial decision to refuse was reversed in 1745 patients (18%) so
-by the end of the week 2544 (27%) patients had died or been admitted to critical
-care.
+Patients referred to, but then refused, critical care (without treatment limitations) had a 7-day mortality of 12% (1102 deaths); 799 (67%) of these deaths occurred on the ward, and 303 (33%) deaths followed late admission. Overall, the initial decision to refuse was reversed in 1745 patients (18%) so by the end of the week 2544 (27%) patients had died or been admitted to critical care.
 
-Within this cohort, 7-day mortality was higher for those recommended but refused
-(17.6% versus 10.4%, risk difference 7.1% 95%CI 5.1-9.1%), and for those where
-the initial decision to refuse was reversed (17.4% versus 10.3%, risk difference
-7.0% 95%CI 5.1-9.0%).
+Within this cohort, 7-day mortality was higher for those recommended but refused (17.6% versus 10.4%, risk difference 7.1% 95%CI 5.1-9.1%), and for those where the initial decision to refuse was reversed (17.4% versus 10.3%, risk difference 7.0% 95%CI 5.1-9.0%).
 
-### Patients initially refused critical care with treatment limits
+### Patients with treatment limits initially refused critical care
 
 These 2141 patients had a 7-day mortality of 41% (881 deaths). The initial
 decision to refuse admission was reversed in just 76 patients (4%) of whom 26
@@ -334,13 +323,11 @@ decision to refuse admission was reversed in just 76 patients (4%) of whom 26
 
 Compared to those refused without a treatment limitation order, this cohort was
 older (77 vs 66 years, 95%CI for difference 11--12 years), and more acutely
-unwell (3.6 vs 2.8 SOFA points, 95%CI for difference 0.7--0.9). The final 90-day
-mortalities was substantial 65% (1402 deaths), but 506 patients (24%) survived a
-year despite the decision.
+unwell (3.6 vs 2.8 SOFA points, 95%CI for difference 0.7--0.9). The final 90-day mortalities was substantial 65% (1402 deaths), but 506 patients (24%) survived a year despite the decision.
 
 ### Patients immediately accepted to critical care
 
-The 3546 (27%) of patients accepted to critical care at the initial bedside
+The 3546 (27%) patients accepted to critical care at the initial bedside
 assessment had a 7-day mortality of 21% (696 deaths). Just 40 (6%) of those
 deaths occurred before admission was arranged, but a further 223 patients (6%)
 were never admitted but survived regardless.
@@ -348,20 +335,16 @@ were never admitted but survived regardless.
 Those offered admission were marginally younger (64 versus 66 years, 95%CI
 1--2), and more acutely unwell (4.1 vs 2.8 SOFA points, 95%CI 1.2-1.3).
 
-The median delay between assessment and admission for these patients was 2 hours
-(IQR 1--4) compared to 12 hours for those refused without treatment limits
-(median additional delay 10 hours, IQR 9--11). This meant that 2250 (73%)
-admissions were achieved within 4 hours for those initially accepted versus 322
-(17%) for those initially refused (risk difference 55%, 95%CI 53-58%).
+The median delay between assessment and admission for these patients was 2 hours(IQR 1--4) compared to 12 hours for those refused without treatment limits (median additional delay 10 hours, IQR 9--11). This meant that 2250 (73%) admissions were achieved within 4 hours for those initially accepted versus 322 (17%) for those initially refused (risk difference 55%, 95%CI 53-58%). 
 
 Variation in decision making
 ----------------------------
 
 We built a multi-level (patients nested within hospitals) logistic regression
 model to examine factors associated with a decision to admit to critical care
-compared for those patients without a treatment limitation order. As with the
+amongst those patients without a treatment limitation order. As with the
 univariate comparisons above, older patients were less likely to be admitted (OR
-0.60 for patients over  80 years, 95%CI 0.53--0.69), and sicker patients were
+0.60 for patients over 80 years, 95%CI 0.53--0.69), and sicker patients were
 more likely to be admitted (OR 1.07 per ICNARC physiology point, 95%CI
 1.06--1.07). Similarly, patients already receiving organ support (OR 95%CI), or
 clinically judged to be peri-arrest (OR 95%CI) were much more likely to be
@@ -370,7 +353,9 @@ admitted.
 Patients referred overnight (7pm-7am), during the weekend, or during the winter
 were more likely to be offered critical care, but those assessed when the
 critical care unit was at, or near capacity were less likely to be admitted (OR
-0.70, 95%CI 0.57--0.86, and OR 0.87 95%CI 0.77--0.98 respectively).
+0.70, 95%CI 0.57--0.86, and OR 0.87 95%CI 0.77--0.98 respectively). Otherwise
+said, had there been no limitations on capacity then an additional 122 patients
+(95%CI 53-186) would have been admitted
 
 The model also demonstrated significant hospital level variation with a Median
 Odds Ratio (MOR) between hospitals of 1.82 (95%CI 1.78-2.16) which was minimally
@@ -380,9 +365,6 @@ randomly selected hospitals the adjusted odds of being offered critical care
 varied by almost two fold.
 
  
-
-\- [ ] TODO(2015-12-10): now comment on time to admission for those offered
-critical care
 
  
 
