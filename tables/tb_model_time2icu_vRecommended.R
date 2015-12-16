@@ -24,18 +24,20 @@ ls()
 # setwd('/Users/steve/aor/p-academic/paper-spotearly/src/analysis')
 source("project_paths.r")
 
+#  ==========================
+#  = Set-up and development =
+#  ==========================
+# install.packages("cmprsk", type="source", dependencies=TRUE)
+# install.packages("frailtypack", type="source", dependencies=TRUE)
+
 library(Hmisc)
 library(ggplot2)
 library(data.table)
-library(lme4)
 library(XLConnect)
 library(assertthat)
-library(boot)
 library(survival)
 library(coxme)
-# install.packages("frailtypack", type="source", dependencies=TRUE)
-install.packages("frailtypack")
-library(frailtypack)
+library(cmprsk)
 
 load(paste0(PATH_DATA, '/paper-spotepi.RData'))
 wdt.surv1.original <- wdt.surv1
@@ -84,6 +86,10 @@ wdt.surv1[, `:=`(
 # str(wdt.surv1[,.(id,_t,_d)])
 str(wdt.surv1[,c("id","_t","_d"),with=FALSE])
 
+#  =========================
+#  = Competing risks model =
+#  =========================
+
 # Set up competing risks data
 wdt.surv1[,.(id,site,dt1,dt2,dt3,dt4)]
 setnames(wdt.surv1,"_t", "stata_t")
@@ -92,12 +98,12 @@ setnames(wdt.surv1,"_d", "stata_d")
 wdt.surv1[,.(id,site,stata_t0,stata_t,stata_d)]
 
 # Minimum of time2icu or death
-wdt.surv1[, t := 
+wdt.surv1[, t.cr :=
     ifelse(is.na(time2icu), 24*stata_t,
     ifelse(time2icu/24 < stata_t, time2icu, 24*stata_t))]
 # Censor at 7d
-wdt.surv1[,t:=ifelse(t>168,168,t)]
-wdt.surv1[,.(id,site,time2icu,stata_t,t)]
+wdt.surv1[,t.cr:=ifelse(t.cr>168,168,t.cr)]
+wdt.surv1[,.(id,site,time2icu,stata_t,t.cr)]
 
 
 wdt.surv1[, event := 
@@ -105,41 +111,74 @@ wdt.surv1[, event :=
     ifelse(is.na(time2icu) & stata_t>7, "survive",
     ifelse(time2icu/24 < stata_t, "icu", "survive")))]
 wdt.surv1[, event := factor(event)]
-wdt.surv1[,.(id,site,time2icu,stata_t,t,icucmp,stata_d,event)]
+wdt.surv1[,.(id,site,time2icu,stata_t,t.cr,icucmp,stata_d,event)]
 
-# Model with frailtypack
-(m0 <- coxph(Surv(t, event=="dead") ~ 1, data=wdt.surv1[icu_accept==1]))
-(m0 <- coxph(Surv(t, event=="icu") ~ 1, data=wdt.surv1[icu_accept==1]))
+# Try competing risks model
+str(wdt.surv1$event)
 
-(m.cr <- frailtyPenal(Surv(t,event=="icu") ~ cluster(site) +
-    icu_accept +
+tdt <- wdt.surv1
+c <- (complete.cases(
+        tdt[,c("t.cr", "event", "icu_accept",
+                vars.patient, vars.timing), with=FALSE]))
+nrow(tdt)
+tdt <- tdt[c]
+nrow(tdt)
+
+(m0 <- coxph(Surv(t, event=="dead") ~ 1, data=tdt))
+
+# Create design matrix and drop the intercept
+cov1 <- model.matrix(
+    ~ icu_accept +
     age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
     icnarc_score +
     out_of_hours + weekend + winter + room_cmp2,
-    data=wdt.surv1,
-    n.knots=7,kappa=1000,Frailty=TRUE,cross.validation=TRUE
-    ))
-plot(m.cr)
-plot(m.cr$frailty.pred)
-print(m.cr)
+data=tdt)[,-1]
+assert_that(sum(complete.cases(cov1))==nrow(tdt))
 
+# For reference, although you are not planning on using this
+# Subdistribution hazard for death
+# m1.cr.dead <- crr(ftime=tdt$t, fstatus=tdt$event, cov1=cov1, failcode="dead", cencode="survive" )
 
+# Subdistribution hazard for ICU admission
+m1.cr.icu <- crr(ftime=tdt$t.cr, fstatus=tdt$event,
+        cov1=cov1, failcode="icu", cencode="survive",
+        )
+m1.cr.icu
+# Extract confidence intervals etc
+summary(m1.cr.icu)
+str(summary(m1.cr.icu))
 
-s <- with(wdt.surv1, Surv(time2icu, icucmp))
-with(wdt.surv1, Surv(time2icu, time2icu > 0))
-wdt.surv1[,`:=` (
+# Prepare the columns
+(e <- summary(m1.cr.icu))
+beta <- e$coef[,1]
+beta.exp <- e$conf.int[,1]
+se <- e$coef[,3]
+p <- e$coef[,5]
+CI.exp <- e$conf.int[,3:4]
+
+# (m.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
+(m1.cr.icu.eform <- cbind(beta.exp, CI.exp, p))
+
+#  =============
+#  = Cox model =
+#  =============
+
+# Variable definitions for cox model
+s <- with(tdt, Surv(time2icu, icucmp))
+with(tdt, Surv(time2icu, time2icu > 0))
+tdt[,`:=` (
     admit=ifelse(is.na(time2icu),0,1),
     t=ifelse(is.na(time2icu),168,time2icu)
     )]
-describe(wdt.surv1$admit)
-describe(wdt.surv1$t)
+describe(tdt$admit)
+describe(tdt$t)
 
 # Run your model
 # --------------
-Surv(wdt.surv1$t, wdt.surv1$admit)
+Surv(tdt$t, tdt$admit)
 
 # Null model
-m0 <- coxph(Surv(t, admit) ~ 1, data=wdt.surv1[icu_accept==1])
+m0 <- coxph(Surv(t, admit) ~ 1, data=tdt)
 m0$loglik
 
 # Build model for those accepted else will just be reporting 'decision'
@@ -148,7 +187,7 @@ m1 <- coxph(Surv(t, admit) ~
     age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
     icnarc_score +
     out_of_hours + weekend + winter + room_cmp2,
-    data=wdt.surv1)
+    data=tdt)
 summary(m1)
 
 # Log likelihood
@@ -157,9 +196,13 @@ m1$loglik
 ## Chi-squared value comparing this model to the null model
 (-2 * (m0$loglik - logLik(m1)))
 
+#  =========================================
+#  = Cox model with random effect for site =
+#  =========================================
+
 # Model with frailty
 require(coxme)
-m0.xt <- coxme(Surv(t, admit) ~ 1 + (1|site), data=wdt.surv1[icu_accept==1])
+m0.xt <- coxme(Surv(t, admit) ~ 1 + (1|site), data=tdt)
 m0.xt
 m0.xt$loglik
 
@@ -168,7 +211,7 @@ m1.xt <- coxme(Surv(t, admit) ~
     icnarc_score +
     out_of_hours + weekend + winter + room_cmp2 +
     (1|site),
-    data=wdt.surv1[icu_accept==1])
+    data=tdt)
 summary(m1.xt)
 
 ## Log likelihood
@@ -253,7 +296,7 @@ removeSheet(wb, sheet1)
 createSheet(wb, name = sheet1)
 sheet1.df <- rbind(
     c('table name', table.name),
-    c('observations', nrow(wdt.surv1)),
+    c('observations', nrow(tdt)),
     c('observations analysed', m$n),
     c("MHR", MHR)
     )
