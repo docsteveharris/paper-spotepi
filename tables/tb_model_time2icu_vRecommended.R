@@ -39,6 +39,41 @@ library(survival)
 library(coxme)
 library(cmprsk)
 
+# Format results table
+# --------------------
+# - [ ] NOTE(2015-12-16): move this to a package/library
+
+format.results.table <- function(t, est.name="beta.exp", dp=2, p.dp=3) {
+    # t must be a matrix of results in the following order
+    # (est,L95,U95,p)
+    # dp = number of decimal places for pretty printing
+    # p.dp = number for p values
+    dp.fmt <- paste0("%.", dp, "f")
+    p.dp.fmt <- paste0("%.", p.dp, "f")
+
+    t.fmt <- data.frame(cbind(vars = row.names(t), t))
+    colnames(t.fmt)[2] <- est.name
+    colnames(t.fmt)[3] <- 'L95'
+    colnames(t.fmt)[4] <- 'U95'
+
+    t.fmt$HR     <- sprintf(dp.fmt, round(as.numeric(as.character(t.fmt$HR)), dp))
+
+    t.fmt$L95    <- sprintf(dp.fmt, round(as.numeric(as.character(t.fmt$L95)), dp))
+    t.fmt$U95    <- sprintf(dp.fmt, round(as.numeric(as.character(t.fmt$U95)), dp))
+    t.fmt$CI     <- paste('(', t.fmt$L95, '--', t.fmt$U95, ')', sep='')
+
+    t.fmt$star   <- ifelse(as.numeric(as.character(t.fmt$p)) < 0.05, '*', '')
+    t.fmt$star   <- ifelse(as.numeric(as.character(t.fmt$p)) < 0.01, '**', t.fmt$star)
+    t.fmt$star   <- ifelse(as.numeric(as.character(t.fmt$p)) < 0.001, '***', t.fmt$star)
+    t.fmt$p      <- sprintf(p.dp.fmt, round(as.numeric(as.character(t.fmt$p)), p.dp))
+    t.fmt$p      <- ifelse(t.fmt$p == '0.000', '<0.001', t.fmt$p)
+
+    # Now reorder columns and drop L95 U95
+    (t.fmt        <- t.fmt[ ,c(1,2,6,5,7)])
+    return(t.fmt)
+}
+
+
 load(paste0(PATH_DATA, '/paper-spotepi.RData'))
 wdt.surv1.original <- wdt.surv1
 wdt.surv1$sample_N <- 1
@@ -124,7 +159,7 @@ nrow(tdt)
 tdt <- tdt[c]
 nrow(tdt)
 
-(m0 <- coxph(Surv(t, event=="dead") ~ 1, data=tdt))
+(m0 <- coxph(Surv(t.cr, event=="dead") ~ 1, data=tdt))
 
 # Create design matrix and drop the intercept
 cov1 <- model.matrix(
@@ -158,6 +193,7 @@ CI.exp <- e$conf.int[,3:4]
 
 # (m.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
 (m1.cr.icu.eform <- cbind(beta.exp, CI.exp, p))
+(m1.cr.icu.fmt <- format.results.table(m1.cr.icu.eform, est.name="HR"))
 
 #  =============
 #  = Cox model =
@@ -207,6 +243,7 @@ m0.xt
 m0.xt$loglik
 
 m1.xt <- coxme(Surv(t, admit) ~
+    icu_accept +
     age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
     icnarc_score +
     out_of_hours + weekend + winter + room_cmp2 +
@@ -235,54 +272,24 @@ pchisq(q = as.numeric(logLikDiffNeg2), df = dfDiff, lower.tail = FALSE)
 summary(m1.xt)
 VarCorr(m1.xt) # variance
 # MHR <- exp(sqrt(2*var)*phi-1(0.75))
-# str(m1.xt)
 (MHR <- exp(sqrt(2*VarCorr(m1.xt)$site) * qnorm(0.75)))
 
-# m becomes the name of the model used
-m <- m1.xt
-# model reports exponeniated coefficients
-str(m)
-m$coeff # coefficients on the original scale
-confint(m)
-
-# for the baseine survival function
-# plot(survfit(m))
-
 # Prepare the columns
-beta <- coef(m)
-beta.exp <- exp(coef(m))
-se   <- sqrt(diag(m$var))
+print(m1.xt)
+# - [ ] NOTE(2015-12-16): no closed form solution for confidence
+#   intervals - would need to bootstrap or similar
+#   For now, just report the frailty model and ignore the clustering here
+(beta <- fixef(m1.xt))
+(beta.exp <- exp(fixef(m1.xt)))
+(se   <- sqrt(diag(vcov(m1.xt))))
 p    <- 1 - pchisq((beta/se)^2, 1)
-CI   <- round(confint(m), 3)
-CI.exp   <- exp(round(confint(m), 3))
+CI   <- round(confint(m1.xt), 3)
+CI.exp   <- exp(round(confint(m1.xt), 3))
 
-# (m.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
-(m.eform <- cbind(beta.exp, CI.exp, p))
+# (m1.xt.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
+(m1.xt.eform <- cbind(beta.exp, CI.exp, p))
 
-# Format results table
-# --------------------
-m.xt.fmt <- data.frame(cbind(vars = row.names(m.eform), m.eform))
-colnames(m.xt.fmt)[2] <- 'HR'
-colnames(m.xt.fmt)[3] <- 'L95'
-colnames(m.xt.fmt)[4] <- 'U95'
-m.xt.fmt
-
-m.xt.fmt$HR     <- sprintf("%.2f", round(as.numeric(as.character(m.xt.fmt$HR)), 2))
-
-m.xt.fmt$L95    <- sprintf("%.2f", round(as.numeric(as.character(m.xt.fmt$L95)), 2))
-m.xt.fmt$U95    <- sprintf("%.2f", round(as.numeric(as.character(m.xt.fmt$U95)), 2))
-m.xt.fmt$CI     <- paste('(', m.xt.fmt$L95, '--', m.xt.fmt$U95, ')', sep='')
-
-m.xt.fmt$star   <- ifelse(as.numeric(as.character(m.xt.fmt$p)) < 0.05, '*', '')
-m.xt.fmt$star   <- ifelse(as.numeric(as.character(m.xt.fmt$p)) < 0.01, '**', m.xt.fmt$star)
-m.xt.fmt$star   <- ifelse(as.numeric(as.character(m.xt.fmt$p)) < 0.001, '***', m.xt.fmt$star)
-m.xt.fmt$p      <- sprintf("%.3f", round(as.numeric(as.character(m.xt.fmt$p)), 3))
-m.xt.fmt$p      <- ifelse(m.xt.fmt$p == '0.000', '<0.001', m.xt.fmt$p)
-
-m.xt.fmt
-# Be careful with this order: if you change it then the columns in the excel sheet will be out of order
-(m.xt.fmt        <- m.xt.fmt[ ,c(1,2,6,5,7)])
-
+(m1.xt.eform.fmt <- format.results.table(m1.xt.eform, est.name="HR"))
 
 # Now export to excel
 # -------------------
@@ -297,20 +304,30 @@ createSheet(wb, name = sheet1)
 sheet1.df <- rbind(
     c('table name', table.name),
     c('observations', nrow(tdt)),
-    c('observations analysed', m$n),
+    c('observations analysed', nrow(tdt)),
     c("MHR", MHR)
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
-sheet2 <- 'raw'
+sheet2 <- 'raw.frailty'
 removeSheet(wb, sheet2)
 createSheet(wb, name = sheet2)
-writeWorksheet(wb, cbind(vars = row.names(m.eform), m.eform), sheet2)
+writeWorksheet(wb, cbind(vars = row.names(m1.xt.eform), m1.xt.eform), sheet2)
 
-sheet3 <- 'results'
+sheet3 <- 'results.frailty'
 removeSheet(wb, sheet3)
 createSheet(wb, name = sheet3)
-writeWorksheet(wb, m.xt.fmt, sheet3)
+writeWorksheet(wb, m1.xt.eform.fmt, sheet3)
+
+sheet4 <- 'raw.cr.icu'
+removeSheet(wb, sheet4)
+createSheet(wb, name = sheet4)
+writeWorksheet(wb, cbind(vars = row.names(m1.cr.icu.eform), m1.cr.icu.eform), sheet4)
+
+sheet5 <- 'results.cr.icu'
+removeSheet(wb, sheet5)
+createSheet(wb, name = sheet5)
+writeWorksheet(wb, m1.cr.icu.fmt, sheet5)
 
 saveWorkbook(wb)
 
