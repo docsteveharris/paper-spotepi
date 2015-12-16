@@ -14,6 +14,8 @@
 # ===
 # 2015-12-15
 # - file created by duplicating from tb_model_icu_accept_vRecommended
+# - initial version complete
+# - dropped site level covariates
 
 # Notes
 # =====
@@ -30,6 +32,10 @@ library(XLConnect)
 library(assertthat)
 library(boot)
 library(survival)
+library(coxme)
+# install.packages("frailtypack", type="source", dependencies=TRUE)
+install.packages("frailtypack")
+library(frailtypack)
 
 load(paste0(PATH_DATA, '/paper-spotepi.RData'))
 wdt.surv1.original <- wdt.surv1
@@ -40,6 +46,7 @@ nrow(wdt.surv1)
 # Redefine working data
 # ---------------------
 wdt.surv1 <- wdt.surv1[rxlimits==0 & icu_recommend==1]
+describe(wdt.surv1$icu_accept)
 
 # Define file name
 table.name <- "model_time2icu_vRecommended"
@@ -73,10 +80,51 @@ wdt.surv1[, `:=`(
     icode               = factor(icode)
     )]
 
-
 # R doesn't like leading underscores from stata 
 # str(wdt.surv1[,.(id,_t,_d)])
 str(wdt.surv1[,c("id","_t","_d"),with=FALSE])
+
+# Set up competing risks data
+wdt.surv1[,.(id,site,dt1,dt2,dt3,dt4)]
+setnames(wdt.surv1,"_t", "stata_t")
+setnames(wdt.surv1,"_t0", "stata_t0")
+setnames(wdt.surv1,"_d", "stata_d")
+wdt.surv1[,.(id,site,stata_t0,stata_t,stata_d)]
+
+# Minimum of time2icu or death
+wdt.surv1[, t := 
+    ifelse(is.na(time2icu), 24*stata_t,
+    ifelse(time2icu/24 < stata_t, time2icu, 24*stata_t))]
+# Censor at 7d
+wdt.surv1[,t:=ifelse(t>168,168,t)]
+wdt.surv1[,.(id,site,time2icu,stata_t,t)]
+
+
+wdt.surv1[, event := 
+    ifelse(is.na(time2icu) & stata_t<=7 & stata_d==1, "dead",
+    ifelse(is.na(time2icu) & stata_t>7, "survive",
+    ifelse(time2icu/24 < stata_t, "icu", "survive")))]
+wdt.surv1[, event := factor(event)]
+wdt.surv1[,.(id,site,time2icu,stata_t,t,icucmp,stata_d,event)]
+
+# Model with frailtypack
+(m0 <- coxph(Surv(t, event=="dead") ~ 1, data=wdt.surv1[icu_accept==1]))
+(m0 <- coxph(Surv(t, event=="icu") ~ 1, data=wdt.surv1[icu_accept==1]))
+
+(m.cr <- frailtyPenal(Surv(t,event=="icu") ~ cluster(site) +
+    icu_accept +
+    age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
+    icnarc_score +
+    out_of_hours + weekend + winter + room_cmp2,
+    data=wdt.surv1,
+    n.knots=7,kappa=1000,Frailty=TRUE,cross.validation=TRUE
+    ))
+plot(m.cr)
+plot(m.cr$frailty.pred)
+print(m.cr)
+
+
+
 s <- with(wdt.surv1, Surv(time2icu, icucmp))
 with(wdt.surv1, Surv(time2icu, time2icu > 0))
 wdt.surv1[,`:=` (
@@ -90,14 +138,65 @@ describe(wdt.surv1$t)
 # --------------
 Surv(wdt.surv1$t, wdt.surv1$admit)
 
+# Null model
+m0 <- coxph(Surv(t, admit) ~ 1, data=wdt.surv1[icu_accept==1])
+m0$loglik
+
 # Build model for those accepted else will just be reporting 'decision'
-m <- coxph(Surv(t, admit) ~
+m1 <- coxph(Surv(t, admit) ~
+    icu_accept +
     age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
     icnarc_score +
     out_of_hours + weekend + winter + room_cmp2,
-    data=wdt.surv1[icu_accept==1])
-summary(m)
+    data=wdt.surv1)
+summary(m1)
 
+# Log likelihood
+m1$loglik
+
+## Chi-squared value comparing this model to the null model
+(-2 * (m0$loglik - logLik(m1)))
+
+# Model with frailty
+require(coxme)
+m0.xt <- coxme(Surv(t, admit) ~ 1 + (1|site), data=wdt.surv1[icu_accept==1])
+m0.xt
+m0.xt$loglik
+
+m1.xt <- coxme(Surv(t, admit) ~
+    age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
+    icnarc_score +
+    out_of_hours + weekend + winter + room_cmp2 +
+    (1|site),
+    data=wdt.surv1[icu_accept==1])
+summary(m1.xt)
+
+## Log likelihood
+m1.xtlogLik <- m1.xt$loglik + c(0, 0, m1.xt$penalty)
+m1.xtlogLik
+
+## -2 logLik difference
+(-2 * (m1.xtlogLik["NULL"] - m1.xtlogLik["Penalized"]))
+
+## -2 logLik difference
+(logLikDiffNeg2 <- -2 * (logLik(m1.xt) - m1.xtlogLik["Integrated"]))
+
+## Degree of freedom difference
+(dfDiff <- m1.xt$df[1] - 1)
+
+## P value for the random effects: significant random effects across centers
+pchisq(q = as.numeric(logLikDiffNeg2), df = dfDiff, lower.tail = FALSE)
+
+# Median Hazard ratio
+# -------------------
+summary(m1.xt)
+VarCorr(m1.xt) # variance
+# MHR <- exp(sqrt(2*var)*phi-1(0.75))
+# str(m1.xt)
+(MHR <- exp(sqrt(2*VarCorr(m1.xt)$site) * qnorm(0.75)))
+
+# m becomes the name of the model used
+m <- m1.xt
 # model reports exponeniated coefficients
 str(m)
 m$coeff # coefficients on the original scale
@@ -155,7 +254,8 @@ createSheet(wb, name = sheet1)
 sheet1.df <- rbind(
     c('table name', table.name),
     c('observations', nrow(wdt.surv1)),
-    c('observations analysed', m$n)
+    c('observations analysed', m$n),
+    c("MHR", MHR)
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
