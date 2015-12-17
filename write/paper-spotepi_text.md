@@ -19,21 +19,28 @@ prospective observational cohort study in 48 NHS hospitals
 
 ## Background
 
-Recent policy has placed emphasis identifying and responding to deterioration
-among ward patients, and providing early access to critical care. However, critical care provision in the NHS is constrained, and existing data on the outcomes of deteriorating ward patients is sparse. We sought to define the incidence, disposition during the week following assessment, and outcomes of these patients.
+Recent policy has placed emphasis identifying and responding to deterioration among ward patients, and providing early access to critical care. However, critical care provision in the NHS is constrained, and existing data on the outcomes of deteriorating ward patients is sparse. We sought to define the incidence, disposition during the week following assessment, and outcomes of these patients.
 
 ## Methods
 
-We conducted a prospective cohort study of consecutive deteriorating ward
-patients referred to critical care in 48 NHS hospitals (1 November 2010 --- 31 December 2011). We used the SOFA score to define organ failure at ward assessment, and captured both the assessor's recommendation for critical care, and the decision to admit. Admission to critical care in the subsequent week was defined by linking to the national critical care audit database, and survival to one year by linking to national death registrations. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression, and Cox proportional hazards respectively. 
+We conducted a prospective cohort study of consecutive deteriorating ward patients referred to critical care in 48 NHS hospitals (1 November 2010 --- 31 December 2011). We recorded both the assessor's recommendation for critical care, and the decision to admit. For the subsequent week, admission to critical care was defined by linking to the national critical care audit database, and survival to one year by linking to national death registrations. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression, and Cox proportional hazards respectively. 
 
 ## Findings
 
-We included 15,158 patients of whom 6759 (45%) were in the highest NEWS risk class --- equivalent to 17 (95%CI 13--20) per hospital per month. Sepsis was reported in 9296 (61%), and 1427 patients (9%) were in respiratory failure, 2931 (19%) in renal failure, and 4636 (31%) who were shocked. The critical care unit was full at the time of 1221 (8%) referrrals.
+We included 15,158 patients of whom 6759 (45%) were in the highest NEWS risk class --- equivalent to 17 patients (95%CI 13--20) per hospital per month. The critical care unit was full at the time of 1221 (8%) referrrals. 5164 (34%) patients were already in established organ failure with only 870 patients (6%) in receipt of organ support. Sepsis was reported in 9296 (61%). 2708 (18%) patients died within 7-days, and most (57%, 1539 deaths) in the first 48 hours.
 
-2141 (14%) patients were refused critical care with a treatment limitation order of whom 506 (24%) survived 1-year.
+5321 (35%) patients were recommended for critical care at assessment of which 3375 (63%) were accepted. Critical care was less likely to be offered to the elderly (OR 0.60 95%CI 0.53--0.69 if aged over 80 years), and when the unit was full (OR 0.70, 95%CI 0.57-0.86). There was also significant variation in practice between hospital (Median OR 1.82, 95%1.74--2.19). Delay to admission was 2 hours (IQR 1--4) for those offered critical care. Of 1946 patients recommended but refused, 1003 (52%) survived 7-days without critical care, but 606 (31%) were admitted late (median delay 8 hours, IQR 3--22) and 337 (18%) died without critical care.
 
-Critical care was recommended for 5321 (35%) patients of whom 3375 (63%) were offered admission. A decision to admit was less likely for the elderly (OR 0.71, 95%CI 0.57--0.88 if age > 80 years) and when the unit was full (OR 0.56, 95%CI 0.42--0.75).
+9837 (65%) patients were recommended ward care of which 1796 (18%) had treatment limits, and a 7-day mortality of 40% (712 deaths). 8041 (82%) had no treatment limits of whom 6116 survived 7-days without critical care, 1303 were admitted late (median delay 14 hours, IQR 6--33) and 622 (8%) died without critical care.
+
+
+## Conclusion
+
+- high mortality
+- variability
+- early window of opportunity
+- occupancy effect
+
 
 <!-- 
 	                                    
@@ -55,14 +62,7 @@ Patients recommended but refused had a higher 7-day mortality (17.6% versus 10.4
 
 
 About a third of patients (5,326, 34·1%) were admitted to
-critical care. There were 2,787 (17·9%), and 6,989 (44·8%) deaths at 1-week, and
-1-year respectively (Kaplan-Meier failure function). A greater proportion of
-deaths occurred amongst those admitted to ICU during the subsequent week (959,
-18.4%), but a similar number of patients (934, 11.4%{\>\>check these numbers,
-need wrXX file for abstract\<\<}) without treatment limitation orders died on
-the ward without ICU care. There was significant variation in mortality between
-hospitals even after adjustment for patient level risk-factors (Median Hazard
-Ratio 1·34, 95%CI xx-yy @todo ).
+critical care. There were 2,787 (17·9%), and 6,989 (44·8%) deaths at 1-week, and 1-year respectively (Kaplan-Meier failure function). A greater proportion of deaths occurred amongst those admitted to ICU during the subsequent week (959, 18.4%), but a similar number of patients (934, 11.4%{\>\>check these numbers, need wrXX file for abstract\<\<}) without treatment limitation orders died on the ward without ICU care. There was significant variation in mortality between hospitals even after adjustment for patient level risk-factors (Median Hazard Ratio 1·34, 95%CI xx-yy @todo ).
 
 Interpretation
 --------------
@@ -332,11 +332,9 @@ assessment had a 7-day mortality of 21% (696 deaths). Just 40 (6%) of those
 deaths occurred before admission was arranged, but a further 223 patients (6%)
 were never admitted but survived regardless.
 
-Those offered admission were marginally younger (64 versus 66 years, 95%CI
-1--2), and more acutely unwell (4.1 vs 2.8 SOFA points, 95%CI 1.2-1.3).
+Those offered admission were marginally younger (64 versus 66 years, 95%CI 1--2), and more acutely unwell (4.1 vs 2.8 SOFA points, 95%CI 1.2-1.3).
 
 The median delay between assessment and admission for these patients was 2 hours(IQR 1--4) compared to 12 hours for those refused without treatment limits (median additional delay 10 hours, IQR 9--11). This meant that 2250 (73%) admissions were achieved within 4 hours for those initially accepted versus 322 (17%) for those initially refused (risk difference 55%, 95%CI 53-58%). 
-
 Variation in decision making
 ----------------------------
 
