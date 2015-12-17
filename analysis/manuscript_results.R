@@ -44,23 +44,30 @@ library(dplyr)
 
 source(paste0(PATH_SHARE, "/functions4rmd.R"))    # Rmd functions
 source(paste0(PATH_SHARE, "/derive.R"))
+source(paste0(PATH_SHARE, "/spotepi_variable_prep.R"))
 
 # Load data
 # NOTE: 2015-11-05 - [ ] removed from waf control
 load(paste0(PATH_DATA, '/paper-spotepi.RData'))
 wdt.original <- wdt
+tdt <- prep.wdt(wdt)
 tt <- list()                            # empty list to store rmd vars
 
+#  ============
+#  = Abstract =
+#  ============
 
-# Data defintions
-wdt[, recommend := ifelse(icu_recommend==1 & rxlimits==0,1,0)]
-wdt[, ward := ifelse(icu_recommend==0 & rxlimits==0,1,0)]
-wdt[, accept := ifelse(icu_recommend==1 & rxlimits==0 & icu_accept,1,0)]
-wdt[, room_cmp2 := cut2(open_beds_cmp, c(1,3), minmax=T )]
-wdt[, beds_none2 := cut2(open_beds_cmp, c(1), minmax=T )]
-wdt[, bedside.decision :=
-  ifelse(rxlimits == 1, "rxlimits",
-  ifelse(icu_accept == 0, "ward", "icu"))]
+with(wdt, CrossTable(icu_recommend))
+with(wdt, CrossTable(icu_recommend, icu_accept))
+
+with(wdt[icu_recommend==1 & icu_accept==0], CrossTable(icucmp,dead7))
+(ff.mediqr('time2icu', data=wdt[icu_recommend==1 & icu_accept==0], dp=0))
+
+with(wdt, CrossTable(icu_recommend, rxlimits))
+with(wdt[icu_recommend==0 & rxlimits==1], CrossTable(dead7))
+with(wdt[icu_recommend==0 & rxlimits==0], CrossTable(icucmp,dead7))
+(ff.mediqr('time2icu', data=wdt[icu_recommend==0 & rxlimits==0], dp=0))
+
 
 #  ===================
 #  = Results - intro =
@@ -201,6 +208,7 @@ describe(wdt$news_risk)
 dead2 <- ff.np('dead2', dp=1)
 dead7.d2 <- ff.np('dead2', dp=1, data=wdt[dead7==1])
 dead7 <- ff.np('dead7', dp=1)
+dead90 <- ff.np('dead90', dp=1)
 dead1y <- ff.np('dead1y', dp=1)
 dead90.wk1 <- ff.np('dead7', dp=1, data=wdt[dead90==1])
 
@@ -209,6 +217,10 @@ dead90.wk1 <- ff.np('dead7', dp=1, data=wdt[dead90==1])
 #  =================================
 #  = Pathways following assessment =
 #  =================================
+with(wdt, CrossTable(icu_recommend))
+with(wdt, CrossTable(icu_recommend, rxlimits))
+with(wdt[icu_recommend==0], CrossTable(icu_accept, rxlimits))
+
 with(wdt, CrossTable(bedside.decision))
 with(wdt, CrossTable(dead7, bedside.decision))
 with(wdt, CrossTable(icucmp, bedside.decision))
@@ -225,10 +237,10 @@ with(wdt[icu_recommend==1], CrossTable(beds_none, bedside.decision))
 #  ==================================
 rxlimits <- ff.np('rxlimits', data=wdt, dp=0)
 
-age.by.rxlimits <- t.test.format(wdt, 'age', 'rxlimits', dp=0)
+age.by.rxlimits <- ff.t.test(wdt, 'age', 'rxlimits', dp=0)
 age.by.rxlimits
 
-sofa.by.rxlimits <- t.test.format(wdt, 'sofa_score', 'rxlimits', dp=1)
+sofa.by.rxlimits <- ff.t.test(wdt, 'sofa_score', 'rxlimits', dp=1)
 sofa.by.rxlimits
 
 dead7.rxlimits <- ff.np('dead7', dp=1, data=wdt[rxlimits==1])
@@ -240,9 +252,9 @@ dead1y.rxlimits <- ff.np('dead1y', dp=1, data=wdt[rxlimits==1])
 #  ========================================================
 ward <- ff.np('ward', dp=1, data=wdt)
 
-age.by.ward <- t.test.format(wdt[rxlimits==0], 'age', 'ward', dp=1)
+age.by.ward <- ff.t.test(wdt[rxlimits==0], 'age', 'ward', dp=1)
 age.by.ward
-sofa.by.ward <- t.test.format(wdt[rxlimits==0], 'sofa_score', 'ward', dp=1)
+sofa.by.ward <- ff.t.test(wdt[rxlimits==0], 'sofa_score', 'ward', dp=1)
 sofa.by.ward
 
 recommend <- ff.np('recommend', dp=1, data=wdt)
@@ -266,9 +278,14 @@ accept <- ff.np('accept', dp=1, data=wdt[recommend==1])
 
 # characteristics of those accepted
 with(wdt[recommend==1], tapply(age, accept, summary))
-age.by.accept <- t.test.format(wdt[recommend==1], 'age', 'accept', dp=1)
+age.by.accept <- ff.t.test(wdt[recommend==1], 'age', 'accept', dp=1)
 age.by.accept
-sofa.by.accept <- t.test.format(wdt[recommend==1], 'sofa_score', 'accept', dp=1)
+
+lookfor("age")
+describe(wdt$age80_b)
+ff.prop.test(var="age80", byvar="accept", data=wdt[rxlimits==0,.(accept,age80=age<=80)], )
+
+sofa.by.accept <- ff.t.test(wdt[recommend==1], 'sofa_score', 'accept', dp=1)
 sofa.by.accept
 with(wdt[recommend==1], CrossTable(dead7, accept, prop.chisq=F, prop.t=F, chisq=T))
 with(wdt[recommend==1 & accept==1], CrossTable(dead7, icucmp, prop.chisq=F, prop.t=F, chisq=T))
@@ -312,223 +329,3 @@ early4.ward <- ff.np('early4', wdt.timing[icucmp==1 & ward==1])
 
 
 
-#  =======================
-#  = END OF CURRENT WORK =
-#  =======================
-
-
-stop()
-# Define your variables
-# ---------------------
-vars.patient    <- c("age80m", "age80p", "male", "sepsis_dx", "v_ccmds",
-      "v_ccmds_rec",
-      "delayed_referral", "periarrest", "icnarc_score")
-vars.timing     <- c("out_of_hours", "weekend", "winter")
-vars            <- c(vars.patient)
-
-# Model specification
-# -------------------
-wdt[, `:=`(
-age_k               = relevel(factor(age_k), 2),
-v_ccmds             = relevel(factor(v_ccmds), 2),
-sepsis_dx           = relevel(factor(sepsis_dx), 1),
-room_cmp            = relevel(factor(room_cmp), 3),
-icode               = factor(icode)
-)]
-
-tdt.reco[, `:=`(
-age_k               = relevel(factor(age_k), 2),
-v_ccmds             = relevel(factor(v_ccmds), 2),
-sepsis_dx           = relevel(factor(sepsis_dx), 1),
-room_cmp            = relevel(factor(room_cmp), 3),
-icode               = factor(icode)
-)]
-
-f.icu_recommend <- reformulate(termlabels = c(vars), response = 'icu_recommend')
-f.icu_accept <- reformulate(termlabels = c("icu_accept", vars), response = 'dead90')
-f.early4 <- reformulate(termlabels = c("early4", vars), response = 'dead90')
-
-# Run your model
-# --------------
-m <- glm(f.icu_recommend , family = 'binomial', data = wdt[rxlimits==0])
-summary(m)
-library(MASS)
-library(lme4)
-library(ggplot2)
-install.packages("GGally")
-library(GGally)
-confint(m)
-
-stop()
-# Modelling should exclude patients with treatment limits
-tdt <- wdt[rxlimits == 0]
-
-# Redefine room_cmp
-# -----------------
-# cut2 intervals are [) specified (i.e. a <= x < b)
-wdt[, room_max := cut2(open_beds_max, c(1,3), minmax=T )]
-wdt[,.N,by=room_max]
-str(wdt$room_max)
-wdt[, room_max := factor(room_max, labels=c(0,1,2))]
-
-wdt[, room_cmp2 := cut2(open_beds_cmp, c(1,3), minmax=T )]
-wdt[,.N,by=room_cmp2]
-wdt[, room_cmp2 := factor(room_cmp2, labels=c(0,1,2))]
-wdt[,.N,by=room_cmp2]
-
-# Redefine beds_none
-# ------------------
-wdt[,.N,by=beds_none]
-
-# Patients offerec critical care sicker and younger
-with(wdt, CrossTable(dead7, icu_recommend, prop.chisq=F, prop.t=F))
-with(wdt, tapply(icnarc0, icu_recommend, summary))
-with(wdt, tapply(age, icu_recommend, summary))
-
-# Compare to room_cmp (which uses open_beds_cmp not open_beds_max)
-with(wdt, CrossTable(room_cmp, room_max))
-with(wdt, CrossTable(room_cmp2, room_cmp))
-
-# Show that this defines recommendation, decision, delivery
-with(wdt, CrossTable(icu_recommend, room_cmp, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(icu_recommend, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(icu_recommend, beds_none, prop.chisq=F, prop.t=F))
-
-with(wdt, CrossTable(icu_accept, room_cmp, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(icu_accept, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(icu_accept, beds_none, prop.chisq=F, prop.t=F))
-
-with(wdt, CrossTable(early4, room_cmp, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(early4, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(early4, beds_none, prop.chisq=F, prop.t=F))
-
-with(wdt, CrossTable(dead7, room_cmp, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(dead7, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(dead7, beds_none, prop.chisq=F, prop.t=F))
-with(wdt[icu_recommend==1 & rxlimits==0], CrossTable(dead7, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt[icu_recommend==1 & rxlimits==0], CrossTable(dead7, beds_none, prop.chisq=F, prop.t=F))
-
-with(wdt, CrossTable(dead90, room_cmp, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(dead90, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(dead90, beds_none, prop.chisq=F, prop.t=F))
-with(wdt[icu_recommend==1 & rxlimits==0], CrossTable(dead90, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt[icu_recommend==1 & rxlimits==0], CrossTable(dead90, beds_none, prop.chisq=F, prop.t=F))
-
-with(wdt, CrossTable(rxlimits, room_cmp, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(rxlimits, room_cmp2, prop.chisq=F, prop.t=F))
-with(wdt, CrossTable(rxlimits, beds_none, prop.chisq=F, prop.t=F))
-
-
-
-with(wdt, tapply(time2icu, room_cmp, summary))
-with(wdt, tapply(time2icu, room_cmp2, summary))
-with(wdt, tapply(time2icu, beds_none, summary))
-
-
-# Define your variables
-# ---------------------
-vars.patient    <- c("age80m", "age80p", "male", "sepsis_dx", "v_ccmds",
-                "v_ccmds_rec",
-                "delayed_referral", "periarrest", "icnarc_score")
-vars.timing     <- c("out_of_hours", "weekend", "winter")
-vars            <- c(vars.patient)
-
-# Model specification
-# -------------------
-tdt[, `:=`(
-    age_k               = relevel(factor(age_k), 2),
-    v_ccmds             = relevel(factor(v_ccmds), 2),
-    sepsis_dx           = relevel(factor(sepsis_dx), 1),
-    room_cmp            = relevel(factor(room_cmp), 3),
-    icode               = factor(icode)
-    )]
-
-f.early4 <- reformulate(termlabels = c("early4", vars), response = 'dead90')
-f.icu_accept <- reformulate(termlabels = c("icu_accept", vars), response = 'dead90')
-
-# Run your model
-# --------------
-m <- glm(f.icu_accept , family = 'binomial', data = tdt)
-summary(m)
-m <- glm(f.icu_accept , family = 'binomial', data = tdt[icu_recommend==1])
-summary(m)
-
-m <- glm(f.early4 , family = 'binomial', data = tdt.rec)
-summary(m)
-
-# TODO: 2015-08-04 - [ ] define steps in the pathway to be reported and followed
-# ------------------------------------------------------------------------------
-# - week one pathways
-# - primary outcome
-# - one year survival
-
-
-# Pathway steps
-# - report 7 day mortality as marker of severity
-with(tdt.rec, CrossTable(grp, dead7))
-
-# Pathway for potential admissions
-#   - immediate offers
-#   - late offers
-#   - dead without critical care
-
-# - all (no rxlimits - comparison of recommended and controls
-with(tdt, CrossTable(icu_accept))
-with(tdt, CrossTable(icu_accept, icucmp))
-with(tdt, CrossTable(icu_accept, dead7.noicu)) # 953 patients died without ICU
-with(tdt, CrossTable(grp, dead7))
-with(tdt, CrossTable(grp, dead90))
-with(tdt, CrossTable(grp, dead1y))
-
-# - recommend grp
-with(tdt.rec, CrossTable(icu_accept))
-with(tdt.rec, CrossTable(icu_accept, icucmp))
-with(tdt.rec, CrossTable(icu_accept, dead7.noicu))
-with(tdt.rec, CrossTable(dead90))
-with(tdt.rec, CrossTable(dead1y))
-
-# - limited care grp: not recommended
-# with(tdt.lim, CrossTable(icu_accept))
-with(tdt.lim, CrossTable(icu_accept, icucmp))
-with(tdt.lim, CrossTable(icu_accept, dead7.noicu))
-with(tdt.lim, CrossTable(grp, dead7))
-with(tdt.lim, CrossTable(grp, dead90))
-with(tdt.lim, CrossTable(grp, dead1y))
-
-
-# TODO: 2015-08-08 - [ ] build model icu_accept in 'full population'
-# ------------------------------------------------------------------
-# - decision making (who gets offered critical care) and ?site level variation
-
-
-# NOTE: 2015-09-04 - [ ] redefine room_cmp
-wdt[, encourage := ifelse(open_beds_max<=0, 0,
-    ifelse(open_beds_max %in% c(1,2), 1,
-    ifelse(open_beds_max>=3, 2
-        ,NA)))]
-with(wdt, CrossTable(encourage))
-with(wdt, CrossTable(icu_accept, encourage))
-with(wdt, CrossTable(early4, encourage))
-with(wdt, CrossTable(dead7, encourage))
-with(wdt, CrossTable(dead28, encourage))
-with(wdt, CrossTable(dead90, encourage))
-
-# when there are lots of beds, what proportion of patients recommended for critical care don't get it
-with(wdt[cc_recommended==1], CrossTable(icucmp, encourage))
-with(wdt[cc_recommended==1], CrossTable(icu_accept, encourage))
-# NOTE: 2015-09-04 - [ ] mortality is lower for ICU admissions when beds available!!
-with(wdt[cc_recommended==1 & encourage==2], t.test(icnarc0~icucmp))
-# despite the severity of illness being higher!!!
-with(wdt[cc_recommended==1 & encourage==0], CrossTable(dead7, icu_accept))
-with(wdt[cc_recommended==1 & encourage==1], CrossTable(dead7, icu_accept))
-with(wdt[cc_recommended==1 & encourage==2], CrossTable(dead7, icu_accept))
-with(wdt[cc_recommended==1 & rxlimits==0 & encourage==2], CrossTable(dead7, icu_accept))
-with(wdt[cc_recommended==1 & rxlimits==0 & encourage==2], CrossTable(dead90, icu_accept))
-with(wdt[cc_recommended==1 & encourage==2], CrossTable(dead7, early4))
-with(wdt[cc_recommended==1 & encourage==2], CrossTable(dead7, icucmp))
-with(wdt[cc_recommended==1 & encourage==2], CrossTable(dead90, icucmp))
-
-tdt <- wdt[cc_recommended==1 & rxlimits==0 & encourage==2]
-m <- glm(dead90 ~ icu_accept + age + icnarc0 , family = 'binomial', data = tdt)
-summary(m)
-plot(m)
