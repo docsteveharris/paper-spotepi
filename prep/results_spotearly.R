@@ -38,6 +38,7 @@ source("project_paths.r")
 # TODO: 2015-07-21 - [ ] but working_post_flight_plus does not exist, go with postflight
 # working.stata.data <- "/Volumes/phd/data-spot_early/working_postflight_plus.dta"
 working.stata.data <- paste0(PATH_DATA, '/working_postflight.dta')
+working.stata.surv1 <- paste0(PATH_DATA, "/working_survival_single.dta")
 
 # TODO: 2015-07-21 - [ ] does not exist
 # sensitivity.stata.data <- paste0(PATH_DATA, "/working_sensitivity.dta")
@@ -84,6 +85,11 @@ if (clean.run) {
         convert.underscore = FALSE,
         convert.factors = FALSE
         )
+    rdf.surv1 <- read.dta(working.stata.surv1,
+        convert.dates = TRUE,
+        convert.underscore = FALSE,
+        convert.factors = FALSE
+        )
     # Working sensitivity data
     # wdt.sens <- data.table(read.dta(sensitivity.stata.data,
     #     convert.dates = TRUE,
@@ -96,6 +102,8 @@ if (clean.run) {
     var.names <- data.frame(names(wdf))
     wdt <- data.table(wdf)
     setkey(wdt, icode)
+
+    wdt.surv1 <- data.table(rdf.surv1)
 
     #  ===================================
     #  = Prepare other views of the data =
