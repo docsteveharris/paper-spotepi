@@ -223,6 +223,12 @@ system.time(d <- rsample2(tdt, id.unit="pid", id.cluster="site"))
 # Now use this function to bootstrap coefficients and MHR from model
 
 # Define formula for model
+# Formula for single level model in coxph
+fm.ph <- formula(
+        paste("Surv(t, f)",
+        paste(c(vars.patient, vars.timing),
+        collapse = "+"), sep = "~"))
+
 # Formula for old version of coxph with frailty (coxme now recommended but slow)
 fm.xt <- formula(
         paste("Surv(t, f)",
@@ -270,12 +276,27 @@ coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
     return(c(est, mhr=MHR))
 }
 
-coxph.rsample(fm=fm.xt, data=tdt, coxme=FALSE)
-coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE)
+# coxph.rsample(fm=fm.xt, data=tdt, coxme=FALSE)
+# coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE)
+# r <- (sapply(1:20,  function(i) coxph.rsample(fm=fm.xt, data=tdt)))
 
-r <- (sapply(1:20,  function(i) coxph.rsample(fm=fm.xt, data=tdt)))
-r <- (sapply(1:2,  function(i) coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE)))
-r
+#  =======================================
+#  = Set up number of sims for bootstrap =
+#  =======================================
+
+nsims <- 1
+
+# Cox ME version (for all patients without Rx limits)
+# ---------------------------------------------------
+d <- tdt
+
+# Single level model in coxph (for sanity checks)
+m1 <- coxph(fm.ph, data=d)
+m1.confint <- cbind(summary(m1)$conf.int[,c(1,3:4)], p=(summary(m1)$coefficients[,5]))
+
+r1.system.time <- system.time(r <- (sapply(1:nsims,
+     function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
+
 r1 <- t(apply(r, 1,
     function(x) {
             c(
@@ -288,42 +309,82 @@ r1 <- t(apply(r, 1,
             # z=mean(x)/sd(x),
         )}
     ))
+
 r1
+(r1.raw <- r1[1:nrow(r1)-1,c(1:4)])
+(r1.mhr <- c(r1[nrow(r1),c(5:7)],p=NA))
+# Bind single level model estimates for visual checks
+(r1.raw <- cbind(r1.raw, m1.confint))
+(r1.raw <- rbind(r1.raw, r1.mhr))
+(r1.fmt <- model2table(r1.raw[,1:4], est.name="HR"))
 
-(m1.xt.eform.fmt <- model2table(m1.xt.eform, est.name="HR"))
 
+# Cox ME version (for patients refused)
+# -------------------------------------
+d <- tdt[icu_accept==0]
 
-m.xt.eform <- cbind(exp(coef(summary(m.xt))[,1:2]),
-    exp(confint(m.xt, method='Wald'))[-1,], # drop the first row
-    z = summary(m.xt)[['coefficients']][,3],
-    p = summary(m.xt)[['coefficients']][,4])
-m.xt.eform # this is a matrix not a dataframe
+# Single level model in coxph (for sanity checks)
+m2 <- coxph(fm.ph, data=d)
+m2.confint <- cbind(summary(m2)$conf.int[,c(1,3:4)], p=(summary(m2)$coefficients[,5]))
 
-(beta <- fixef(m1.xt))
-(beta.exp <- exp(fixef(m1.xt)))
-(se   <- sqrt(diag(vcov(m1.xt))))
-p    <- 1 - pchisq((beta/se)^2, 1)
-CI   <- round(confint(m1.xt), 3)
-CI.exp   <- exp(round(confint(m1.xt), 3))
+r2.system.time <- system.time(r.refuse <- (sapply(1:nsims,
+     function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
+r2.system.time
 
-# (m1.xt.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
-(m1.xt.eform <- cbind(beta.exp, CI.exp, p))
-(m1.xt.eform.fmt <- model2table(m1.xt.eform, est.name="HR"))
-MHR4boot <- function(m) {
-    # Median Odds Ratio
-    (MHR <- exp(sqrt(2*VarCorr(m)$site) * qnorm(0.75)))
-    return(MHR)
-}
-library(boot)
-bootMer(m1.xt, MHR4boot, nsim=1)
-MHR4boot(m1.xt)
+r2 <- t(apply(r.refuse, 1,
+    function(x) {
+            c(
+            mean.exp=exp(mean(x)),
+            q.exp=quantile(exp(x), probs=c(0.05,0.95)) ,
+            p=1-pnorm(abs(mean(x)/sd(x))),
+            mean=mean(x),
+            q=quantile(x, probs=c(0.05,0.95))
+            # se=sd(x),
+            # z=mean(x)/sd(x),
+        )}
+    ))
 
-system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=100))
-system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=100))
-MOR.nopt.95ci <- boot.ci(bMer, type=c("norm"))
-MOR.nopt.95ci <- c(MOR.nopt.95ci$t0, MOR.nopt.95ci$normal[,2:3])
+r2
+(r2.raw <- r2[1:nrow(r2)-1,c(1:4)])
+(r2.mhr <- c(r2[nrow(r2),c(5:7)],p=NA))
+# Bind single level model estimates for visual checks
+(r2.raw <- cbind(r2.raw, m2.confint))
+(r2.raw <- rbind(r2.raw, r2.mhr))
+(r2.fmt <- model2table(r2.raw[,1:4], est.name="HR"))
 
-stop()
+# Cox ME version (for patients refused but recommended)
+# -----------------------------------------------------
+d <- tdt[icu_accept==0 & icu_recommend==1]
+
+# Single level model in coxph (for sanity checks)
+m3 <- coxph(fm.ph, data=d)
+m3.confint <- cbind(summary(m2)$conf.int[,c(1,3:4)], p=(summary(m3)$coefficients[,5]))
+m3.confint
+
+r3.system.time <- system.time(r.refused.recommended <- (sapply(1:nsims,
+     function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
+r3.system.time[1]
+
+r3 <- t(apply(r.refused.recommended, 1,
+    function(x) {
+            c(
+            mean.exp=exp(mean(x)),
+            q.exp=quantile(exp(x), probs=c(0.05,0.95)) ,
+            p=1-pnorm(abs(mean(x)/sd(x))),
+            mean=mean(x),
+            q=quantile(x, probs=c(0.05,0.95))
+            # se=sd(x),
+            # z=mean(x)/sd(x),
+        )}
+    ))
+
+r3
+(r3.raw <- r3[1:nrow(r3)-1,c(1:4)])
+(r3.mhr <- c(r3[nrow(r3),c(5:7)],p=NA))
+# Bind single level model estimates for visual checks
+(r3.raw <- cbind(r3.raw, m3.confint))
+(r3.raw <- rbind(r3.raw, r3.mhr))
+(r3.fmt <- model2table(r3.raw[,1:4], est.name="HR"))
 
 # Now export to excel
 # -------------------
@@ -339,30 +400,43 @@ sheet1.df <- rbind(
     c('table name', table.name),
     c('observations', nrow(tdt)),
     c('observations analysed', nrow(tdt)),
-    c("MHR", MHR)
+    c('bootstap sims', nsims),
+    c('r1 system.time', r1.system.time[1]),
+    c('r2 system.time', r2.system.time[1]),
+    c('r3 system.time', r3.system.time[1])
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
-sheet2 <- 'raw.frailty'
+sheet2 <- 'raw.norxlimits'
 removeSheet(wb, sheet2)
 createSheet(wb, name = sheet2)
-writeWorksheet(wb, cbind(vars = row.names(m1.xt.eform), m1.xt.eform), sheet2)
+writeWorksheet(wb, cbind(vars = row.names(r1.raw), r1.raw), sheet2)
 
-sheet3 <- 'results.frailty'
+sheet3 <- 'fmt.norxlimits'
 removeSheet(wb, sheet3)
 createSheet(wb, name = sheet3)
-writeWorksheet(wb, m1.xt.eform.fmt, sheet3)
+writeWorksheet(wb, r1.fmt, sheet3)
 
-sheet4 <- 'raw.cr.icu'
+
+sheet4 <- 'raw.refused'
 removeSheet(wb, sheet4)
 createSheet(wb, name = sheet4)
-writeWorksheet(wb, cbind(vars = row.names(m1.cr.icu.eform), m1.cr.icu.eform), sheet4)
+writeWorksheet(wb, cbind(vars = row.names(r2.raw), r2.raw), sheet4)
 
-sheet5 <- 'results.cr.icu'
+sheet5 <- 'fmt.refused'
 removeSheet(wb, sheet5)
 createSheet(wb, name = sheet5)
-writeWorksheet(wb, m1.cr.icu.fmt, sheet5)
+writeWorksheet(wb, r2.fmt, sheet5)
+
+sheet6 <- 'raw.refused.recommended'
+removeSheet(wb, sheet6)
+createSheet(wb, name = sheet6)
+writeWorksheet(wb, cbind(vars = row.names(r3.raw), r3.raw), sheet6)
+
+sheet7 <- 'fmt.refused.recommended'
+removeSheet(wb, sheet7)
+createSheet(wb, name = sheet7)
+writeWorksheet(wb, r3.fmt, sheet7)
+
 
 saveWorkbook(wb)
-
-
