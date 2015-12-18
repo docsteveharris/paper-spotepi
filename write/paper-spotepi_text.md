@@ -41,205 +41,69 @@ In 13017 (86%) patients without treatment limits, mortality occured early with 9
 
 Deteriorating ward patients referred to critical care are vulnerable with a high initial mortality. Despite clinical recommendation for admission a substantial minority die without admission, and high critical care occupancy contributes both predujices and delays admission.
 
-<!-- 
-	                                    
-	                                    
-	 _ __ ___  ___ _   _ _ __ ___   ___ 
-	| '__/ _ \/ __| | | | '_ ` _ \ / _ \
-	| | |  __/\__ \ |_| | | | | | |  __/
-	|_|  \___||___/\__,_|_| |_| |_|\___|
-	                                    
-	                                    
- -->
-
-
-
-
-Patients recommended but refused had a higher 7-day mortality (17.6% versus 10.4%, risk difference 7.1% 95%CI 5.1-9.1%) than those not recommended.
-
-
-
-
-About a third of patients (5,326, 34·1%) were admitted to
-critical care. There were 2,787 (17·9%), and 6,989 (44·8%) deaths at 1-week, and 1-year respectively (Kaplan-Meier failure function). A greater proportion of deaths occurred amongst those admitted to ICU during the subsequent week (959, 18.4%), but a similar number of patients (934, 11.4%{\>\>check these numbers, need wrXX file for abstract\<\<}) without treatment limitation orders died on the ward without ICU care. There was significant variation in mortality between hospitals even after adjustment for patient level risk-factors (Median Hazard Ratio 1·34, 95%CI xx-yy @todo ).
-
-Interpretation
---------------
-
-Deteriorating ward patients are common, and have a high mortality which varies
-significantly between hospitals. A minority of patients are admitted to ICU, and
-many deaths occur without ICU admission.
-
-Funding
--------
+## Funding
 
 Wellcome Trust, NIHR Service Support Costs, and the Intensive Care National
 Audit & Research Centre
 
-Introduction
-============
 
-There are more than 160 acute hospitals in England that care for more than 11
-million overnight hospital admissions per annum. Each patient spends a mean of 5
-days on a hospital ward.[Centre, 2012, \#17089] These inpatients undergo a
-process of continual triage, and those who deteriorate are referred to critical
-care. This interface between the ward and critical care has been a priority area
-for the English National Health Service (NHS), but available data derive from
-qualitative work such as the NHS National Patient Safety Agency report[Luettel
-et al., 2007, \#734], relatively small retrospective studies[McQuillan et al.,
-1998, \#605], or voluntary reporting systems[Cullinane et al., 2005, \#15159].
 
-International reports indicate that episodes of deterioration are common, and
-have poor outcome. Inpatient referrals to critical care outreach teams (CCOT),
-or their equivalent, appear to run between 25--50 per 1,000 hospital
-admissions.[Bell et al., 2006, \#17133; Buist et al., 2007, \#17325; Jones et
-al., 2009, \#17139] For such patients, hospital mortality rates are reported as
-26% (Australia), and 30-day mortality as 28% (Israel).[Buist et al., 2007,
-\#17325; Simchen et al., 2004, \#705] This greatly exceeds the 8·9% inpatient
-30-day mortality recently reported in Scottish NHS hospitals.[Clark et al.,
-2014, \#86524]
 
-Critical care provision in the NHS is constrained despite a one-third increase
-in funding for beds in 2000. In 2010, the United Kingdom (UK) was ranked 24 out
-of 28 European countries in terms of provision of critical care beds per capita
-population.[Rhodes et al., 2012, \#15692] Similar results are found when the
-comparison is with North American health care systems.[Wunsch et al., 2008,
-\#761] This ought to imply that access to critical care for the deteriorating
-ward patient is correspondingly constrained, and that delay to admission to
-critical care is a problem.
+# Introduction
 
-The objective of the (SPOT)light study was two-fold. The first objective was to
-measure the incidence, the disposition, and the outcome of the deteriorating
-ward patient referred to critical care, and to quantify the degree of
-heterogeneity between hospitals. These results will be reported here. The second
-objective was to measure the magnitude and the effect of delay to admission, and
-this will be reported in an accompanying paper.
+There are more than 160 acute hospitals in England that care for more than 11 million overnight hospital admissions per annum. Each patient spends a mean of 5 days on a hospital ward.[Centre, 2012, \#17089] These inpatients undergo a process of continual triage, and those who deteriorate are referred to critical care. This interface between the ward and critical care has been a priority area for the English National Health Service (NHS), but available data derive from qualitative work such as the NHS National Patient Safety Agency report[Luettel et al., 2007, \#734], relatively small retrospective studies[McQuillan et al., 1998, \#605], or voluntary reporting systems[Cullinane et al., 2005, \#15159]. 
 
-Methods
-=======
+International reports indicate that episodes of deterioration are common, and have poor outcome. Inpatient referrals to critical care outreach teams (CCOT), or their equivalent, appear to run between 25--50 per 1,000 hospital admissions.[Bell et al., 2006, \#17133; Buist et al., 2007, \#17325; Jones et al., 2009, \#17139] For such patients, hospital mortality rates are reported as 26% (Australia), and 30-day mortality as 28% (Israel).[Buist et al., 2007, \#17325; Simchen et al., 2004, \#705] This greatly exceeds the 8·9% inpatient 30-day mortality recently reported in Scottish NHS hospitals.[Clark et al., 2014, \#86524] 
 
-Study design and participants
------------------------------
+Critical care provision in the NHS is constrained despite a one-third increase in funding for beds in 2000. In 2010, the United Kingdom (UK) was ranked 24 out of 28 European countries in terms of provision of critical care beds per capita population.[Rhodes et al., 2012, \#15692] Similar results are found when the comparison is with North American health care systems.[Wunsch et al., 2008, \#761] This ought to imply that access to critical care for the deteriorating ward patient is correspondingly constrained, and that delay to admission to critical care is a problem. 
 
-The (SPOT)light study was a prospective observational cohort study of the
-deteriorating ward patient referred to critical care. The physiological status
-of the patient at the time of the first bedside assessment by critical care was
-prospectively recorded along with the recommendation made at the end of the
-assessment. By linking the records generated at the time of the bedside
-assessment, to the Intensive Care National Audit & Research Centre's Case Mix
-Programme Database (ICNARC CMPD), the fact and timing of admission to critical
-care was identified. Similarly, by linking to the NHS Information Service then
-vital status up to 1 year was recorded.
+We set out to measure the incidence, the disposition, and the outcome of the deteriorating ward patient referred to critical care, and the factors affecting the decision making around, and the timing of, admission.
 
-Patients were eligible if they were inpatients on general hospital wards who had
-been referred to, and assessed by, critical care. The assessment had to be
-performed at the bedside by a member of the critical care team. This was defined
-broadly to include members of the critical care outreach service, or members of
-the critical care medical or nursing staff. Only the first assessment for a
-given episode of illness was eligible. Cardiac arrests, planned admissions, and
-visits that were retrievals of patients where a decision to admit had already
-been made were not eligible.
+# Methods
 
-Patient demographics, and the date, time and location of the visit were
-recorded, along with the level of care at the time of the visit.[2000, \#1009]
-Available patient physiology (vital signs, arterial blood gas and laboratory
-measurements) at the time of, or immediately preceding, the visit was abstracted
-along with organ support, antibiotic therapy, and a subjective assessment of the
-likelihood of sepsis, and its source. The assessor was then asked to report the
-level of care recommended, and the outcome of the decision to admit to critical
-care. Treatment limitation orders were recorded for those not admitted.
+## Study design and participants
 
-Procedures
-----------
+The (SPOT)light study was a prospective observational cohort study of the deteriorating ward patient referred to critical care. The physiological status of the patient at the time of the first bedside assessment by critical care was prospectively recorded along with the recommendation made at the end of the assessment. By linking the records generated at the time of the bedside assessment, to the Intensive Care National Audit & Research Centre's Case Mix Programme Database (ICNARC CMPD), the fact and timing of admission to critical care was identified. Similarly, by linking to the NHS Information Service then vital status up to 1 year was recorded. 
 
-The study was registered on the National Institute of Health Research (NIHR)
-research portfolio, and hospitals were eligible if they participated in the CMP.
-Research teams at each hospital attended a Dataset Familiarisation Course, and a
-data collection manual containing definitions of items to be collected was
-provided. The Clinical Trials Unit at ICNARC provided support for research
-queries during the study.
+Patients were eligible if they were inpatients on general hospital wards who had been referred to, and assessed by, critical care. The assessment had to be performed at the bedside by a member of the critical care team. This was defined broadly to include members of the critical care outreach service, or members of the critical care medical or nursing staff. Only the first assessment for a given episode of illness was eligible. Cardiac arrests, planned admissions, and visits that were retrievals of patients where a decision to admit had already been made were not eligible. 
 
-Hospitals were asked to report all consecutive ward referrals to the critical
-care team. Where possible, data collection was to be contemporaneous, and
-hospitals were requested to identify and submit missed referrals. We used the
-proportion of emergency ward admissions in the ICNARC CMP that were successfully
-linked to the (SPOT)light database to quality control the study. Data quality
-was judged on a monthly basis, and all data from individual months falling below
-a minimum standard of 80% data linkage were excluded. Reporting was via a secure
-online web portal which performed real-time field and record level validation.
-Further on-line validation reports were completed by all hospitals before the
-database was locked in September 2012. Fact and date of death were then
-requested from the NHS Information Service. CCOT provision was reported by
-participating hospitals, and contemporaneous CMP data and Hospital Episode
-Statistics (HES) were used to define critical care provision, occupancy, and
-hospital characteristics.
+Patient demographics, and the date, time and location of the visit were recorded, along with the level of care at the time of the visit.[2000, \#1009] Available patient physiology (vital signs, arterial blood gas and laboratory measurements) at the time of, or immediately preceding, the visit was abstracted along with organ support, antibiotic therapy, and a subjective assessment of the likelihood of sepsis, and its source. The assessor was then asked to report the level of care recommended, and the outcome of the decision to admit to critical care. Treatment limitation orders were recorded for those not admitted. 
 
-Statistical analysis
---------------------
+## Procedures
 
-The primary outcome was 90-day mortality. Sample size was calculated to evaluate
-mortality increases from delay to admission using estimates from 2007 ICNARC CMP
-data. The target sample size was 12,075--20,125 patients referred to critical
-care which allowed for delays to occur in 10--40% of admissions and mortality
-effect sizes of 5--10%.
+The study was registered on the National Institute of Health Research (NIHR) research portfolio, and hospitals were eligible if they participated in the CMP. Research teams at each hospital attended a Dataset Familiarisation Course, and a data collection manual containing definitions of items to be collected was provided. The Clinical Trials Unit at ICNARC provided support for research queries during the study.
 
-Three definitions of physiological severity of illness on the ward were
-constructed from the physiological data collected at the time of the bedside
-assessment: the NHS National Early Warning Score (NEWS); the acute physiology
-component of the ICNARC score, and SOFA score.[Physicians, 2012, \#9726;
-Harrison et al., 2007, \#1640; Vincent et al., 1996, \#719] The NEWS score
-additionally defines three risk classes (Low, Medium, and High) designed to
-trigger an escalating clinical response. Missing variables were assigned a zero
-weight equivalent to assuming that the unobserved physiology was within the
-normal range.[Harrison et al., 2007, \#1640]
+Hospitals were asked to report all consecutive ward referrals to the critical care team. Where possible, data collection was to be contemporaneous, and hospitals were requested to identify and submit missed referrals. We used the proportion of emergency ward admissions in the ICNARC CMP that were successfully linked to the (SPOT)light database to quality control the study. Data quality was judged on a monthly basis, and all data from individual months falling below a minimum standard of 80% data linkage were excluded. Reporting was via a secure online web portal which performed real-time field and record level validation. Further on-line validation reports were completed by all hospitals before the database was locked in September 2012. Fact and date of death were then requested from the NHS Information Service. CCOT provision was reported by participating hospitals, and contemporaneous CMP data and Hospital Episode Statistics (HES) were used to define critical care provision, occupancy, and hospital characteristics.
 
- 
+## Statistical analysis
 
->   The indicator of critical care unit occupancy was the difference between the
->   maximum number of beds reported to ICNARC, and the number of actively
->   treated patients occupying those beds at the time the ward patient was
->   assessed. Units were defined as having two or more, one, or zero or fewer
->   empty beds (the latter where occupancy exceeded reported capacity).
+The primary outcome was 90-day mortality. Sample size was calculated to evaluate mortality increases from delay to admission using estimates from 2007 ICNARC CMP data. The target sample size was 12,075--20,125 patients referred to critical care which allowed for delays to occur in 10--40% of admissions and mortality effect sizes of 5--10%. 
 
->   At ward assessment, the level of care recommended, and the decision to
->   admit, or not, was recorded. Prompt admission was defined as one occuring
->   within four hours of ward assessment, in line with recently published UK
->   guidelines.{2013f}
+Physiology measurements at the time of the ward assessment were abstracted. From these, the ICNARC physiology score, the NHS National Early Warning Score and the Sequential Organ Failure Assessment (SOFA) score were calculated with missing values given zero weights as recommended.[Physicians, 2012, \#9726; Harrison et al., 2007, \#1640; Vincent et al., 1996, \#719] The NEWS score additionally defines three risk classes (Low, Medium, and High) designed to trigger an escalating clinical response.
 
- 
+The patient's existing dependency at assessment was defined using the UK Critical Care Minimum Dataset (CCMDS) levels of care: Levels 0 and 1 are most commonly provided on normal wards while Levels 2 and 3 are within high dependency (HDU) and intensive care units (ICU) respectively.{2013f} The level of care recommended was recorded using the same scale, along with the decision to admit. Prompt admission was defined as one occuring within four hours of ward assessment, in line with recently published UK guidelines.{2013f}
 
-Incidence models were stratified by NEWS risk class. The unit of analysis was a
-study week so that weekly fluctuations in lagged critical care occupancy could
-be examined. Estimation was via generalised estimating equations (GEE) with
-hospitals as clusters, and week-by-week correlations modelled using a first
-order autoregressive structure. Cox proportional hazards were used to model
-survival with a shared frailty (random effect) for hospitals which was is
-reported as a Median Hazard Ratio (MHR).[Bengtsson and Dribe, 2010, \#60939] The
-proportional hazards assumption was checked by inspecting plots of smoothed
-exponentiated standardised Schoënfeld residuals, and re-entering terms using
-time-varying co-efficients where necessary.
+The indicator of critical care unit occupancy was the difference between the maximum number of beds reported to ICNARC, and the number of actively treated patients occupying those beds at the time the ward patient was assessed. Bed pressure was defined as being high (zero or fewer beds), medium (one or two beds), or low (three or more beds).
 
-Categorical data were reported as counts and percentages, and continuous data as
-mean (SD) or median (IQR) values. Effect measures are reported with their 95%
-confidence intervals. In tables, where effect measures from different models are
-reported alongside each other for the purposes of comparison then the 95%
-confidence intervals are replaced with asterisks to improve legibility. One
-asterisk is used when the probability of a type I error is less than 5%
-(p\<0·05), two asterisks are used when the risk is less than 1% (p\<0·01), and
-three when the risk is less than 0·1% (p\<0·001).
+Incidence models were stratified by NEWS risk class. The unit of analysis was a study week so that weekly fluctuations in lagged critical care occupancy could be examined. Estimation was via generalised estimating equations (GEE) with hospitals as clusters, and week-by-week correlations modelled using a first order autoregressive structure. Decision to admit was modelled multi-level logisitc regression with patients nested within hospitals. Cox proportional hazards were used to model survival with a shared frailty. The proportional hazards assumption was checked by inspecting plots of smoothed exponentiated standardised Schoënfeld residuals, and re-entering terms using time-varying co-efficients where necessary. We reported random effects using the Median Odds Ratio (MOR), and the Median Hazard Ratio (MHR) using the bootstrap to generate 95% confidence intervals. These statistics represent the median difference when comparing outcomes from any two randomly selected hospitals.[Bengtsson and Dribe, 2010, \#60939]
 
-Role of the funding source
---------------------------
+Categorical data were reported as counts and percentages, and continuous data as mean (SD) or median (IQR) values. Effect measures are reported with their 95% confidence intervals.
 
-The study was centrally funded by the Wellcome Trust, sponsored by ICNARC, and
-supported at NHS hospitals through the National Institute of Health Research
-service support costs. The funders of the study had no role in the study design;
-gathering, analysis, and interpretation of the data; writing of the report; and
-decision to submit the report for publication. The corresponding author had full
-access to all the data (including statistical reports and tables); takes
-responsibility for the integrity of the data and the accuracy of the data
-analysis; and takes final responsibility for the decision to submit for
-publication.
+## Role of the funding source
+
+The study was centrally funded by the Wellcome Trust, sponsored by ICNARC, and supported at NHS hospitals through the National Institute of Health Research service support costs. The funders of the study had no role in the study design; gathering, analysis, and interpretation of the data; writing of the report; and decision to submit the report for publication. The corresponding author had full access to all the data (including statistical reports and tables); takes responsibility for the integrity of the data and the accuracy of the data analysis; and takes final responsibility for the decision to submit for publication.
+
+<!-- 
+                                        
+                                        
+     _ __ ___  ___ _   _ _ __ ___   ___ 
+    | '__/ _ \/ __| | | | '_ ` _ \ / _ \
+    | | |  __/\__ \ |_| | | | | | |  __/
+    |_|  \___||___/\__,_|_| |_| |_|\___|
+                                        
+                                        
+ -->
+
 
 # Results
 
