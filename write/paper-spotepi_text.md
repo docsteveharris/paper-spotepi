@@ -1,5 +1,3 @@
-\<!-- pandoc -o mas\_spotepi.odt paper-spotepi\_text.md --smart --\>
-
 # Title page
 
 ## Working title
@@ -27,20 +25,21 @@ We conducted a prospective cohort study of consecutive deteriorating ward patien
 
 ## Findings
 
-We included 15,158 patients of whom 6759 (45%) were in the highest NEWS risk class --- equivalent to 17 patients (95%CI 13--20) per hospital per month. The critical care unit was full at the time of 1221 (8%) referrrals. 5164 (34%) patients were already in established organ failure with only 870 patients (6%) in receipt of organ support. Sepsis was reported in 9296 (61%). 2708 (18%) patients died within 7-days, and most (57%, 1539 deaths) in the first 48 hours.
+We included 15,158 patients of whom 6759 (45%) were in the highest NEWS risk class --- equivalent to 17 high risk patients (95%CI 13--20) per hospital per month. The critical care unit was full at the time of 1221 (8%) referrals. 5164 (34%) patients were in established organ failure with only 870 patients (6%) already on organ support. Sepsis was reported in 9296 (61%) patients. 
 
-5321 (35%) patients were recommended for critical care at assessment of which 3375 (63%) were accepted. Critical care was less likely to be offered to the elderly (OR 0.60 95%CI 0.53--0.69 if aged over 80 years), and when the unit was full (OR 0.70, 95%CI 0.57-0.86). There was also significant variation in practice between hospital (Median OR 1.82, 95%1.74--2.19). Delay to admission was 2 hours (IQR 1--4) for those offered critical care. Of 1946 patients recommended but refused, 1003 (52%) survived 7-days without critical care, but 606 (31%) were admitted late (median delay 8 hours, IQR 3--22) and 337 (18%) died without critical care.
+5321 (35%) patients were recommended for critical care at assessment of which 3375 (63%) were accepted. Patients over 80 years were less likely to be offered admission (OR 0.60 95%CI 0.53--0.69) as were patients assesssed when the unit was full (OR 0.70, 95%CI 0.57-0.86).There was also significant interhospital variation in admission decisions (Median OR 1.82, 95%1.74--2.19). 
 
-9837 (65%) patients were recommended ward care of which 1796 (18%) had treatment limits, and a 7-day mortality of 40% (712 deaths). 8041 (82%) had no treatment limits of whom 6116 survived 7-days without critical care, 1303 were admitted late (median delay 14 hours, IQR 6--33) and 622 (8%) died without critical care.
+The remaining 1946 (37%) patients recommended were refused immediate admission. Of these, 606 (31%) were admitted late and 337 (18%) died without critical care.
 
+9837 (65%) patients were recommended ward care of which 8041 (82%) had no treatment limitation orders. Of these, 1303 (16%) were admitted late and 622 (8%) died without critical care.
+
+For patients recommended for critical care, refusing admission increased the median delay from 2 to 8 hours (95%CI for median ...) as did referral when the unit was full (from x to y hours, 95%CI for median ...).
+
+In 13017 (86%) patients without treatment limits, mortality occured early with 964 (7%), 1827 (14%), and 3935 (30%) deaths at 2, 7, and 90 days respectively. Survival was worse for patients asssessed when the critical care unit was full (HR 1.13, 95%CI1.00--1.27), and varied between site even after adjustment for patient level risk factors (Median Hazard Ratio 1.28, 95%CI  1.26--1.30). In the 2141 patients with treatment limits, 90 day mortality was 66% (1402 deaths).
 
 ## Conclusion
 
-- high mortality
-- variability
-- early window of opportunity
-- occupancy effect
-
+Deteriorating ward patients referred to critical care are vulnerable with a high initial mortality. Despite clinical recommendation for admission a substantial minority die without admission, and high critical care occupancy contributes both predujices and delays admission.
 
 <!-- 
 	                                    
