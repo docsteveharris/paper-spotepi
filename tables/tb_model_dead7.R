@@ -4,7 +4,10 @@
 
 # Readme
 # ======
-# Run this in full population, then repeat in subgrps
+# Run this in full population, then repeat in subgrps If you are
+# interested in occupancy effect on mortality then exclude site level
+# variables (because they are responsbile for occupancy) but condition
+# on timing which is a confounder
 
 
 # Todo
@@ -66,7 +69,7 @@ tdt <- prep.wdt(wdt.surv1)
 dim(tdt)
 
 # Check data correct
-assert_that(all.equal(dim(tdt), c(15158,80)))
+assert_that(all.equal(dim(tdt), c(15158,81)))
 
 #  ===============
 #  = Subset data =
@@ -146,13 +149,13 @@ m0.xt
 m0.xt$loglik
 
 # Prepare model
-fm.xt <- formula(
+fm.me <- formula(
         paste("Surv(t, f)",
-        paste(c(vars.patient, vars.timing, vars.site, "(1|site)"),
+        paste(c(vars.patient, vars.timing, "(1|site)"),
         collapse = "+"), sep = "~"))
-fm.xt
+fm.me
 
-m1.xt <- coxme(fm.xt, data=tdt)
+m1.xt <- coxme(fm.me, data=tdt)
 summary(m1.xt)
 
 ## Log likelihood
@@ -190,6 +193,135 @@ CI.exp   <- exp(round(confint(m1.xt), 3))
 # (m1.xt.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
 (m1.xt.eform <- cbind(beta.exp, CI.exp, p))
 (m1.xt.eform.fmt <- model2table(m1.xt.eform, est.name="HR"))
+
+
+
+rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
+    require(data.table)
+
+    setkeyv(tdt,id.cluster)
+    # Generate within cluster ID (needed for the sample command)
+    tdt[, "id.within" := .SD[,.I], by=id.cluster, with=FALSE]
+
+    # Random sample of sites
+    bdt <- data.table(sample(unique(tdt[[id.cluster]]), replace=TRUE))
+    setnames(bdt,"V1",id.cluster)
+    setkeyv(bdt,id.cluster)
+
+    # Use random sample of sites to select from original data
+    # then
+    # within each site sample with replacement using the within site ID
+    bdt <- tdt[bdt, .SD[sample(.SD$id.within, replace=TRUE)],by=.EACHI]
+
+    # return data sampled with replacement respecting clusters
+    bdt[, id.within := NULL] # drop id.within
+    return(bdt)
+}
+
+system.time(d <- rsample2(tdt, id.unit="pid", id.cluster="site"))
+
+# Now use this function to bootstrap coefficients and MHR from model
+
+# Define formula for model
+# Formula for old version of coxph with frailty (coxme now recommended but slow)
+fm.xt <- formula(
+        paste("Surv(t, f)",
+        paste(c(vars.patient, vars.timing, "frailty(site, dist=\"gamma\")"),
+        collapse = "+"), sep = "~"))
+
+# Formula for coxme
+fm.me <- formula(
+        paste("Surv(t, f)",
+        paste(c(vars.patient, vars.timing, "(1|site)"),
+        collapse = "+"), sep = "~"))
+fm.me
+
+#  =============================================
+#  = Extract confidence intervals by bootstrap =
+#  =============================================
+# - [ ] NOTE(2015-12-16): no closed form solution for confidence
+#   intervals - would need to bootstrap or similar
+#   For now, just report the frailty model and ignore the clustering here
+
+
+# Now pack this together into a single function
+coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
+    
+    # Resample with replacement the data
+    d <- rsample2(tdt, id.unit="pid", id.cluster="site")
+
+    # By default usses coxph with frailty
+
+    if (coxme) {
+        m1.xt <- coxme(fm, data=d)
+        (est <- fixef(m1.xt))
+        (MHR <- exp(sqrt(2*VarCorr(m1.xt)$site) * qnorm(0.75)))
+    }
+    else {
+        m1.xt <- coxph(fm, data=d)
+        (est = m1.xt$coefficients)
+        # Extracting theta means pulling the last value from the model
+        theta <- m1.xt$history$frailty$history[,1]
+        (theta <- m1.xt$history$frailty$history[,1][length(theta)])
+        (MHR <- exp(sqrt(2*theta) * qnorm(0.75)))
+        
+    }
+
+    return(c(est, mhr=MHR))
+}
+
+coxph.rsample(fm=fm.xt, data=tdt, coxme=FALSE)
+coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE)
+
+r <- (sapply(1:20,  function(i) coxph.rsample(fm=fm.xt, data=tdt)))
+r <- (sapply(1:2,  function(i) coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE)))
+r
+r1 <- t(apply(r, 1,
+    function(x) {
+            c(
+            mean.exp=exp(mean(x)),
+            q.exp=quantile(exp(x), probs=c(0.05,0.95)) ,
+            p=1-pnorm(abs(mean(x)/sd(x))),
+            mean=mean(x),
+            q=quantile(x, probs=c(0.05,0.95))
+            # se=sd(x),
+            # z=mean(x)/sd(x),
+        )}
+    ))
+r1
+
+(m1.xt.eform.fmt <- model2table(m1.xt.eform, est.name="HR"))
+
+
+m.xt.eform <- cbind(exp(coef(summary(m.xt))[,1:2]),
+    exp(confint(m.xt, method='Wald'))[-1,], # drop the first row
+    z = summary(m.xt)[['coefficients']][,3],
+    p = summary(m.xt)[['coefficients']][,4])
+m.xt.eform # this is a matrix not a dataframe
+
+(beta <- fixef(m1.xt))
+(beta.exp <- exp(fixef(m1.xt)))
+(se   <- sqrt(diag(vcov(m1.xt))))
+p    <- 1 - pchisq((beta/se)^2, 1)
+CI   <- round(confint(m1.xt), 3)
+CI.exp   <- exp(round(confint(m1.xt), 3))
+
+# (m1.xt.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
+(m1.xt.eform <- cbind(beta.exp, CI.exp, p))
+(m1.xt.eform.fmt <- model2table(m1.xt.eform, est.name="HR"))
+MHR4boot <- function(m) {
+    # Median Odds Ratio
+    (MHR <- exp(sqrt(2*VarCorr(m)$site) * qnorm(0.75)))
+    return(MHR)
+}
+library(boot)
+bootMer(m1.xt, MHR4boot, nsim=1)
+MHR4boot(m1.xt)
+
+system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=100))
+system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=100))
+MOR.nopt.95ci <- boot.ci(bMer, type=c("norm"))
+MOR.nopt.95ci <- c(MOR.nopt.95ci$t0, MOR.nopt.95ci$normal[,2:3])
 
 stop()
 
