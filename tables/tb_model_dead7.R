@@ -53,7 +53,7 @@ library(scipaper) # contains model2table
 #  = Set up number of sims for bootstrap =
 #  =======================================
 
-nsims <- 1
+nsims <- 5
 
 #  ========================================
 #  = Define path and filenames for output =
@@ -63,8 +63,8 @@ table.name <- "model_dead7"
 table.name <- paste0(table.name, "_sim", nsims)
 table.path <- paste0(PATH_TABLES, '/')
 table.xlsx <- paste0(table.path, 'tb_', table.name, '.xlsx')
-table.RData <- paste0(table.path, table.name, '.RData', sep='')
-table.RData
+data.path <- paste0(PATH_DATA, '/')
+table.RData <- paste0(data.path, table.name, '.RData', sep='')
 
 #  =============
 #  = Load data =
@@ -215,6 +215,7 @@ d <- tdt
 # Single level model in coxph (for sanity checks)
 m1 <- coxph(fm.ph, data=d)
 m1.confint <- cbind(summary(m1)$conf.int[,c(1,3:4)], p=(summary(m1)$coefficients[,5]))
+(m1.confint <- model2table(m1.confint, est.name="HR"))
 
 r1.system.time <- system.time(r <- (sapply(1:nsims,
      function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
@@ -248,6 +249,7 @@ d <- tdt[icu_accept==0]
 # Single level model in coxph (for sanity checks)
 m2 <- coxph(fm.ph, data=d)
 m2.confint <- cbind(summary(m2)$conf.int[,c(1,3:4)], p=(summary(m2)$coefficients[,5]))
+(m2.confint <- model2table(m2.confint, est.name="HR"))
 
 r2.system.time <- system.time(r.refuse <- (sapply(1:nsims,
      function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
@@ -280,8 +282,8 @@ d <- tdt[icu_accept==0 & icu_recommend==1]
 
 # Single level model in coxph (for sanity checks)
 m3 <- coxph(fm.ph, data=d)
-m3.confint <- cbind(summary(m2)$conf.int[,c(1,3:4)], p=(summary(m3)$coefficients[,5]))
-m3.confint
+m3.confint <- cbind(summary(m3)$conf.int[,c(1,3:4)], p=(summary(m3)$coefficients[,5]))
+m3.confint <- model2table(m3.confint, est.name="HR")
 
 r3.system.time <- system.time(r.refused.recommended <- (sapply(1:nsims,
      function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
