@@ -49,15 +49,22 @@ library(assertthat)
 library(datascibc)
 library(scipaper) # contains model2table
 
+#  =======================================
+#  = Set up number of sims for bootstrap =
+#  =======================================
+
+nsims <- 1
+
 #  ========================================
 #  = Define path and filenames for output =
 #  ========================================
 table.name <- "model_dead7"
+# add nsims to file names since you'll be gutted if you overwrite a major simulation
+table.name <- paste0(table.name, "_sim", nsims)
 table.path <- paste0(PATH_TABLES, '/')
-table.file <- paste(table.path, 'tb_', table.name, '.xlsx', sep='')
-table.file
-table.R <- paste(table.path, table.name, '.R', sep='')
-table.R
+table.xlsx <- paste0(table.path, 'tb_', table.name, '.xlsx')
+table.RData <- paste0(table.path, table.name, '.RData', sep='')
+table.RData
 
 #  =============
 #  = Load data =
@@ -117,85 +124,8 @@ head(tdt[,.(site,id,t.trace,dead,t,f)])
 describe(tdt$t)
 describe(tdt$f)
 
-#  ======================
-#  = Survival modelling =
-#  ======================
-# Null model
-m0 <- coxph(Surv(t, f) ~ 1, data=tdt)
-m0$loglik
 
-# Prepare model
-fm <- formula(
-        paste("Surv(t, f)",
-        paste(c(vars.patient, vars.timing, vars.site),
-        collapse = "+"), sep = "~"))
-
-m1 <- coxph(fm, data=tdt)
-summary(m1)
-
-# Log likelihood
-m1$loglik
-## Chi-squared value comparing this model to the null model
-(-2 * (m0$loglik - logLik(m1)))
-
-#  =========================================
-#  = Cox model with random effect for site =
-#  =========================================
-
-# Model with frailty
-require(coxme)
-m0.xt <- coxme(Surv(t, f) ~ 1 + (1|site), data=tdt)
-m0.xt
-m0.xt$loglik
-
-# Prepare model
-fm.me <- formula(
-        paste("Surv(t, f)",
-        paste(c(vars.patient, vars.timing, "(1|site)"),
-        collapse = "+"), sep = "~"))
-fm.me
-
-m1.xt <- coxme(fm.me, data=tdt)
-summary(m1.xt)
-
-## Log likelihood
-m1.xtlogLik <- m1.xt$loglik + c(0, 0, m1.xt$penalty)
-m1.xtlogLik
-## -2 logLik difference
-(-2 * (m1.xtlogLik["NULL"] - m1.xtlogLik["Penalized"]))
-## -2 logLik difference
-(logLikDiffNeg2 <- -2 * (logLik(m1.xt) - m1.xtlogLik["Integrated"]))
-## Degree of freedom difference
-(dfDiff <- m1.xt$df[1] - 1)
-## P value for the random effects: significant random effects across centers
-pchisq(q = as.numeric(logLikDiffNeg2), df = dfDiff, lower.tail = FALSE)
-
-# Median Hazard ratio
-# -------------------
-summary(m1.xt)
-VarCorr(m1.xt) # variance
-# MHR <- exp(sqrt(2*var)*phi-1(0.75))
-(MHR <- exp(sqrt(2*VarCorr(m1.xt)$site) * qnorm(0.75)))
-
-#  =============================================
-#  = Extract confidence intervals by bootstrap =
-#  =============================================
-# - [ ] NOTE(2015-12-16): no closed form solution for confidence
-#   intervals - would need to bootstrap or similar
-#   For now, just report the frailty model and ignore the clustering here
-(beta <- fixef(m1.xt))
-(beta.exp <- exp(fixef(m1.xt)))
-(se   <- sqrt(diag(vcov(m1.xt))))
-p    <- 1 - pchisq((beta/se)^2, 1)
-CI   <- round(confint(m1.xt), 3)
-CI.exp   <- exp(round(confint(m1.xt), 3))
-
-# (m1.xt.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
-(m1.xt.eform <- cbind(beta.exp, CI.exp, p))
-(m1.xt.eform.fmt <- model2table(m1.xt.eform, est.name="HR"))
-
-
-
+# Function for resampling clustered data
 rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
     require(data.table)
 
@@ -218,11 +148,13 @@ rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
     return(bdt)
 }
 
-system.time(d <- rsample2(tdt, id.unit="pid", id.cluster="site"))
 
 # Now use this function to bootstrap coefficients and MHR from model
 
-# Define formula for model
+#  =============================
+#  = Define formulae for model =
+#  =============================
+
 # Formula for single level model in coxph
 fm.ph <- formula(
         paste("Surv(t, f)",
@@ -240,15 +172,10 @@ fm.me <- formula(
         paste("Surv(t, f)",
         paste(c(vars.patient, vars.timing, "(1|site)"),
         collapse = "+"), sep = "~"))
-fm.me
 
 #  =============================================
 #  = Extract confidence intervals by bootstrap =
 #  =============================================
-# - [ ] NOTE(2015-12-16): no closed form solution for confidence
-#   intervals - would need to bootstrap or similar
-#   For now, just report the frailty model and ignore the clustering here
-
 
 # Now pack this together into a single function
 coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
@@ -280,11 +207,6 @@ coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
 # coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE)
 # r <- (sapply(1:20,  function(i) coxph.rsample(fm=fm.xt, data=tdt)))
 
-#  =======================================
-#  = Set up number of sims for bootstrap =
-#  =======================================
-
-nsims <- 1
 
 # Cox ME version (for all patients without Rx limits)
 # ---------------------------------------------------
@@ -386,11 +308,13 @@ r3
 (r3.raw <- rbind(r3.raw, r3.mhr))
 (r3.fmt <- model2table(r3.raw[,1:4], est.name="HR"))
 
+
+save(list=ls(all=TRUE),file=table.RData)
+
 # Now export to excel
 # -------------------
-
-ls()
-wb <- loadWorkbook(table.file, create = TRUE)
+table.xlsx
+wb <- loadWorkbook(table.xlsx, create = TRUE)
 setStyleAction(wb, XLC$"STYLE_ACTION.NONE") # no formatting applied
 
 sheet1 <-'model_details'
@@ -437,6 +361,5 @@ sheet7 <- 'fmt.refused.recommended'
 removeSheet(wb, sheet7)
 createSheet(wb, name = sheet7)
 writeWorksheet(wb, r3.fmt, sheet7)
-
 
 saveWorkbook(wb)
