@@ -22,6 +22,8 @@
 # - dropped site level covariates
 # 2015-12-17
 # - file duplicated again fr model_time2icu_vRecommend
+# - bootstrapping added
+# - file made generic to model survival at different times
 
 # Notes
 # =====
@@ -49,16 +51,17 @@ library(assertthat)
 library(datascibc)
 library(scipaper) # contains model2table
 
-#  =======================================
-#  = Set up number of sims for bootstrap =
-#  =======================================
+#  ========================
+#  = KEY GLOBAL VARIABLES =
+#  ========================
 
-nsims <- 5
+t.censor <- 90       # censor survival time (days)
+nsims <- 5          # simulations for bootstrap
 
 #  ========================================
 #  = Define path and filenames for output =
 #  ========================================
-table.name <- "model_dead7"
+table.name <- paste0("model_dead", t.censor)
 # add nsims to file names since you'll be gutted if you overwrite a major simulation
 table.name <- paste0(table.name, "_sim", nsims)
 table.path <- paste0(PATH_TABLES, '/')
@@ -118,12 +121,11 @@ vars <- c(vars.site, vars.timing, vars.patient)
 #  = Set up survival structure =
 #  =============================
 # t = time, f=failure event
-tdt[, t:=ifelse(t.trace>7,168,24*t.trace)]
-tdt[, f:=ifelse(dead==1 & t.trace <=7 ,1,0)]
+tdt[, t:=ifelse(t.trace>t.censor, 24*t.censor, 24*t.trace)]
+tdt[, f:=ifelse(dead==1 & t.trace <= t.censor ,1,0)]
 head(tdt[,.(site,id,t.trace,dead,t,f)])
 describe(tdt$t)
 describe(tdt$f)
-
 
 # Function for resampling clustered data
 rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
@@ -311,7 +313,8 @@ r3
 (r3.fmt <- model2table(r3.raw[,1:4], est.name="HR"))
 
 
-save(list=ls(all=TRUE),file=table.RData)
+# Save models since it is these that take ages to run
+save(list=c("r1","r2","r3"),file=table.RData)
 
 # Now export to excel
 # -------------------
