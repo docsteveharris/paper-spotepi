@@ -43,11 +43,7 @@ Deteriorating ward patients referred to critical care are vulnerable with a high
 
 ## Funding
 
-Wellcome Trust, NIHR Service Support Costs, and the Intensive Care National
-Audit & Research Centre
-
-
-
+Wellcome Trust, NIHR Service Support Costs, and the Intensive Care National Audit & Research Centre
 
 # Introduction
 
@@ -107,232 +103,75 @@ The study was centrally funded by the Wellcome Trust, sponsored by ICNARC, and s
 
 # Results
 
-48 hospitals reported 20893 visits over 435 months. 2694 visits (12.9%) did not
-meet the inclusion criteria including 1860 (8.9%) repeat rather than first
-visits, and 586 (2.8%) patients recently discharged from critical care. Data
-linkage was incomplete (\< 80%) for 66 (15%) study-months excluding a further
-2440 (11.7%) visits. Therefore 15759 patients were recruited to the study, of
-which 15158 (96.1%) completed follow-up without error and were available for
-analysis ([Figure FFF][figureFFF]). Final data linkage (ward visits to critical
-care admissions) was 93% complete.
+48 hospitals reported 20893 visits over 435 months. 2694 visits (12.9%) did not meet the inclusion criteria including 1860 (8.9%) repeat rather than first visits, and 586 (2.8%) patients recently discharged from critical care. Data linkage was incomplete (< 80%) for 66 (15%) study-months excluding a further 2440 (11.7%) visits. Therefore 15759 patients were recruited to the study, of which 15158 (96.1%) completed follow-up without error and were available for analysis ([Figure FFF][figureFFF]). Final data linkage (ward visits to critical care admissions) was 93% complete.
 
 ## Hospitals (and epidemiology)
 
-The participating hospitals comprised 10 teaching and 38 general hospitals that
-each collected data between September 2010 and December 2011 for a median of 8
-months (range 2--12 months). Each hospital contributed a median of 253 patients
-(range 80--1305) equivalent to 6 patients referred to critica care (IQR 3--9)
-per 1,000 overnight admissions.
-
-Critical Care Outreach Teams operated 24 hours/day and 7 days/week in 14 (29%)
-hospitals, less than 24 hours/day in 19 (40%) hospitals, and less than 7
-days/week in 13 (27%) hospitals ([supplementary Table TTT](<stableTTT>)). As
-outreach provision decreased, the numbers of patients assessed by critical care
-also fell (8, 5, and 4 per 1,000 overnight admissions). The two (4%) hospitals
+The participating hospitals comprised 10 teaching and 38 general hospitals that each collected data between September 2010 and December 2011 for a median of 8 months (range 2--12 months). Each hospital contributed a median of 253 patients (range 80--1305) equivalent to 6 patients referred to critical care (IQR 3--9) per 1,000 overnight admissions. Critical Care Outreach Teams operated 24 hours/day and 7 days/week in 14 (29%) hospitals, less than 24 hours/day in 19 (40%) hospitals, and less than 7 days/week in 13 (27%) hospitals ([supplementary Table TTT](<stableTTT>)). As outreach provision decreased, the numbers of patients assessed by critical care also fell (8, 5, and 4 per 1,000 overnight admissions). The two (4%) hospitals
 with CCOT nonetheless saw 8 patients per 1,000 overnight admissions.
 
-There was a median of 12 (IQR 9--18) critical care beds per hospital (mixed
-Level 2 --- typically intensive monitoring or single organ support, and Level 3
---- ventilated or multiple organ support), most often in a single physical
-location (45 hospitals). These units admitted a median 20 (IQR 14--26) unplanned admissions from the ward per month which represented 36% of all critical care admissions (IQR 31-43%).
+### Critical care units and bed occupancy
 
-### Critical care occupancy
+There was a median of 12 (IQR 9--18) critical care beds per hospital (mixed Level 2 --- typically intensive monitoring or single organ support, and Level 3 --- ventilated or multiple organ support), most often in a single physical location (45 hospitals). These units admitted a median 20 (IQR 14--26) unplanned admissions from the ward per month which represented 36% of all critical care admissions (IQR 31-43%). 
 
-There were 1221 (8%) patients assessed when the unit was full, 3825 (25%)
-assessed when there were either one or two beds available, and 10347 (67%)
-assessed when there were more than two beds available (Table TTT). Critical care
-occupancy fluctuated with time of the day, day of the week, and season of the
-year.([Supplementary Figure FFF](<sfigureFFF>)).
+There were 1221 (8%) patients assessed when the unit was full, 3825 (25%) assessed when there were either one or two beds available, and 10347 (67%) assessed when there were more than two beds available (Table TTT). Critical care occupancy fluctuated with time of the day, day of the week, and season of the year.([Supplementary Figure FFF](<sfigureFFF>)).
 
 ## Patient characteristics
 
-Table TTT shows the baseline data for all ward patients assessed. Sepsis was
-reported in (9296, 61%) patients; of these, the respiratory system was
-considered to be the source in half (4772, 51%). Organ failure, defined as a
-SOFA score greater than or equal to two, was present in 5164 (34%) of patients.
-1427 patients (9%) were in respiratory failure, 2931 (19%) were in renal
-failure, and 4636 (31%) were shocked. However, organ support at the time of
-assessment was uncommon (870 patients, 6%).
+Table TTT shows the baseline data for all ward patients assessed. Sepsis was reported in (9296, 61%) patients; of these, the respiratory system was considered to be the source in half (4772, 51%). Organ failure, defined as a SOFA score greater than or equal to two, was present in 5164 (34%) of patients. 1427 patients (9%) were in respiratory failure, 2931 (19%) were in renal failure, and 4636 (31%) were shocked. Organ support at the time of assessment was however uncommon (870 patients, 6%).
 
-Overall, 2708 (18%) patients died during the 7-days following ward assessment.
-Mortality was heavily front-loaded with 1539 (57%) of these deaths occuring in
-the first 48 hours (Supplementary Figure FFF). There was a clear correlation
-between physiological severity and early (7-day) mortality using either ward
-based (NEWS) or critical care scoring systems (SOFA, ICNARC) (Supplementary
-Figure FFF).
+Overall, 2708 (18%) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with 1539 (57%) of these deaths occuring in the first 48 hours (Supplementary Figure FFF). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (Supplementary Figure FFF).
 
-Patient pathways following ward assessment
-------------------------------------------
+>>> insert discussion of pts with Rx limits; should flow nicely from mortality discussion above; then switch remaining discussion to pts w/o limits and pathways
 
-3546 (27%) patients were accepted immediately to critical care, 2141 (14%) were
-refused critical care and remained on the ward with a treatment limitation
-order, but the majority (9471, 62%) were refused without treatment limitation.
-Within the subgroup of 5321 (35%) patients with a recommendation for critical
-care at the bedside assessment, 3375 (63%) were accepted immediately, 345 (7%)
-were refused with treatment limits, and 1601 (30%) were refused without
+## Patient pathways following ward assessment
+
+Overall, 3546 (27%) patients were accepted immediately to critical care, 2141 (14%) were refused critical care and remained on the ward with a treatment limitation order, but the majority (9471, 62%) were refused without treatment limitation. A subgroup of 5321 (35%) patients were recommended for critical care at the bedside assessment. Within these, 3375 (63%) were accepted immediately, 345 (7%) were refused with treatment limits, and 1601 (30%) were refused without
 treatment limits.
 
 ### Patients without treatment limits initially refused critical care
 
 Patients referred to, but then refused, critical care (without treatment limitations) had a 7-day mortality of 12% (1102 deaths); 799 (67%) of these deaths occurred on the ward, and 303 (33%) deaths followed late admission. Overall, the initial decision to refuse was reversed in 1745 patients (18%) so by the end of the week 2544 (27%) patients had died or been admitted to critical care.
 
-Within this cohort, 7-day mortality was higher for those recommended but refused (17.6% versus 10.4%, risk difference 7.1% 95%CI 5.1-9.1%), and for those where the initial decision to refuse was reversed (17.4% versus 10.3%, risk difference 7.0% 95%CI 5.1-9.0%).
+7-day mortality was higher for those recommended but refused (17.6% versus 10.4%, risk difference 7.1% 95%CI 5.1-9.1%), and for those where the initial decision to refuse was reversed (17.4% versus 10.3%, risk difference 7.0% 95%CI 5.1-9.0%).
 
 ### Patients with treatment limits initially refused critical care
 
-These 2141 patients had a 7-day mortality of 41% (881 deaths). The initial
-decision to refuse admission was reversed in just 76 patients (4%) of whom 26
-(34%) died within the week.
+These 2141 patients had a 7-day mortality of 41% (881 deaths). The initial decision to refuse admission was reversed in just 76 patients (4%) of whom 26 (34%) died within the week.
 
-Compared to those refused without a treatment limitation order, this cohort was
-older (77 vs 66 years, 95%CI for difference 11--12 years), and more acutely
-unwell (3.6 vs 2.8 SOFA points, 95%CI for difference 0.7--0.9). The final 90-day mortalities was substantial 65% (1402 deaths), but 506 patients (24%) survived a year despite the decision.
+Compared to those refused without a treatment limitation order, this cohort was older (77 vs 66 years, 95%CI for difference 11--12 years), and more acutely unwell (3.6 vs 2.8 SOFA points, 95%CI for difference 0.7--0.9). The final 90-day mortalities was substantial 65% (1402 deaths), but 506 patients (24%) survived a year despite the decision.
 
 ### Patients immediately accepted to critical care
 
-The 3546 (27%) patients accepted to critical care at the initial bedside
-assessment had a 7-day mortality of 21% (696 deaths). Just 40 (6%) of those
-deaths occurred before admission was arranged, but a further 223 patients (6%)
-were never admitted but survived regardless.
+The 3546 (27%) patients accepted to critical care at the initial bedside assessment had a 7-day mortality of 21% (696 deaths). Just 40 (6%) of those deaths occurred before admission was arranged, but a further 223 patients (6%) were never admitted but survived regardless.
 
 Those offered admission were marginally younger (64 versus 66 years, 95%CI 1--2), and more acutely unwell (4.1 vs 2.8 SOFA points, 95%CI 1.2-1.3).
 
 The median delay between assessment and admission for these patients was 2 hours(IQR 1--4) compared to 12 hours for those refused without treatment limits (median additional delay 10 hours, IQR 9--11). This meant that 2250 (73%) admissions were achieved within 4 hours for those initially accepted versus 322 (17%) for those initially refused (risk difference 55%, 95%CI 53-58%). 
-Variation in decision making
-----------------------------
 
-We built a multi-level (patients nested within hospitals) logistic regression
-model to examine factors associated with a decision to admit to critical care
-amongst those patients without a treatment limitation order. As with the
-univariate comparisons above, older patients were less likely to be admitted (OR
-0.60 for patients over 80 years, 95%CI 0.53--0.69), and sicker patients were
-more likely to be admitted (OR 1.07 per ICNARC physiology point, 95%CI
-1.06--1.07). Similarly, patients already receiving organ support (OR 95%CI), or
-clinically judged to be peri-arrest (OR 95%CI) were much more likely to be
-admitted.
+### Variation in decision making
 
-Patients referred overnight (7pm-7am), during the weekend, or during the winter
-were more likely to be offered critical care, but those assessed when the
-critical care unit was at, or near capacity were less likely to be admitted (OR
-0.70, 95%CI 0.57--0.86, and OR 0.87 95%CI 0.77--0.98 respectively). Otherwise
-said, had there been no limitations on capacity then an additional 122 patients
-(95%CI 53-186) would have been admitted
+We built a multi-level (patients nested within hospitals) logistic regression model to examine factors associated with a decision to admit to critical care amongst those patients without a treatment limitation order. As with the univariate comparisons above, older patients were less likely to be admitted (OR 0.60 for patients over 80 years, 95%CI 0.53--0.69), and sicker patients were more likely to be admitted (OR 1.07 per ICNARC physiology point, 95%CI 1.06--1.07). Similarly, patients already receiving organ support (OR 95%CI), or
+clinically judged to be peri-arrest (OR 95%CI) were much more likely to be admitted.
 
-The model also demonstrated significant hospital level variation with a Median
-Odds Ratio (MOR) between hospitals of 1.82 (95%CI 1.78-2.16) which was minimally
-affected by adjustment for patient characteristics (MHR 1.82 95%CI 1.78--2.16 in
-a model excluding these). This implies that when comparing patients from any two
-randomly selected hospitals the adjusted odds of being offered critical care
-varied by almost two fold.
+Patients referred overnight (7pm-7am), during the weekend, or during the winter were more likely to be offered critical care, but those assessed when the critical care unit was at, or near capacity were less likely to be admitted (OR 0.70, 95%CI 0.57--0.86, and OR 0.87 95%CI 0.77--0.98 respectively). Otherwise said, had there been no limitations on capacity then an additional 122 patients (95%CI 53-186) would have been admitted
 
- 
-
- 
-
-Variation in 90-day mortality
------------------------------
-
- 
-
-\- [\#section-1](<#section-1>) TODO(2015-12-08): section on variability in
-outcome (90d)
-
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
--   unexplained by site
-
--   ?by occupancy
-~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~
-
- 
-
- 
-
-### next
-
--   effect of occupancy on decision making
-
--   effect of decision on time to admission (for those without a Rx limit)
-
--   effect of occupancy on time to admission
-
-\- [\#section-1](<#section-1>) TODO(2015-12-07): table and figure by the
-simplified v\_disposal split
-
- 
-
- 
-
-Critical care admission
------------------------
-
-We built a multi-level (patients nested within hospitals) logistic regression
-model to examine factors associated with a decision to admit to critical care
-compared to
-
- 
-
-ICU admission
--------------
-
-5,248 patients (33·4%) were admitted to critical care during the week following
-their assessment. This included 40·7% (2,859) patients in the NEWS High Risk
-class, and 29·8% (1,294), and 25·9% (999) in the Medium and Low risk classes.
+The model also demonstrated significant hospital level variation with a Median Odds Ratio (MOR) between hospitals of 1.82 (95%CI 1.78-2.16) which was minimally affected by adjustment for patient characteristics (MHR 1.82 95%CI 1.78--2.16 in a model excluding these). This implies that when comparing patients from any two randomly selected hospitals the adjusted odds of being offered critical care varied by almost two fold.
 
 Mortality
 ---------
 
-There were 706 deaths by the end of the first day, 2,787 by the end of the first
-week, 4,561 by the end of the first month, and 6,989 by the end of the first
-year. The risk of death at these time points was 4·5%, 17·9%, 29·2%, and 44·8%
-respectively (Kaplan-Meier failure function). The period of greatest risk
-immediately followed the referral, falls rapidly, but remained elevated even at
-one-year (excess mortality 0·103 deaths/patient-year, 95%CI
-0·076--0·130.([Figure 4][figure4]).[Cancer Research UK Cancer Survival Group,
-2006, \#91622]
+There were 706 deaths by the end of the first day, 2,787 by the end of the first week, 4,561 by the end of the first month, and 6,989 by the end of the first year. The risk of death at these time points was 4·5%, 17·9%, 29·2%, and 44·8% respectively (Kaplan-Meier failure function). The period of greatest risk immediately followed the referral, falls rapidly, but remained elevated even at one-year (excess mortality 0·103 deaths/patient-year, 95%CI 0·076--0·130.([Figure 4][figure4]).[Cancer Research UK Cancer Survival Group, 2006, \#91622]
 
-During the week following the ward visit, the majority (1767, 63·4%) of deaths
-occurred without admission to critical care. The majority of these patients
-(934, 52·9%) had no treatment limitation order reported at the time of their
-initial evaluation ([Figure 5][figure5]). These patients were less unwell (SOFA
-score -0·68, 95%CI -0·46 to -0·91), but older (6·3 years, 95%CI 5·1--7·5) than
-those deaths occurring in ICU ([supplementary Table
-4](<stb04_ward_vs_icu_deaths.ods>)). A small proportion (66, 7·1%) of the ward
-deaths had been accepted to critical care, but died before the admission was
-realised. In contrast, among those with treatment limitation orders, 472 (23·1%)
-patients survived to one year without admission to critical care in that first
-week.
+During the week following the ward visit, the majority (1767, 63·4%) of deaths occurred without admission to critical care. The majority of these patients (934, 52·9%) had no treatment limitation order reported at the time of their initial evaluation ([Figure 5][figure5]). These patients were less unwell (SOFA score -0·68, 95%CI -0·46 to -0·91), but older (6·3 years, 95%CI 5·1--7·5) than those deaths occurring in ICU ([supplementary Table 4](<stb04_ward_vs_icu_deaths.ods>)). A small proportion (66, 7·1%) of the ward deaths had been accepted to critical care, but died before the admission was realised. In contrast, among those with treatment limitation orders, 472 (23·1%) patients survived to one year without admission to critical care in that first week.
 
-A series of models were fitted with 90-day survival as the dependent variable.
-The final best model [Table 4](<tb03_ward_survival_final.ods>) incorporated a
-time-varying effect for acute physiological severity so that the effect of
-severity on survival was greatest in the first days following assessment (see
-supplementary [supplementary Figure
-1](<sfig01_survival_icnarc0_ssresidual.pdf>)). Other patient level risk factors
-were consistent with the existing literature on outcomes in similar patients:
-older patients, males, patients receiving a higher level of care, and those with
-sepsis (other than genito-urinary) had worse outcomes.[Harrison, 2007] Patients
-admitted during the winter months had an adjusted hazard ratio of 1·12 (95%CI
-1·04--1·20), but neither time of day, nor day of the week affected survival.
+A series of models were fitted with 90-day survival as the dependent variable. The final best model [Table 4](<tb03_ward_survival_final.ods>) incorporated a time-varying effect for acute physiological severity so that the effect of severity on survival was greatest in the first days following assessment (see supplementary [supplementary Figure 1](<sfig01_survival_icnarc0_ssresidual.pdf>)). Other patient level risk factors were consistent with the existing literature on outcomes in similar patients: older patients, males, patients receiving a higher level of care, and those with sepsis (other than genito-urinary) had worse outcomes.[Harrison, 2007] Patients admitted during the winter months had an adjusted hazard ratio of 1·12 (95%CI 1·04--1·20), but neither time of day, nor day of the week affected survival. 
 
-At the hospital level, with the exception of the two hospitals without a CCOT
-service, there was weak stepwise decrease in survival as the provision of CCOT
-services expanded. No other hospital level factors were associated with outcome.
-The final best model demonstrated significant hospital level variation (variance
-0·030, 95%CI 0·013--0·046, [supplementary Figure
-2](<sfig02_survival_reffects.pdf>)). This gives a Median Hazard Ratio (MHR)
-between hospitals of 1·28 in the final model which was not markedly affected by
-adjustment for patient characteristics (MHR 1·29 in a model excluding these).
+At the hospital level, with the exception of the two hospitals without a CCOT service, there was weak stepwise decrease in survival as the provision of CCOT services expanded. No other hospital level factors were associated with outcome. The final best model demonstrated significant hospital level variation (variance 0·030, 95%CI 0·013--0·046, [supplementary Figure 2](<sfig02_survival_reffects.pdf>)). This gives a Median Hazard Ratio (MHR) between hospitals of 1·28 in the final model which was not markedly affected by adjustment for patient characteristics (MHR 1·29 in a model excluding these).
 
 Discussion
 ==========
 
-*to be written!*
-
-\- [ ] NOTE(2015-12-10): front loaded mortality (time critical opportunity to
-act)
-
-\- [ ] NOTE(2015-12-10): 1/10 patients recommended critical care die without
-admission \@discussion
 
 References
 ==========
@@ -345,55 +184,14 @@ Sensitivity Analyses
 
 ### Data linkage quality
 
-Data linkage rates between the (SPOT)light data and the ICNARC CMP data were
-used throughout the study to monitor quality. Where eligible admissions to a
-critical care unit were reported to the ICNARC CMP but not found in the
-(SPOT)light reports, then the concern was that ward referrals to ICU were not
-being captured. Hospitals were required to meet a minimum standard of 80%
-capture during the first three months, and, even after this period, those months
-where the data quality fell below this standard were also excluded.
+Data linkage rates between the (SPOT)light data and the ICNARC CMP data were used throughout the study to monitor quality. Where eligible admissions to a critical care unit were reported to the ICNARC CMP but not found in the (SPOT)light reports, then the concern was that ward referrals to ICU were not being captured. Hospitals were required to meet a minimum standard of 80% capture during the first three months, and, even after this period, those months where the data quality fell below this standard were also excluded. 
 
-The incidence, severity, and survival models were therefore repeated using the
-additional data submitted that was 70--80% complete --- the 'all' data set. This
-included an additional 11 hospitals, 85 study months and 3,670 patients.
-Similarly, the analysis was repeated amongst those hospitals meeting a higher
-95% threshold --- the 'best' data set (44 hospitals, 219 study months, and 9,179
-patients). The mean data linkage proportions in the 'all', 'study' and 'best'
-data sets were 92·3%, 93·5%, and 99·8%.
+The incidence, severity, and survival models were therefore repeated using the additional data submitted that was 70--80% complete --- the 'all' data set. This included an additional 11 hospitals, 85 study months and 3,670 patients. Similarly, the analysis was repeated amongst those hospitals meeting a higher 95% threshold --- the 'best' data set (44 hospitals, 219 study months, and 9,179 patients). The mean data linkage proportions in the 'all', 'study' and 'best' data sets were 92·3%, 93·5%, and 99·8%. 
 
-The baseline incidence of NEWS High Risk patients was slightly lower among the
-44 hospitals in the 'best' data set with an estimated incidence of 4·5 (95%CI
-4·1--4·9) versus 5·0 (95%CI 4·7--5·4) patients per hospital per week. Otherwise
-the approximate magnitude and direction of the effect of all hospital and timing
-risk factors were very similar
+The baseline incidence of NEWS High Risk patients was slightly lower among the 44 hospitals in the 'best' data set with an estimated incidence of 4·5 (95%CI 4·1--4·9) versus 5·0 (95%CI 4·7--5·4) patients per hospital per week. Otherwise the approximate magnitude and direction of the effect of all hospital and timing risk factors were very similar
 
-### Alternative provision of critical care
-
-4 of the 49 hospitals reported critical care capacity in units that were not
-monitored by the ICNARC CMP. Only one hospital had unmonitored Level 3 capacity,
-and this was in a designated post-operative critical care unit unlikely to
-receive direct admissions from the ward. The unmonitored beds at the other 3
-hospitals were in coronary care units (2 hospitals), post-operative critical
-care units (1 hospital), and a general HDU (1 hospital).
-
-Since it is unlikely that direct emergency ward admissions would have been
-admitted to these units, the hospitals were included in the primary analysis;
-however, the estimates of the proportion of patients dying without admission to
-critical care have been repeated excluding 749 patients from these 4 hospitals.
-
-During the week following the ward visit in the 45 remaining hospitals, the
-majority (1621, 63·3%) of deaths occurred without admission to critical care. In
-turn, the majority of these patients (862, 53·2%) had no treatment limitation
-order reported at the time of their initial evaluation. These proportions are
-near identical to those in the primary analysis.
 
 Estimation of relative survival
 -------------------------------
 
-Estimation of relative survival was performed using the `strel2` package in
-Stata where the expected survival was derived from life tables based on data
-from the UK census and Office of National Statistics (ONS) records. These were
-compiled by the Cancer Research UK Cancer Survival Group at the London School of
-Hygiene and Tropical Medicine, and were downloaded from
-http://www.lshtm.ac.uk/eph/ncde/cancersurvival/tools/registered/lifetables.html
-in May 2014.
+Estimation of relative survival was performed using the `strel2` package in Stata where the expected survival was derived from life tables based on data from the UK census and Office of National Statistics (ONS) records. These were compiled by the Cancer Research UK Cancer Survival Group at the London School of Hygiene and Tropical Medicine, and were downloaded fromhttp://www.lshtm.ac.uk/eph/ncde/cancersurvival/tools/registered/lifetables.html in May 2014.
