@@ -273,6 +273,7 @@ preserve
 xtgee vperday ///
 	teaching_hosp ///
 	hes_overnight_c ///
+	ib3.ccot_shift_pattern ///
 	$unit_vars $timing_vars ///
 	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 

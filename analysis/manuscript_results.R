@@ -57,6 +57,7 @@ tt <- list()                            # empty list to store rmd vars
 #  = Abstract =
 #  ============
 
+with(wdt, CrossTable(rxlimits))
 with(wdt, CrossTable(icu_recommend))
 with(wdt, CrossTable(icu_recommend, icu_accept))
 
@@ -67,6 +68,24 @@ with(wdt, CrossTable(icu_recommend, rxlimits))
 with(wdt[icu_recommend==0 & rxlimits==1], CrossTable(dead7))
 with(wdt[icu_recommend==0 & rxlimits==0], CrossTable(icucmp,dead7))
 (ff.mediqr('time2icu', data=wdt[icu_recommend==0 & rxlimits==0], dp=0))
+
+# 7 day mortality
+with(wdt, CrossTable(dead90, rxlimits))
+
+with(wdt[rxlimits==0], CrossTable(dead2))
+with(wdt[rxlimits==0], CrossTable(dead7))
+with(wdt[rxlimits==0], CrossTable(dead90))
+
+with(wdt[rxlimits==0 & icu_recommend], CrossTable(dead7))
+
+with(wdt[rxlimits==0 & icu_recommend & icu_accept==1], CrossTable(dead7))
+with(wdt[rxlimits==0 & icu_recommend & icu_accept==0], CrossTable(dead7))
+
+# 90 day mortality
+with(wdt[rxlimits==0], CrossTable(dead90))
+with(wdt[rxlimits==0 & icu_recommend], CrossTable(dead90))
+with(wdt[rxlimits==0 & icu_recommend & icu_accept==1], CrossTable(dead90))
+with(wdt[rxlimits==0 & icu_recommend & icu_accept==0], CrossTable(dead90))
 
 
 #  ===================
@@ -120,7 +139,8 @@ tails_p
 #  = Effects of critical care occupancy =
 #  ======================================
 
-with(wdt, CrossTable(room_cmp2, prop.chisq=F, prop.t=F, chisq = T))
+with(wdt, CrossTable(room_cmp, prop.chisq=F, prop.t=F, chisq = T))
+with(tdt, CrossTable(room_cmp2, prop.chisq=F, prop.t=F, chisq = T))
 
 # Occupancy and effects on Rx
 with(wdt,
@@ -143,6 +163,7 @@ summary(m)
 #  ===========================
 #  = Patient characteristics =
 #  ===========================
+# - [ ] TODO(2015-12-17): convert to tdt
 summary(wdt$age)
 tt$sepsis <- data.table(sepsis = wdt[,ifelse(sepsis %in% c(3,4),1,0)])
 sepsis <- ff.np('sepsis', data=tt$sepsis, dp=0)
@@ -211,6 +232,9 @@ dead7 <- ff.np('dead7', dp=1)
 dead90 <- ff.np('dead90', dp=1)
 dead1y <- ff.np('dead1y', dp=1)
 dead90.wk1 <- ff.np('dead7', dp=1, data=wdt[dead90==1])
+
+# NEWS risk category and mortality
+with(tdt, CrossTable(dead7, news_risk))
 
 # Associations with severity
 

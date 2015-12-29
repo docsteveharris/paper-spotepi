@@ -53,6 +53,7 @@ prep.wdt <- function(data=wdt) {
             ims2,
             ims_delta,
             news_score,         # physiological severity of illness (ward vital signs)
+            news_risk,
             sofa_score,         # physiological severity of illness (with allowance for organ support)
             sofa_r,
             hrate,              # heart rate
