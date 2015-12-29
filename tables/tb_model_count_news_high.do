@@ -27,6 +27,15 @@
 * - moved under waf control
 * - population examined adjusted to drop 49th site
 * - problems with spot_label_table_vars (python and MySQL issues)
+* 2015-12-29
+* - simplified
+* - report model as supplementary table?
+* - remove elective emergency indicator
+* - swap beds_none for room_cmp2
+* - remove referral pattern adjustment
+* - add back in weekend
+* - remove mp_throughput
+* - check incidence per 1000 is for NEWS high risk ? @done(2015-12-29)
 
 
 *  ============================
@@ -65,8 +74,8 @@ drop _merge
 drop if odate < lite_open
 drop if odate > lite_close
 
-keep icode icnno odate ohrs free_beds_cmp beds_none beds_blocked
-collapse (median) beds_none_l0 = beds_none beds_blocked_l0 = beds_blocked (mean) free_beds_cmp_l0 = free_beds_cmp, by(icode odate)
+keep icode icnno odate ohrs free_beds_cmp beds_none beds_blocked room_cmp2
+collapse (median) beds_none_l0 = beds_none beds_blocked_l0 = beds_blocked (mean) free_beds_cmp_l0 = free_beds_cmp room_cmp2_l0 = room_cmp2, by(icode odate)
 encode icode, gen(site)
 tsset site odate
 
@@ -77,11 +86,31 @@ replace beds_blocked_l0 = beds_blocked_l0 != 0
 gen beds_none_l1 = L.beds_none_l0
 gen beds_blocked_l1 = L.beds_blocked_l0
 gen free_beds_cmp_l1 = L.free_beds_cmp_l0
+cap drop room_cmp2_l1
+gen room_cmp2_l1 = L.room_cmp2_l0
+replace room_cmp2_l1 = round(room_cmp2_l1)
+tab room_cmp2_l1
+replace room_cmp2_l1 = room_cmp2_l1 -1
+cap drop room_cmp2_l1_i*
+gen room_cmp2_l1_i0 = room_cmp2_l1 == 0
+gen room_cmp2_l1_i1 = room_cmp2_l1 == 1
+gen room_cmp2_l1_i2 = room_cmp2_l1 == 2
+su room_cmp2_l1_i*
 
+* gen decjanfeb = inlist(month(odate),11,12,1)
+gen winter = inlist(month(odate),12,1,2,3)
+label var winter "Winter"
+tab winter
 
-gen decjanfeb = inlist(month(odate),11,12,1)
+cap drop weekend
+gen weekend = inlist(dow(odate), 0, 6)
+label var weekend "Day of week"
+label define weekend 0 "Monday--Friday"
+label define weekend 1 "Saturday--Sunday", add
+label values weekend weekend
+tab weekend
 
-global timing_vars 	decjanfeb 	beds_none_l1 // occupancy for the *day* before
+global timing_vars 	winter weekend room_cmp2_l1_i0 room_cmp2_l1_i1 // occupancy for the *day* before
 
 * One row per day: now build the analysis data from this
 * ------------------------------------------------------
@@ -118,18 +147,23 @@ tab news_risk
 *  = Model variables assembled into single macro =
 *  ===============================================
 
-global site_vars teaching_hosp hes_overnight_c hes_emergx_c ccot_p_1 ccot_p_2 ccot_p_3
+* global site_vars teaching_hosp hes_overnight_c hes_emergx_c ccot_p_1 ccot_p_2 ccot_p_3
+global site_vars teaching_hosp hes_overnight_c
+global ccot_vars ccot_p_1 ccot_p_2 ccot_p_3
 
 	* NOTE: 2014-02-21 - replace ib3 with below
 	* if you wish to calculate using <7 as baseline
 	* ib1.ccot_shift_pattern
 
-global study_vars pts_hes_k1 pts_hes_k2 pts_hes_k3
+* global study_vars pts_hes_k1 pts_hes_k2 pts_hes_k3
+global study_vars 
 
-global unit_vars cmp_beds_max_c cmp_throughput
+* global unit_vars cmp_beds_max_c cmp_throughput
+global unit_vars cmp_beds_max_c 
 
 
 global model_vars $site_vars $study_vars $unit_vars $timing_vars
+di "$model_vars"
 * Generate a counter variable
 cap drop new_patients
 gen new_patients = 1
@@ -140,7 +174,7 @@ label var new_patients "New patients (per day)"
 * different baseline
 collapse ///
 	(count) vperday = new_patients ///
-	(firstnm) $site_vars ccot_shift_pattern patients_perhesadmx_c ///
+	(firstnm) $site_vars $ccot_vars ccot_shift_pattern patients_perhesadmx_c ///
 	(firstnm) pts_hes_k1 pts_hes_k2 pts_hes_k3 ///
 	(median) $unit_vars ///
 	(min) studymonth visit_month ///
@@ -175,8 +209,11 @@ rename _merge merge_icode
 
 * Data preparation complete
 * -------------------------
+d
+su winter
+su weekend
+tab room_cmp2_l1
 save ${PATH_DATA}scratch/scratch.dta, replace
-
 
 use ${PATH_DATA}scratch/scratch.dta, clear
 * Check missing model vars
@@ -193,6 +230,12 @@ local table_order = 1
 local i 3
 local model_name = "NEWS risk `i'"
 
+* model without patients_perhesadmx to examine 'effect' of ccot
+xtgee vperday $site_vars $ccot_vars $unit_vars $timing_vars ///
+	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
+* model without rcs for referral patterns
+xtgee vperday $site_vars patients_perhesadmx_c $unit_vars $timing_vars ///
+	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 // CHANGED: 2013-05-05 - allow patients_perhesadmx in as cubic spline
 // first a model with a cubic spline for the patients_perhesadmx
 mkspline2 pts_hes_rcs = patients_perhesadmx_c, cubic nknots(4) displayknots
@@ -205,8 +248,9 @@ est save ${PATH_DATA}estimates/news_high_cubic, replace
 save ${PATH_DATA}count_news_high_cubic, replace all
 
 // now the linear model for the table
-xtgee vperday $site_vars $unit_vars $timing_vars ///
- 	pts_hes_k1 pts_hes_k3 ///
+* now the model without patients_perhesadmx for the final table
+* model without patients_perhesadmx to examine 'effect' of ccot
+xtgee vperday $site_vars $ccot_vars $unit_vars $timing_vars ///
 	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 est store news_high_linear
 est save ${PATH_DATA}estimates/news_high_linear, replace
@@ -229,10 +273,7 @@ preserve
 xtgee vperday ///
 	teaching_hosp ///
 	hes_overnight_c ///
-	hes_emergx_c ///
-	ib3.ccot_shift_pattern ///
 	$unit_vars $timing_vars ///
- 	pts_hes_k1 pts_hes_k3 ///
 	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 
 lincom 3.ccot_shift_pattern -  1.ccot_shift_pattern, irr
@@ -254,3 +295,4 @@ save ${PATH_TABLES}tb_$table_name.dta, replace
 outsheet using "${PATH_TABLES}tb_$table_name.csv", ///
      replace comma
 
+cap log close

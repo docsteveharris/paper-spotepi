@@ -25,6 +25,9 @@ prep.wdt <- function(data=wdt) {
             site,               # hospital level ID
             icode,
             id,                 # patient level ID
+            v_timestamp,
+            last_trace,
+            dead,
             dead7,              # 7 day mortality,  1==dead
             dead90,             # 90 day mortality, 1==dead
             open_beds_cmp,      # beds available at time of ward assessment
@@ -39,7 +42,7 @@ prep.wdt <- function(data=wdt) {
             male,               # male sex
             sepsis_dx,          # reported sepsis diagnosis (0==not septic)
             v_ccmds,            # exisiting level of care
-            v_ccmds_rec,        # recommended level of care - levels 0,1,2,3
+            cc.reco = v_ccmds_rec,  
             delayed_referral,   # assessor considers referral delayed
             periarrest,         # assessor considers patient peri-arrest
             out_of_hours,       # assessed 7pm-7am
@@ -86,15 +89,22 @@ prep.wdt <- function(data=wdt) {
             patients_perhesadmx_c,
             ccot_shift_pattern,
             studymonth,
-            match_quality_by_site
+            match_quality_by_site,
+            elgthtr
                 ) ]
 
     # Further variable generation
+
     tdt[, recommend := ifelse(icu_recommend==1 & rxlimits==0,1,0)]
+
     tdt[, ward := ifelse(icu_recommend==0 & rxlimits==0,1,0)]
+
     tdt[, accept := ifelse(icu_recommend==1 & rxlimits==0 & icu_accept,1,0)]
+
     tdt[, room_cmp2 := cut2(open_beds_cmp, c(1,3), minmax=T )]
+
     tdt[, beds_none2 := cut2(open_beds_cmp, c(1), minmax=T )]
+
     tdt[, bedside.decision :=
         ifelse(rxlimits == 1, "rxlimits",
         ifelse(icu_accept == 0, "ward", "icu"))]
@@ -106,11 +116,22 @@ prep.wdt <- function(data=wdt) {
         (!is.na(sofa2.r) & sofa2.r > 1),1,0)]
 
     tdt[, osupp := ifelse( rxrrt==1 | rx_resp==2 | rxcvs == 2,1,0)]
+    tdt[, osupp2 := ifelse( osupp==1 | v_ccmds == 3,1,0)]
+
+    tdt[, elg.timing :=  ifelse(is.na(elgthtr) | elgthtr == 0, 1, 0)]
+
+    # str(tdt$v_timestamp)
+    # str(tdt$last_trace)
+    tdt[, t.trace :=round(difftime(last_trace,v_timestamp,units="days"),2)]
+    # head(tdt[,.(id,dead,v_timestamp,last_trace,t.trace)])
+    # str(tdt$t.trace)
+
 
     # Relevel variables
     tdt[, `:=`(
         age_k               = relevel(factor(age_k), 2),
         v_ccmds             = relevel(factor(v_ccmds), 2),
+        cc.reco             = relevel(factor(cc.reco), 2),
         sepsis_dx           = relevel(factor(sepsis_dx), 1),
         room_cmp2            = relevel(factor(room_cmp2), 3),
         ccot_shift_pattern  = relevel(factor(ccot_shift_pattern), 4),
@@ -130,3 +151,10 @@ prep.wdt <- function(data=wdt) {
 # load(paste0(PATH_DATA, '/paper-spotepi.RData'))
 # lookfor("month")
 # tdt <- prep.wdt(wdt)
+
+# Double check surv data OK
+# d <- merge(tdt,wdt.surv1[,c("id","_t","_d"),with=FALSE],by="id",all.x=TRUE)
+# setnames(d,"_t", "stata_t")
+# setnames(d,"_d", "stata_d")
+# str(d)
+# head(d[,.(id,dead,stata_d,v_timestamp,last_trace,t.trace,stata_t)])

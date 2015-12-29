@@ -151,6 +151,16 @@ replace room_cmp = 2 if open_beds_cmp >= 2 & !missing(open_beds_cmp)
 label values room_cmp room
 tab room_cmp
 
+// vs reported beds v2 
+cap drop room_cmp2
+gen room_cmp2 = .
+label var room_cmp2 "Room_cmp2 in ICU"
+replace room_cmp2 = 0 if open_beds_cmp <= 0
+replace room_cmp2 = 1 if inlist(open_beds_cmp, 1, 2)
+replace room_cmp2 = 2 if open_beds_cmp >= 3 & !missing(open_beds_cmp)
+label values room_cmp2 room
+tab room_cmp2
+
 // vs reported beds: as above but using physical not active occupancy
 cap drop room_physical
 gen room_physical = .

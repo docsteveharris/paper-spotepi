@@ -1,1 +1,1 @@
-/Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi/bld/project_paths.r
+/Users/steve/aor/academic/paper-spotepi/src/bld/project_paths.r
