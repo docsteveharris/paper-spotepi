@@ -36,7 +36,8 @@
 * - add back in weekend
 * - remove mp_throughput
 * - check incidence per 1000 is for NEWS high risk ? @done(2015-12-29)
-* - recentered at 50k overnight admissions
+* 2015-12-29
+* - removed news high restriction
 * - dropped occupancy vars -  not sure how to interpret
 
 
@@ -49,12 +50,12 @@
 clear
 include project_paths.do
 cap log close
-log using ${PATH_LOGS}tb_model_count_news_high.txt,  text replace
+log using ${PATH_LOGS}tb_model_count_news_all.txt,  text replace
 pwd
 
 * CHANGED: 2014-02-26 - changed project reference
-* GenericSetupSteveHarris mas_spotepi tb_model_count_news_high, logon
-global table_name incidence_news_high
+* GenericSetupSteveHarris mas_spotepi tb_model_count_news_all, logon
+global table_name incidence_news_all
 set seed 3001
 
 * Occupancy by day (lagged and direct)
@@ -88,14 +89,16 @@ replace beds_blocked_l0 = beds_blocked_l0 != 0
 gen beds_none_l1 = L.beds_none_l0
 gen beds_blocked_l1 = L.beds_blocked_l0
 gen free_beds_cmp_l1 = L.free_beds_cmp_l0
-* - [ ] NOTE(2015-12-29): switched from lag to difference operator
-cap drop room_cmp2_d1
-gen room_cmp2_d1 = D.room_cmp2_l0
-replace room_cmp2_d1 = sign(room_cmp2_d1)
-tab room_cmp2_d1
-cap drop room_more room_less
-gen room_more = room_cmp2_d1 > 0
-gen room_less = room_cmp2_d1 < 0
+cap drop room_cmp2_l1
+gen room_cmp2_l1 = L.room_cmp2_l0
+replace room_cmp2_l1 = round(room_cmp2_l1)
+tab room_cmp2_l1
+replace room_cmp2_l1 = room_cmp2_l1 -1
+cap drop room_cmp2_l1_i*
+gen room_cmp2_l1_i0 = room_cmp2_l1 == 0
+gen room_cmp2_l1_i1 = room_cmp2_l1 == 1
+gen room_cmp2_l1_i2 = room_cmp2_l1 == 2
+su room_cmp2_l1_i*
 
 * gen decjanfeb = inlist(month(odate),11,12,1)
 gen winter = inlist(month(odate),12,1,2,3)
@@ -110,8 +113,8 @@ label define weekend 1 "Saturday--Sunday", add
 label values weekend weekend
 tab weekend
 
-* global timing_vars winter weekend room_more room_less // occupancy for the *day* before
-global timing_vars winter weekend // occupancy for the *day* before
+* global timing_vars 	winter weekend room_cmp2_l1_i0 room_cmp2_l1_i1 // occupancy for the *day* before
+global timing_vars 	winter weekend // occupancy for the *day* before
 
 * One row per day: now build the analysis data from this
 * ------------------------------------------------------
@@ -137,11 +140,8 @@ su pts_hes_k* if pickone_site
 cap drop odate
 gen odate = dofC(v_timestamp)
 
-* Keep just NEWS High Risk
-local i 3
-local model_name = "NEWS risk `i'"
-tab news_risk
-keep if news_risk == 3
+* Keep all
+local model_name = "NEWS risk - all"
 tab news_risk
 
 *  ===============================================
@@ -173,16 +173,6 @@ label var new_patients "New patients (per day)"
 * Collapse over site days
 * CHANGED: 2014-03-24 - add in ccot_shift_pattern so can re-run model with 
 * different baseline
-
-* 
-d
-* reset centering for hes_overnight
-lookfor hes
-cap drop pickone_site
-egen pickone_site = tag(icode)
-su hes_overnight hes_admissions if pickone_site
-replace hes_overnight_c = hes_overnight - 50
-
 collapse ///
 	(count) vperday = new_patients ///
 	(firstnm) $site_vars $ccot_vars ccot_shift_pattern patients_perhesadmx_c ///
@@ -218,12 +208,19 @@ use `working', clear
 merge m:1 site using `2merge'
 rename _merge merge_icode
 
-* Data preparation complete
-* -------------------------
 d
 su winter
 su weekend
-tab room_cmp2_d1
+tab room_cmp2_l1
+* reset centering for hes_overnight
+lookfor hes
+cap drop pickone_site
+egen pickone_site = tag(icode)
+su hes_overnight if pickone_site
+replace hes_overnight_c = hes_overnight - 50
+
+* Data preparation complete
+* -------------------------
 save ${PATH_DATA}scratch/scratch.dta, replace
 
 use ${PATH_DATA}scratch/scratch.dta, clear
@@ -239,7 +236,7 @@ tempfile estimates_file
 local model_sequence = 1
 local table_order = 1
 local i 3
-local model_name = "NEWS risk `i'"
+local model_name = "NEWS risk all"
 
 * model without patients_perhesadmx to examine 'effect' of ccot
 xtgee vperday $site_vars $ccot_vars $unit_vars $timing_vars ///
@@ -253,20 +250,20 @@ mkspline2 pts_hes_rcs = patients_perhesadmx_c, cubic nknots(4) displayknots
 * CHANGED: 2013-05-06 - now use xtgee to handle autocorrelation
 xtgee vperday $site_vars pts_hes_rcs* $unit_vars $timing_vars ///
 	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
-est store news_high_cubic
-est save ${PATH_DATA}estimates/news_high_cubic, replace
+est store news_all_cubic
+est save ${PATH_DATA}estimates/news_all_cubic, replace
 // save the data for use with estimates again, 'all' saves estimates
-save ${PATH_DATA}count_news_high_cubic, replace all
+save ${PATH_DATA}count_news_all_cubic, replace all
 
 // now the linear model for the table
 * now the model without patients_perhesadmx for the final table
 * model without patients_perhesadmx to examine 'effect' of ccot
 xtgee vperday $site_vars $ccot_vars $unit_vars $timing_vars ///
 	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
-est store news_high_linear
-est save ${PATH_DATA}estimates/news_high_linear, replace
+est store news_all_linear
+est save ${PATH_DATA}estimates/news_all_linear, replace
 // save the data for use with estimates again, 'all' saves estimates
-save ${PATH_DATA}count_news_high_linear, replace all
+save ${PATH_DATA}count_news_all_linear, replace all
 
 * CHANGED: 2014-03-19 - work out IRR for a week and a month
 lincom _cons, irr

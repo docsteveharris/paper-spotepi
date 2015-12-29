@@ -17,7 +17,7 @@ prospective observational cohort study in 48 NHS hospitals
 
 ## Background
 
-Recent policy has placed emphasis identifying and responding to deterioration among ward patients, and providing early access to critical care. However, critical care provision in the NHS is constrained, and existing data on the outcomes of deteriorating ward patients is sparse. We sought to define the incidence, disposition during the week following assessment, and outcomes of these patients.
+Recent policy has placed emphasis on identifying and responding to deterioration among ward patients including early access to critical care. However, critical care provision in the NHS is constrained, and existing data on the outcomes of deteriorating ward patients is sparse. We sought to define the incidence, disposition during the week following assessment, and outcomes of these patients.
 
 ## Methods
 
@@ -39,7 +39,7 @@ In 13017 (86%) patients without treatment limits, mortality occured early with 9
 
 ## Conclusion
 
-Deteriorating ward patients referred to critical care are vulnerable with a high initial mortality. Despite clinical recommendation for admission a substantial minority die without admission, and high critical care occupancy contributes both predujices and delays admission.
+Deteriorating ward patients referred to critical care are vulnerable with a high initial mortality. Despite clinical recommendation for admission a substantial minority die without admission, and high critical care occupancy both predujices and delays admission.
 
 ## Funding
 
@@ -81,13 +81,40 @@ The patient's existing dependency at assessment was defined using the UK Critica
 
 The indicator of critical care unit occupancy was the difference between the maximum number of beds reported to ICNARC, and the number of actively treated patients occupying those beds at the time the ward patient was assessed. Bed pressure was defined as being high (zero or fewer beds), medium (one or two beds), or low (three or more beds).
 
-Incidence models were stratified by NEWS risk class. The unit of analysis was a study week so that weekly fluctuations in lagged critical care occupancy could be examined. Estimation was via generalised estimating equations (GEE) with hospitals as clusters, and week-by-week correlations modelled using a first order autoregressive structure. Decision to admit was modelled multi-level logisitc regression with patients nested within hospitals. Cox proportional hazards were used to model survival with a shared frailty. The proportional hazards assumption was checked by inspecting plots of smoothed exponentiated standardised Schoënfeld residuals, and re-entering terms using time-varying co-efficients where necessary. We reported random effects using the Median Odds Ratio (MOR), and the Median Hazard Ratio (MHR) using the bootstrap to generate 95% confidence intervals. These statistics represent the median difference when comparing outcomes from any two randomly selected hospitals.[Bengtsson and Dribe, 2010, \#60939]
+Incidence models were stratified by NEWS risk class. The unit of analysis was a study day so that daily fluctuations in lagged critical care occupancy could be examined. Estimation was via generalised estimating equations (GEE) with hospitals as clusters, and day-by-day correlations modelled using a first order autoregressive structure. Decision to admit was modelled multi-level logisitc regression with patients nested within hospitals. Cox proportional hazards were used to model survival with a shared frailty. The proportional hazards assumption was checked by inspecting plots of smoothed exponentiated standardised Schoënfeld residuals, and re-entering terms using time-varying co-efficients where necessary. We reported random effects using the Median Odds Ratio (MOR), and the Median Hazard Ratio (MHR) using the bootstrap to generate 95% confidence intervals. These statistics represent the median difference when comparing outcomes from any two randomly selected hospitals.[Bengtsson and Dribe, 2010, \#60939]
 
 Categorical data were reported as counts and percentages, and continuous data as mean (SD) or median (IQR) values. Effect measures are reported with their 95% confidence intervals.
 
 ## Role of the funding source
 
 The study was centrally funded by the Wellcome Trust, sponsored by ICNARC, and supported at NHS hospitals through the National Institute of Health Research service support costs. The funders of the study had no role in the study design; gathering, analysis, and interpretation of the data; writing of the report; and decision to submit the report for publication. The corresponding author had full access to all the data (including statistical reports and tables); takes responsibility for the integrity of the data and the accuracy of the data analysis; and takes final responsibility for the decision to submit for publication.
+
+# Results
+
+48 hospitals reported 20893 visits over 435 months. 2694 visits (12.9%) did not meet the inclusion criteria including 1860 (8.9%) repeat rather than first visits, and 586 (2.8%) patients recently discharged from critical care. Data linkage was incomplete (< 80%) for 66 (15%) study-months excluding a further 2440 (11.7%) visits. Therefore 15759 patients were recruited to the study, of which 15158 (96.1%) completed follow-up without error and were available for analysis ([Figure FFF][figureFFF]). Final data linkage (ward visits to critical care admissions) was 93% complete.
+
+## Patient characteristics
+
+Table TTT shows the baseline data for all ward patients assessed. Sepsis was reported in (9296, 61%) patients; of these, the respiratory system was considered to be the source in half (4772, 51%). Organ failure, defined as a SOFA score greater than or equal to two, was present in 5164 (34%) of patients. 1427 patients (9%) were in respiratory failure, 2931 (19%) were in renal failure, and 4636 (31%) were shocked. Organ support at the time of assessment was however uncommon (870 patients, 6%).
+
+Overall, 2708 (18%) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with 1539 (57%) of these deaths occuring in the first 48 hours (Supplementary Figure FFF). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (Supplementary Figure FFF). For example, there were 328 (9%), 629 (15%), and 1734 (26%) deaths within a week for NEWS low, medium and high risk classes.
+
+## Participating hospitals
+
+The participating hospitals comprised 10 teaching and 38 general hospitals that each collected data between September 2010 and December 2011 for a median of 8 months (range 2--12 months). Each hospital contributed a median of 253 patients (range 80--1305) equivalent to 6 patients referred to critical care (IQR 3--9) per 1,000 overnight admissions. Critical Care Outreach Teams operated 24 hours/day and 7 days/week in 14 (29%) hospitals, less than 24 hours/day in 19 (40%) hospitals, and less than 7 days/week in 13 (27%) hospitals.
+
+There was a median of 12 (IQR 9--18) critical care beds per hospital (mixed Level 2 --- typically intensive monitoring or single organ support, and Level 3 --- ventilated or multiple organ support), most often in a single physical location (45 hospitals). 
+
+## Incidence models
+
+The incidence model estimated that the critical care team in a typical[^typical hospital: 50k overnight admissions, non-teaching, 24/7 outreach, 11 critical care beds] hospital would assess 46 (95%CI 50--54) patients per month of which 17 (95%CI 17--18) patients would meet the definition of NEWS high risk at assessment. As critical care outreach provision decreased then the number of patients assessed fell (Table TTT). Winter was busier (IRR 1.22, 95%CI 1.14--1.31), and weekends quieter (IRR 0.87, 95%CI 0.82-0.92) than non-winter weekday periods. When we included a measure of case finding (cases referred per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile ([sFigure
+FFF](<../out/figures/count_news_high_rcs.jpg>)).
+
+## Critical care occupancy
+
+There were 1221 (8%) patients assessed when the unit was full, 3825 (25%) assessed when there were either one or two beds available, and 10347 (67%) assessed when there were more than two beds available (Table TTT). Critical care occupancy fluctuated with time of the day, day of the week, and season of the year.([Supplementary Figure FFF](<sfigureFFF>)).
+
+>>> insert discussion of pts with Rx limits; should flow nicely from mortality discussion above; then switch remaining discussion to pts w/o limits and pathways
 
 <!-- 
                                         
@@ -100,29 +127,6 @@ The study was centrally funded by the Wellcome Trust, sponsored by ICNARC, and s
                                         
  -->
 
-
-# Results
-
-48 hospitals reported 20893 visits over 435 months. 2694 visits (12.9%) did not meet the inclusion criteria including 1860 (8.9%) repeat rather than first visits, and 586 (2.8%) patients recently discharged from critical care. Data linkage was incomplete (< 80%) for 66 (15%) study-months excluding a further 2440 (11.7%) visits. Therefore 15759 patients were recruited to the study, of which 15158 (96.1%) completed follow-up without error and were available for analysis ([Figure FFF][figureFFF]). Final data linkage (ward visits to critical care admissions) was 93% complete.
-
-## Hospitals (and epidemiology)
-
-The participating hospitals comprised 10 teaching and 38 general hospitals that each collected data between September 2010 and December 2011 for a median of 8 months (range 2--12 months). Each hospital contributed a median of 253 patients (range 80--1305) equivalent to 6 patients referred to critical care (IQR 3--9) per 1,000 overnight admissions. Critical Care Outreach Teams operated 24 hours/day and 7 days/week in 14 (29%) hospitals, less than 24 hours/day in 19 (40%) hospitals, and less than 7 days/week in 13 (27%) hospitals ([supplementary Table TTT](<stableTTT>)). As outreach provision decreased, the numbers of patients assessed by critical care also fell (8, 5, and 4 per 1,000 overnight admissions). The two (4%) hospitals
-with CCOT nonetheless saw 8 patients per 1,000 overnight admissions.
-
-### Critical care units and bed occupancy
-
-There was a median of 12 (IQR 9--18) critical care beds per hospital (mixed Level 2 --- typically intensive monitoring or single organ support, and Level 3 --- ventilated or multiple organ support), most often in a single physical location (45 hospitals). These units admitted a median 20 (IQR 14--26) unplanned admissions from the ward per month which represented 36% of all critical care admissions (IQR 31-43%). 
-
-There were 1221 (8%) patients assessed when the unit was full, 3825 (25%) assessed when there were either one or two beds available, and 10347 (67%) assessed when there were more than two beds available (Table TTT). Critical care occupancy fluctuated with time of the day, day of the week, and season of the year.([Supplementary Figure FFF](<sfigureFFF>)).
-
-## Patient characteristics
-
-Table TTT shows the baseline data for all ward patients assessed. Sepsis was reported in (9296, 61%) patients; of these, the respiratory system was considered to be the source in half (4772, 51%). Organ failure, defined as a SOFA score greater than or equal to two, was present in 5164 (34%) of patients. 1427 patients (9%) were in respiratory failure, 2931 (19%) were in renal failure, and 4636 (31%) were shocked. Organ support at the time of assessment was however uncommon (870 patients, 6%).
-
-Overall, 2708 (18%) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with 1539 (57%) of these deaths occuring in the first 48 hours (Supplementary Figure FFF). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (Supplementary Figure FFF).
-
->>> insert discussion of pts with Rx limits; should flow nicely from mortality discussion above; then switch remaining discussion to pts w/o limits and pathways
 
 ## Patient pathways following ward assessment
 
