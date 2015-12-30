@@ -18,7 +18,7 @@ require(data.table)
 require(Hmisc)
 require(datascibc)
 
-source(paste0(PATH_SHARE, "/derive.R"))
+source("../share/derive.R")
 
 prep.wdt <- function(data=wdt) {
     tdt <- wdt[,.(
