@@ -19,9 +19,9 @@ Log
 
 */
 
-include project_paths.do
+* include project_paths.do
 cap log close
-log using ${PATH_LOGS}cr_working.txt,  text replace
+log using ../logs/cr_working.txt,  text replace
 pwd
 * ==================================
 * = DEFINE LOCAL AND GLOBAL MACROS =
@@ -89,7 +89,7 @@ clear
 *  This should produce the data for the consort diagram
 
 * NOTE: 2015-06-29 - [ ] sym linked the spot-epi data in
-use ${PATH_DATA_ORIGINAL}working_raw_epi.dta, clear
+use ../data/original/working_raw_epi.dta, clear
 count
 // NOTE: 2014-06-23 - dropping these now b/c bug in procHeadsFinal
 drop occupancy occupancy_active free_beds_cmp cmp_beds_max
@@ -323,9 +323,9 @@ replace exclude4 = 1 if floor(hours(v_timestamp)) 	> floor(hours(last_trace)) 		
 count if include == 1 & exclude1 == 0 & exclude2 == 0 & exclude3 == 0 & exclude4 == 1
 tab exclude4
 
-save ${PATH_DATA}working_all.dta, replace
+save ../data/working_all.dta, replace
 
-use ${PATH_DATA}working_all.dta, clear
+use ../data/working_all.dta, clear
 keep if include
 drop if exclude1 == 1
 drop if exclude2 == 1
@@ -336,7 +336,7 @@ drop if exclude4 == 1
 drop include exclude1 exclude2 exclude3 exclude4
 count
 
-saveold ${PATH_DATA}working.dta, replace
+saveold ../data/working.dta, replace
 
 cap log close
 
