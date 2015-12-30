@@ -1,0 +1,32 @@
+# Abstract
+
+## Background
+
+Recent policy has placed emphasis on identifying and responding to deterioration among ward patients including early access to critical care. However, critical care provision in the NHS is constrained, and existing data on the outcomes of deteriorating ward patients is sparse. We sought to define the incidence, disposition during the week following assessment, and outcomes of these patients.
+
+## Methods
+
+We conducted a prospective cohort study of consecutive deteriorating ward patients referred to critical care in 48 NHS hospitals (1 November 2010 --- 31 December 2011). We recorded both the assessor's recommendation for critical care, and the decision to admit. For the subsequent week, admission to critical care was defined by linking to the national critical care audit database, and survival to one year by linking to national death registrations. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression, and Cox proportional hazards respectively. 
+
+## Findings
+
+We included 15,158 patients of whom 6759 (45\%) were in the highest NEWS risk class --- equivalent to 17 high risk patients (95\%CI 13--20) per hospital per month. The critical care unit was full at the time of 1221 (8\%) referrals. 5164 (34\%) patients were in established organ failure with only 870 patients (6\%) already on organ support. Sepsis was reported in 9296 (61\%) patients. 
+
+5321 (35\%) patients were recommended for critical care at assessment of which 3375 (63\%) were accepted. Patients over 80 years were less likely to be offered admission (OR 0.60 95\%CI 0.53--0.69) as were patients assesssed when the unit was full (OR 0.70, 95\%CI 0.57-0.86).There was also significant interhospital variation in admission decisions (Median OR 1.82, 95\%1.74--2.19). 
+
+The remaining 1946 (37\%) patients recommended were refused immediate admission. Of these, 606 (31\%) were admitted late and 337 (18\%) died without critical care.
+
+9837 (65\%) patients were recommended ward care of which 8041 (82\%) had no treatment limitation orders. Of these, 1303 (16\%) were admitted late and 622 (8\%) died without critical care.
+
+For patients recommended for critical care, refusing admission increased the median delay from 2 to 8 hours (95\%CI for median ...) as did referral when the unit was full (from x to y hours, 95\%CI for median ...).
+
+In 13017 (86\%) patients without treatment limits, mortality occured early with 964 (7\%), 1827 (14\%), and 3935 (30\%) deaths at 2, 7, and 90 days respectively. Survival was worse for patients asssessed when the critical care unit was full (HR 1.13, 95\%CI1.00--1.27), and varied between site even after adjustment for patient level risk factors (Median Hazard Ratio 1.28, 95\%CI  1.26--1.30). In the 2141 patients with treatment limits, 90 day mortality was 66\% (1402 deaths).
+
+## Conclusion
+
+Deteriorating ward patients referred to critical care are vulnerable with a high initial mortality. Despite clinical recommendation for admission a substantial minority die without admission, and high critical care occupancy both predujices and delays admission.
+
+## Funding
+
+Wellcome Trust, NIHR Service Support Costs, and the Intensive Care National Audit & Research Centre
+
