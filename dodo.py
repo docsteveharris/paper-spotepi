@@ -5,6 +5,15 @@ from __future__ import print_function
 #  = Create data for analysis =
 #  ============================
 
+# #      _____                                     _       _        
+#     |  __ \                                   | |     | |       
+#     | |__) | __ ___ _ __   __ _ _ __ ___    __| | __ _| |_ __ _ 
+#     |  ___/ '__/ _ \ '_ \ / _` | '__/ _ \  / _` |/ _` | __/ _` |
+#     | |   | | |  __/ |_) | (_| | | |  __/ | (_| | (_| | || (_| |
+#     |_|   |_|  \___| .__/ \__,_|_|  \___|  \__,_|\__,_|\__\__,_|
+#                    | |                                          
+#                    |_|                                          
+
 def task_cr_working():
     """Build working.dta from working_raw_epi.dta
     This last file is stored on the 'phd' encrypted volume"""
@@ -120,3 +129,14 @@ def task_results_spotearly_R():
         "targets":  ["data/paper-spotepi.RData"],
         "actions": ["R CMD BATCH prep/results_spotearly.R ../logs/results_spotearly.Rout"]
     }
+
+#      _____                                            _ _       
+#     |  __ \                                          | | |      
+#     | |__) |_ _ _ __   ___ _ __   _ __ ___  ___ _   _| | |_ ___ 
+#     |  ___/ _` | '_ \ / _ \ '__| | '__/ _ \/ __| | | | | __/ __|
+#     | |  | (_| | |_) |  __/ |    | | |  __/\__ \ |_| | | |_\__ \
+#     |_|   \__,_| .__/ \___|_|    |_|  \___||___/\__,_|_|\__|___/
+#                | |                                              
+#                |_|                                              
+
+
