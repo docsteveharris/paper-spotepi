@@ -1,8 +1,4 @@
 clear
-include project_paths.do
-cap log close
-log using ${PATH_LOGS}cr_sites.txt,  text replace
-pwd
 
 * ==================================
 * = DEFINE LOCAL AND GLOBAL MACROS =
@@ -22,11 +18,11 @@ local ppass "[po-09"
 
 odbc query "`ddsn'", user("`uuser'") pass("`ppass'") verbose
 
-timer on 1
+* timer on 1
 * odbc load, exec("SELECT * FROM spot_early.sites_early")  dsn("`ddsn'") user("`uuser'") pass("`ppass'") lowercase sqlshow clear
 odbc load, exec("SELECT * FROM spotlight.sites_early")  dsn("`ddsn'") user("`uuser'") pass("`ppass'") lowercase sqlshow clear
-timer off 1
-timer list 1
+* timer off 1
+* timer list 1
 compress
 count
 d
@@ -145,6 +141,6 @@ cap drop _*
 * 	- lite_summ_monthly
 * 	now takes place in sites_early sql code
 
-saveold ${PATH_DATA}sites.dta, replace
+saveold ../data/sites.dta, replace
 
 

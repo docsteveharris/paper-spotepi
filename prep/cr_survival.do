@@ -10,12 +10,7 @@
 * - put under Waf control
 
 clear
-include project_paths.do
-cap log close
-log using ${PATH_LOGS}cr_survival.txt,  text replace
-pwd
-
-use ${PATH_DATA}working_postflight.dta, clear
+use ../data/working_postflight.dta, clear
 
 gen double dt1 = v_timestamp
 gen double dt2 = icu_admit
@@ -51,7 +46,7 @@ stset dt4, id(id) failure(dead) exit(time dt1+90) origin(time dt1)
 * TODO: 2015-11-04 - [ ] will need to look into the issue of calling this
 * from cr_sensitivity that is mentioned above
 
-saveold ${PATH_DATA}working_survival_single.dta, replace
+saveold ../data/working_survival_single.dta, replace
 restore
 
 reshape long dt, i(id) j(event)
@@ -153,5 +148,5 @@ stdescribe
 stvary age icu
 sts list, at(0/28)
 
-saveold ${PATH_DATA}working_survival.dta, replace
+saveold ../data/working_survival.dta, replace
 

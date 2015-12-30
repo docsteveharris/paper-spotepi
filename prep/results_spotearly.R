@@ -32,19 +32,18 @@
 # Waf set-up
 rm(list=ls(all=TRUE))
 # setwd('/Users/steve/aor/academic/paper-spotepi/vc-paper-spotepi/prep')
-source("project_paths.r")
 
 # Load variables / set options
 # TODO: 2015-07-21 - [ ] but working_post_flight_plus does not exist, go with postflight
 # working.stata.data <- "/Volumes/phd/data-spot_early/working_postflight_plus.dta"
-working.stata.data <- paste0(PATH_DATA, '/working_postflight.dta')
-working.stata.surv1 <- paste0(PATH_DATA, "/working_survival_single.dta")
+working.stata.data <- paste0("../data/", '/working_postflight.dta')
+working.stata.surv1 <- paste0("../data/", "/working_survival_single.dta")
 
 # TODO: 2015-07-21 - [ ] does not exist
-# sensitivity.stata.data <- paste0(PATH_DATA, "/working_sensitivity.dta")
-sites.stata.data <- paste0(PATH_DATA, "/sites.dta")
-units.stata.data <- paste0(PATH_DATA, "/unitsfinal.dta")
-occupancy.stata.data <- paste0(PATH_DATA, "/working_occupancy.dta")
+# sensitivity.stata.data <- paste0("../data/", "/working_sensitivity.dta")
+sites.stata.data <- paste0("../data/", "/sites.dta")
+units.stata.data <- paste0("../data/", "/unitsfinal.dta")
+occupancy.stata.data <- paste0("../data/", "/working_occupancy.dta")
 clean.run <- TRUE
 
 # Load libraries
@@ -146,7 +145,7 @@ if (clean.run) {
         )
     # save(list = ls(all = TRUE)) should be equivalent to save.image
     save(list = ls(all = TRUE),
-        file = paste0(PATH_DATA, "/paper-spotepi.RData"),
+        file = paste0("../data/", "/paper-spotepi.RData"),
         precheck = FALSE)
 }
 

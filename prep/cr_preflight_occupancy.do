@@ -1,10 +1,4 @@
-* WAF set up
 clear
-global THIS_FILE = "cr_preflight_occupancy"
-include project_paths.do
-cap log close
-log using ${PATH_LOGS}${THIS_FILE}.txt,  text replace
-pwd
 
 *  ===============================================================
 *  = Pulls working occupnacy data from data-spotstudy and cleans =
@@ -23,15 +17,15 @@ Log
 
 */
 
-use icode using ${PATH_DATA}working.dta, clear
+use icode using ../data/working.dta, clear
 contract icode
 drop _freq
 tempfile 2merge
 save `2merge', replace
 
-* !cp ~/data/spot_study/data/working_occupancy24.dta ${PATH_DATA}working_occupancy24.dta
+* !cp ~/data/spot_study/data/working_occupancy24.dta ../data/working_occupancy24.dta
 clear
-use ${PATH_DATA}original/working_occupancy24.dta
+use ../data/original/working_occupancy24.dta
 // FIXME: 2014-06-23 - temp fix for duplicate observations
 sort icode icnno odate ohrs
 duplicates drop icode icnno odate ohrs, force
@@ -50,10 +44,10 @@ assert r(r) == 48
 cap restore, not
 cap drop unit
 encode icnno, gen(unit)
-saveold ${PATH_DATA}working_occupancy.dta, replace
+saveold ../data/working_occupancy.dta, replace
 
 // running median smoother over a week
-use ${PATH_DATA}working_occupancy.dta, clear
+use ../data/working_occupancy.dta, clear
 collapse (max) occ_a_max = occupancy_active occ_d_max = occupancy ///
 	, by(unit odate)
 xtset unit odate, delta(1 day)
@@ -76,7 +70,7 @@ forvalues i = 1/`unit_max' {
 	restore
 }
 
-use ${PATH_DATA}working_occupancy.dta, clear
+use ../data/working_occupancy.dta, clear
 merge m:1 unit odate using `ddata'
 drop _merge
 ren occ_d_max7 occupancy_pweek
@@ -250,7 +244,7 @@ tab ccadmx_month
 
 * NOTE: 2013-05-02 - no free beds on the ICU 12% of the time
 pwd
-saveold ${PATH_DATA}working_occupancy.dta, replace
+saveold ../data/working_occupancy.dta, replace
 
 
 

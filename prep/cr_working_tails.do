@@ -18,14 +18,10 @@ Log
 
 */
 clear
-include project_paths.do
-cap log close
-log using ${PATH_LOGS}cr_workingtails.txt,  text replace
-pwd
 
 * CHANGED: 2015-11-06 - [ ] using old copy of tails data b/c probs with
 * stata-odbc-sql connection
-use ${PATH_DATA_ORIGINAL}working_tails.dta
+use ../data/original/working_tails.dta
 count
 assert r(N)==58183
 
@@ -51,14 +47,14 @@ keep icnno adno imscore
 tempfile 2merge
 save `2merge', replace
 
-use ${PATH_DATA}working.dta, clear
+use ../data/working.dta, clear
 count
 local patient_count = _N
 tempfile 2append
 keep if missing(icnno, adno)
 save `2append', replace
 
-use ${PATH_DATA}working.dta, clear
+use ../data/working.dta, clear
 drop if missing(icnno, adno)
 merge 1:1 icnno adno using `2merge'
 list icode icnno adno lite_open v_timestamp lite_close if _merge == 1
@@ -74,5 +70,5 @@ clonevar ims1 = icnarc_score
 rename imscore ims2
 gen ims_delta = ims2 - ims1
 
-saveold ${PATH_DATA}working_tails.dta, replace
+saveold ../data/working_tails.dta, replace
 

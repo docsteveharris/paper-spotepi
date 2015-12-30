@@ -1,11 +1,3 @@
-* WAF set up
-clear
-global THIS_FILE = "cr_preflight_occupancy"
-include project_paths.do
-cap log close
-log using ${PATH_LOGS}${THIS_FILE}.txt,  text replace
-pwd
-
 *  =====================================
 *  = Merge occupancy data into working =
 *  =====================================
@@ -32,20 +24,20 @@ Log
 
 // 1: if ICU and HDU then merge against ICU
 
-use icode using ${PATH_DATA}working.dta, clear
+use icode using ../data/working.dta, clear
 contract icode
 keep icode
 tempfile 2merge
 save `2merge', replace
 
-use ${PATH_DATA}working_occupancy.dta, clear
+use ../data/working_occupancy.dta, clear
 
 merge m:1 icode using `2merge'
 drop if _merge != 3
 drop _merge
 
 
-merge m:1 icnno using ${PATH_DATA}unitsfinal.dta, keepusing(unit_type)
+merge m:1 icnno using ../data/unitsfinal.dta, keepusing(unit_type)
 drop if _merge != 3 // broomfield
 drop _merge
 
@@ -64,7 +56,7 @@ tempfile 2merge
 save `2merge'
 
 // now merge this list of unique icnnos back into occupancy
-use ${PATH_DATA}working_occupancy, clear
+use ../data/working_occupancy, clear
 merge m:1 icnno using `2merge'
 drop if _merge != 3
 drop _merge
@@ -75,7 +67,7 @@ tempfile 2merge
 save `2merge'
 
 // 2: Merge this list of occupancy stats against working.dta
-use ${PATH_DATA}working_tails.dta, clear
+use ../data/working_tails.dta, clear
 gen odate = dofc(v_timestamp)
 gen ohrs = hh(v_timestamp)
 
@@ -90,6 +82,6 @@ tab bed_pressure
 tab xbed_pressure
 tab mbed_pressure
 
-saveold ${PATH_DATA}working_merge.dta, replace
+saveold ../data/working_merge.dta, replace
 cap log close
 
