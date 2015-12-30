@@ -78,7 +78,7 @@ tdt <- wdt[,
 tdt
 qplot(x=wday,y=occupancy, data=tdt, geom="step") 
 
-# Now plot when the unit is full
+# Now plot when the unit is full (by hour of the week)
 tdt <- wdt[, .(
 		full.physical=mean(full.physical,na.rm=TRUE),
 		full.clinical=mean(full.clinical,na.rm=TRUE)
@@ -89,13 +89,38 @@ qplot(x=wday,y=full.clinical, data=tdt, geom="step")
 
 # Final plot
 gg <- ggplot(data=tdt, aes(x=wday,y=full.clinical*100))
-gg + geom_step() +
+gg1 <- gg +
+	geom_step() +
 	theme_minimal() +
 	scale_x_continuous(breaks=c(0,24,48,72,96,120,144,168)) +
 	xlab("Hours (starting at 00:00h Monday)") +
 	ylab("Clinical occupancy at capacity (%)") +
 	coord_cartesian(y=c(0,20))
 
+ggsave(filename=paste0(PATH_FIGURES, "/fg_occupancy_over_time.pdf"),
+	plot=gg1, width=6, height=3, scale=1.3)
 
 
+# Now plot when the unit is full (by hour over the year)
+tdt <- wdt[, .(
+		full.physical=mean(full.physical,na.rm=TRUE),
+		full.clinical=mean(full.clinical,na.rm=TRUE)
+		),
+	by=.(yday(otimestamp))]
+tdt
+summary(tdt$yday)
+qplot(x=yday,y=full.clinical, data=tdt, geom="step") 
+
+# Final plot
+gg <- ggplot(data=tdt, aes(x=wday,y=full.clinical*100))
+gg1 <- gg +
+	geom_step() +
+	theme_minimal() +
+	scale_x_continuous(breaks=c(0,24,48,72,96,120,144,168)) +
+	xlab("Hours (starting at 00:00h Monday)") +
+	ylab("Clinical occupancy at capacity (%)") +
+	coord_cartesian(y=c(0,20))
+
+# ggsave(filename=paste0(PATH_FIGURES, "/fg_occupancy_over_time.pdf"),
+# 	plot=gg1, width=6, height=3, scale=1.3)
 

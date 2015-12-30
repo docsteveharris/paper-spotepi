@@ -130,8 +130,7 @@ There were 1221 (8%) patients assessed when the unit was full, 3825 (25%) assess
 
 ## Patient pathways following ward assessment
 
-Overall, 3546 (27%) patients were accepted immediately to critical care, 2141 (14%) were refused critical care and remained on the ward with a treatment limitation order, but the majority (9471, 62%) were refused without treatment limitation. A subgroup of 5321 (35%) patients were recommended for critical care at the bedside assessment. Within these, 3375 (63%) were accepted immediately, 345 (7%) were refused with treatment limits, and 1601 (30%) were refused without
-treatment limits.
+Overall, 3546 (27%) patients were accepted immediately to critical care, 2141 (14%) were refused critical care and remained on the ward with a treatment limitation order, but the majority (9471, 62%) were refused without treatment limitation. A subgroup of 5321 (35%) patients were recommended for critical care at the bedside assessment. Within these, 3375 (63%) were accepted immediately, 345 (7%) were refused with treatment limits, and 1601 (30%) were refused without treatment limits.
 
 ### Patients without treatment limits initially refused critical care
 

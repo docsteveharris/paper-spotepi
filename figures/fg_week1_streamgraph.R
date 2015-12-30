@@ -35,8 +35,8 @@ library(survival)
 library(data.table)
 library(Hmisc)
 library(assertthat)
-# packageDescription('data.table')
-# library(reshape2) # don't need reshape2 if using data.table >=1.9.6
+# packageDescription("data.table")
+# library(reshape2) # don"t need reshape2 if using data.table >=1.9.6
 
 rm(list=ls(all=TRUE))
 
@@ -45,13 +45,13 @@ source("project_paths.r")
 
 # Load the necessary data
 # -----------------------
-working.data <- paste0(PATH_DATA, '/working_survival_single.dta')
+working.data <- paste0(PATH_DATA, "/working_survival_single.dta")
 rdt <- data.table(read.dta(working.data,
     convert.dates = FALSE,
     convert.underscore = FALSE,
     convert.factors = FALSE
     ))
-# head(rdf[c('dt1', 'dt2', 'dt3', 'dt4')])
+# head(rdf[c("dt1", "dt2", "dt3", "dt4")])
 
 # Check this is the correct data
 dim(rdt)
@@ -140,7 +140,7 @@ days.sum <- days.patients[
 
 # Now scale (by individual pathway, for drawing individually)
 tt <- days.sum
-tt <- melt(tt, id=c("time", "pathway"))
+tt <- melt(tt, id=c("time", "pathway")) # original by decision only
 tt <- tt[!is.na(value)]
 sb <- patients[,.N,by=pathway]
 sb
@@ -149,7 +149,7 @@ setkey(tt, pathway)
 tt <- sb[tt]
 tt[, value.pct := value/N*100]
 tt[, value.pct.all := value/nrow(rdt)*100]
-# - [ ] NOTE(2015-12-02): don't need to dcast
+# - [ ] NOTE(2015-12-02): don"t need to dcast
 # tt
 # head(dcast(tt, time + pathway ~ variable))
 # tt <- dcast(tt, time + pathway + variable ~ .)
@@ -188,8 +188,6 @@ p.base +
  theme(panel.margin.x=unit(1, "lines")) +
  xlab("Days following bedside assessment")
 
-
-
 str(tt)
 tt.wide <- dcast(tt[,.(time,pathway,variable,value.pct)],
     time + pathway ~ variable)
@@ -212,6 +210,87 @@ p.base <- gg +
 p.base +
  theme(panel.margin.x=unit(1, "lines")) +
  xlab("Days following bedside assessment")
+
+
+# plot bad outcomes so the total height is all badness
+ # - dead post icu
+ # - dead without icu
+ # - in icu
+gg <- ggplot(data=tt.wide[!is.na(room_cmp2)], aes(x=time, group=pathway))
+p.base <- gg +
+ geom_ribbon(aes(ymax=sum.icu.now, ymin=0, fill="1")) +
+ geom_ribbon(aes(ymax=sum.icu.now+sum.dead.posticu, ymin=sum.icu.now, fill="2")) +
+ geom_ribbon(aes(ymax=sum.icu.now+sum.dead.posticu+sum.dead.noicu, ymin=sum.icu.now+sum.dead.posticu, fill="3")) +
+ geom_hline(yintercept=0) +
+ facet_grid(.~pathway) +
+ coord_cartesian(ylim=c(0,75), xlim=c(0,90)) +
+ scale_x_continuous(breaks=seq(0,90,30)) +
+ scale_fill_manual(values=c("1"="#33a02c", "3"="#b2df8a", "2"="#1f78b4")) +
+ theme_minimal()
+p.base +
+ theme(panel.margin.x=unit(1, "lines")) +
+ xlab("Days following bedside assessment")
+
+# Repeat all plots with further subdivision by occupancy
+# Total status by day
+daysByOcc.sum <- days.patients[
+    ,
+    .(
+    sum.dead = sum(i.dead),
+    sum.alive = sum(i.alive),
+    sum.dead.noicu = sum(i.dead.noicu),
+    sum.alive.noicu = sum(i.alive.noicu),
+    sum.dead.posticu = sum(i.dead.posticu),
+    sum.alive.posticu = sum(i.alive.posticu),
+    sum.icu.now = sum(i.icu.now),
+    sum.alive.evericu = sum(i.alive.evericu))
+    ,
+    # by=.(time, pathway)] # original by decision only
+    by=.(time, pathway, room_cmp2)]
+
+# Now scale (by individual pathway, for drawing individually)
+ttByOcc <- days.sum
+# ttByOcc <- melt(ttByOcc, id=c("time", "pathway")) # original by decision only
+ttByOcc <- melt(ttByOcc, id=c("time", "pathway", "room_cmp2"))
+ttByOcc <- ttByOcc[!is.na(value)]
+# sb <- patients[,.N,by=pathway]
+sb <- patients[,.N,by=.(pathway, room_cmp2)]
+sb
+setkey(sb, pathway, room_cmp2)
+setkey(ttByOcc, pathway, room_cmp2)
+ttByOcc <- sb[ttByOcc]
+ttByOcc[, value.pct := value/N*100]
+ttByOcc[, value.pct.all := value/nrow(rdt)*100]
+# - [ ] NOTE(2015-12-02): don"t need to dcast
+# ttByOcc
+# head(dcast(ttByOcc, time + pathway ~ variable))
+# ttByOcc <- dcast(ttByOcc, time + pathway + variable ~ .)
+ttByOcc[, pathway:=factor(pathway, label=c("Rxlimits", "Ward", "Critical care"))]
+ttByOcc
+str(ttByOcc)
+# plot bad outcomes so the total height is all badness
+ # - dead post icu
+ # - dead without icu
+ # - in icu
+ttByOcc
+ttByOcc.wide <- dcast(ttByOcc[,.(time,pathway,room_cmp2,variable,value.pct)],
+    time + pathway + room_cmp2 ~ variable)
+ttByOcc.wide
+gg <- ggplot(data=ttByOcc.wide[!is.na(room_cmp2)], aes(x=time, group=pathway))
+p.base <- gg +
+ geom_ribbon(aes(ymax=sum.icu.now, ymin=0, fill="1")) +
+ geom_ribbon(aes(ymax=sum.icu.now+sum.dead.posticu, ymin=sum.icu.now, fill="2")) +
+ geom_ribbon(aes(ymax=sum.icu.now+sum.dead.posticu+sum.dead.noicu, ymin=sum.icu.now+sum.dead.posticu, fill="3")) +
+ geom_hline(yintercept=0) +
+ facet_grid(pathway~room_cmp2) +
+ coord_cartesian(ylim=c(0,75), xlim=c(0,90)) +
+ scale_x_continuous(breaks=seq(0,90,30)) +
+ scale_fill_manual(values=c("1"="#33a02c", "3"="#b2df8a", "2"="#1f78b4")) +
+ theme_minimal()
+p.base +
+ theme(panel.margin.x=unit(1, "lines")) +
+ xlab("Days following bedside assessment")
+
 
 stop()
 

@@ -324,7 +324,7 @@ rBoot <- function(m) {
 # system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=2))
 system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=100))
 
-names(bMer$t0) <-     
+names(bMer$t0) <-
         c("Median.OR",
         "p.beds1", "p.beds2", "p.beds3",
         "p.extra2v1", "n2.extra",
@@ -334,8 +334,8 @@ names(bMer$t0) <-
 rBoot95ci <- function(b, this.i=1) {
     b95ci <- boot.ci(b, type=c("norm"), index=this.i)
     return(c(
-        parm = names(b$t0[this.i]), 
-        est = b$t0[this.i], 
+        parm = names(b$t0[this.i]),
+        est = b$t0[this.i],
         l95 = b95ci$normal[,2],
         u95 = b95ci$normal[,3])
     )

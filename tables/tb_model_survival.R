@@ -51,24 +51,6 @@ library(assertthat)
 library(datascibc)
 library(scipaper) # contains model2table
 
-#  ========================
-#  = KEY GLOBAL VARIABLES =
-#  ========================
-
-t.censor <- 90       # censor survival time (days)
-nsims <- 5          # simulations for bootstrap
-
-#  ========================================
-#  = Define path and filenames for output =
-#  ========================================
-table.name <- paste0("model_dead", t.censor)
-# add nsims to file names since you'll be gutted if you overwrite a major simulation
-table.name <- paste0(table.name, "_sim", nsims)
-table.path <- paste0(PATH_TABLES, '/')
-table.xlsx <- paste0(table.path, 'tb_', table.name, '.xlsx')
-data.path <- paste0(PATH_DATA, '/')
-table.RData <- paste0(data.path, table.name, '.RData', sep='')
-
 #  =============
 #  = Load data =
 #  =============
@@ -81,10 +63,36 @@ dim(tdt)
 # Check data correct
 assert_that(all.equal(dim(tdt), c(15158,81)))
 
-#  ===============
-#  = Subset data =
-#  ===============
-nrow(tdt <- tdt[rxlimits==0])
+#  ===========================================
+#  = KEY GLOBAL VARS AND SUBSETTIG OPERATION =
+#  ===========================================
+
+t.censor <- 90          # censor survival time (days)
+nsims <- 200              # simulations for bootstrap
+subgrp <- "all"         # define subgrp
+
+if (subgrp=="all") {
+    nrow(tdt <- tdt)
+    assert_that(nrow(tdt)==15158)
+}
+
+if (subgrp=="nolimits") {
+    nrow(tdt <- tdt[rxlimits==0])
+    assert_that(nrow(tdt)==13017)
+}
+
+#  ========================================
+#  = Define path and filenames for output =
+#  ========================================
+table.name <- paste0("model_dead", t.censor, subgrp)
+
+# add nsims to file names since you'll be gutted if you overwrite a major simulation
+table.name <- paste0(table.name, "_sim", nsims)
+table.path <- paste0(PATH_TABLES, '/')
+table.xlsx <- paste0(table.path, 'tb_', table.name, '.xlsx')
+data.path <- paste0(PATH_DATA, '/')
+table.RData <- paste0(data.path, table.name, '.RData', sep='')
+
 
 #  =====================
 #  = Define predictors =
@@ -336,12 +344,12 @@ sheet1.df <- rbind(
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
-sheet2 <- 'raw.norxlimits'
+sheet2 <- 'raw.subgrp'
 removeSheet(wb, sheet2)
 createSheet(wb, name = sheet2)
 writeWorksheet(wb, cbind(vars = row.names(r1.raw), r1.raw), sheet2)
 
-sheet3 <- 'fmt.norxlimits'
+sheet3 <- 'fmt.subgrp'
 removeSheet(wb, sheet3)
 createSheet(wb, name = sheet3)
 writeWorksheet(wb, r1.fmt, sheet3)

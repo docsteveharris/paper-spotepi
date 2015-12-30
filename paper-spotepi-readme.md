@@ -1,33 +1,79 @@
 Readme
 ======
+Avoiding all analyses of the 'effectiveness' of ICU (i.e. effect of decision to admit, or early admission)
+Factors affecting outcome for patients _not_ admitted
+Examining the effect of occupancy
+	- in the frailty model allows for confounding by hospital
+	- but removes the effect of hospital	that operates _through_ occupancy
+Recast results to emphasise interest in outcomes of patients referred to and not immediately admitted (esp. those with a recommendation for critical care)
 
-Todo:
+inbox:
 =====
 
-- writing
-	- model decision to admit as binary excluding patients with a treatment limitation order
-		- tidying tasks
-			- extract MOR @done(2015-12-10)
-			- re-run with SOFA score to keep severity adjustment consistent
-			- exclude patients with level 3 support  and replace v_ccmds_now with organ_support (soup)
-			- redo exact OR in text after updating model
-			- redo MOR excluding patient level factors
-		- sensitivity models
-			- full cohort without rxlimit exclusion
-			- sensitivity using time2icu as the dependent var	
-			- early admission as the dependent var instead
-			- within subgroup with a recommendation for critical care
-		- comment in text on
-			- effect of occupancy
-				- number of additional patients who would be predicted to be admitted were occupancy OK (overall, and amongst those recommended) 
-			- inter site variability via MOR
-				- translate into predicted admissions too?
+@continue:
+
+@next:
+	- redo predictors
+			- add in time-varying covariates to survival models
+			- drop site level predictors except from incidence model
+				- simplify site level predictors (drop ?emergency admissions, CMP throughput) ... or just remove through out
+			- switch to ccmds 2 or 3 (now) (back from osupp)
+	 
+	- bootstrap CI 
+		- check/read about which SE to use after bootstrap (simple vs ...)
+			at present assuming central limit theorem holds and sampling by bootstrap creates this distn then use Z
+	abstract:
+		- 95%CI for delay when refusing admission
+		- 95%CI for delay with high occupancy
+	intro:
+		- explain concept of tracking patients not admitted
+			emphasise USP that we have followed all patients
+	methods:
+		- explain why mortality analysis in subgroup of patients rejected
+	results:
+		- tables
+			- table 1
+		- figures
+			- fig 1: consort diagram 
+				- repeat for subgroup recommended?
+			- sfig 1: occupancy over time 
+		- move treatment limits cohort earlier in results and then ignore further
+			then remaining discussion is around fate of patients without treatment limits remaining on the ward (and comparison with those immediately admitted)
+		- run full simulation for survival models
+		- run survival model in full cohort
+			maybe add in interaction between room_cmp and recommendation
+	discussion
+
+@later:
 	
-	- finish with mortality model for decision to admit 
-		- for all patients 
-		- for patients recommended to critical care
-		show similar outcomes, in discussion then comment on incomplete adjustment which sets up next paper
-	- table comparing the three pathways
+	
+	
+	- writing
+		- model decision to admit as binary excluding patients with a treatment limitation order
+			- tidying tasks
+				- re-run with SOFA score to keep severity adjustment consistent
+				- exclude patients with level 3 support	and replace v_ccmds_now with organ_support (soup)
+				- redo exact OR in text after updating model
+				- redo MOR excluding patient level factors
+			- sensitivity models
+				- full cohort without rxlimit exclusion
+				- sensitivity using time2icu as the dependent var	
+				- early admission as the dependent var instead
+				- within subgroup with a recommendation for critical care
+			- comment in text on
+				- effect of occupancy
+					- number of additional patients who would be predicted to be admitted were occupancy OK (overall, and amongst those recommended)
+						get at the weighted mean by taking `n.extra` and dividing by the study pop
+						- full model
+						- in subgroup recommended (this might be the model to present)
+				- inter site variability via MOR
+					- translate into predicted admissions too?
+		
+		- finish with mortality model for decision to admit 
+			- for all patients 
+			- for patients recommended to critical care
+			show similar outcomes, in discussion then comment on incomplete adjustment which sets up next paper
+		- table comparing the three pathways
 
 
 
@@ -62,17 +108,17 @@ TRY - drop survival errors early so that you have the same number of patients in
 140413
 - added outsheet commands to table files in order that I can generate tables for publication from data
 	- table 1a completed
-    - table 1b completed
-    - supp table 1 - site chars - completed
-    - supp table 2 - incidence by news risk class - completed
+	- table 1b completed
+	- supp table 1 - site chars - completed
+	- supp table 2 - incidence by news risk class - completed
 - replaced all spot_ward references with mas_spotepi (incl those in vcode/spot_ward) so that I don't forget when working in the future with new transfers
 - created wr08_sensitivity analysis
 
 140328
 
 - created a single record per patient survival data set by modifying cr_survival
-    + see working_survival_single.dta
-    + tried then running the laplace command in stata; nice because it directly estimates percentile survival; but I can't seem to pull out a random effect estimate for the site effect (fixed only)
+	+ see working_survival_single.dta
+	  + tried then running the laplace command in stata; nice because it directly estimates percentile survival; but I can't seem to pull out a random effect estimate for the site effect (fixed only)
 - go back to estimating the median odds ratio; according to this [answer](http://www.stata.com/statalist/archive/2012-11/msg00307.html) it is not possible to derive a confidence interval for this (easily) in stata
     + exp(sqrt(2*V*invnormal(0.75)) where V is the random effects variance when the random effects are normally distributed
 - median hazard ratio??
@@ -134,6 +180,43 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 
 
 Archive:
+	- skim and check methods @done(2015-12-19) @project(@continue)
+	- incidence figures from GEE model  @done(2015-12-29) @project(results)
+		- report model as supplementary table?
+		- remove elective emergency indicator
+		- swap beds_none for room_cmp2
+		- remove referral pattern adjustment
+		- add back in weekend
+		- remove mp_throughput
+		- check incidence per 1000 is for NEWS high risk ? @done(2015-12-29)
+	- basic @done(2015-12-29) @project(results)
+	- add in major groups @done(2015-12-29) @project(results)
+	- write abstract @done(2015-12-18)
+		- report  occupancy and decision from time2icu model
+		- report mortality models
+			- run mortality model in cohort not recommended without limits
+				this asks the qn: who should be offered critical care esp if you use combined endpoint of death or admission to critical care in the next week
+	- model code @done(2015-12-18) @project(Mortality models)
+	- overall 7 and 90 day survival models @done(2015-12-18) @project(Mortality models)
+	- subgroup @done(2015-12-18) @project(Mortality models)
+	- model outputs @done(2015-12-18) @project(Mortality models)
+	- sanity check: add in report of model w/o frailty @done(2015-12-18) @project(Mortality models)
+	- why  missing 'p' (b/c only 1 sim) @done(2015-12-18) @project(Mortality models)
+	- recommended and refused @done(2015-12-18) @project(Mortality models)
+	- refused @done(2015-12-18) @project(Mortality models)
+	- interaction of recommendation? @done(2015-12-18) @project(Mortality models)
+		probably can drop this since you are looking at within subgroup effects 
+	- frailty / site level variation @done(2015-12-17) @project(Mortality models)
+	- use re-sampling code - but is v slow; will need to run overnight? @done(2015-12-18) @project(Mortality models)
+	- model time to admission for those recommended with MHR etc as before @done(2015-12-16)
+		- next steps
+			- 
+		- would need to include competing risk of death since censoring is _not_ independent  @done(2015-12-16)
+	- fit simplified version of model @done(2015-12-15)
+	- add in frailty @done(2015-12-15)
+	- examine impact of 'correct decision' (i.e. what is the cost of being refused if admitted in the end) @done(2015-12-15)
+	- just do simple model with CR but not frailty since combination is difficult @done(2015-12-16)
+	- extract MOR @done(2015-12-10)
 	- use data set up structure from paper-spotearly @now @done(2015-12-10)
 		+ copied the prep folder and made the same @done(2015-12-10)
 	- include occupancy @done(2015-12-08)

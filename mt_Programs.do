@@ -1,1 +1,0 @@
-/Users/steve/analysis/spot_early/vcode/mt_Programs.do

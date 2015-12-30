@@ -19,6 +19,19 @@ def build(ctx):
         ]
     )
 
+    # Occupancy over the week
+    # ---------------------------------
+    ctx(
+        features='run_r_script',
+        source='fg_occupancy_over_time.R',
+        target=[
+            ctx.path_to(ctx, 'FIGURES', 'fg_occupancy_over_time.pdf')
+            ],
+        deps=[
+            ctx.path_to(ctx, 'DATA', 'working_occupancy.dta')
+        ]
+    )
+    
     # Hazard and survival plot
     # ----------------------------
     ctx(
