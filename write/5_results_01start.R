@@ -18,5 +18,6 @@ source("../share/spotepi_variable_prep.R")
 load("../data/paper-spotepi.RData")
 wdt.original <- wdt
 tdt <- prep.wdt(wdt)
+names(tdt)
 # empty list to store rmd vars
 tt <- list()                     

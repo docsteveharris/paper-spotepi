@@ -41,6 +41,8 @@ prep.wdt <- function(data=wdt) {
             age_k,
             male,               # male sex
             sepsis_dx,          # reported sepsis diagnosis (0==not septic)
+            sepsis,
+            sepsis_site,
             v_ccmds,            # exisiting level of care
             cc.reco = v_ccmds_rec,  
             delayed_referral,   # assessor considers referral delayed
