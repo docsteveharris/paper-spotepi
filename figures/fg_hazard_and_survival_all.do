@@ -13,15 +13,12 @@ Log
 */
 
 clear
-include project_paths.do
-cap log close
-log using ${PATH_LOGS}cr_working.txt,  text replace
 pwd
 
 *  ===============================
 *  = Simple non-parametric plots =
 *  ===============================
-use ${PATH_DATA}working_survival.dta, clear
+use ../data/working_survival.dta, clear
 set scheme shred
 stset dt1, id(id) failure(dead_st) exit(time dt0+365) origin(time dt0)
 sts list, at(0/28)
@@ -85,5 +82,4 @@ graph display survival_both
 
 
 * export as eps since console version can't make pdfs
-graph export ${PATH_FIGURES}hazard_and_survival_all.eps, replace
-log close
+graph export ../write/figures/hazard_and_survival_all.eps, replace

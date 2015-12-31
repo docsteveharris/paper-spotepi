@@ -153,3 +153,16 @@ def task_table1():
         "actions": ["R CMD BATCH tables/tb_table1_all.R ../logs/tb_table1_all.Rout"]
     }
 
+def task_sfig_hazard_survival():
+    """Prepare hazard and survival - all (in eps format)"""
+
+    return {
+        # "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["figures/fg_hazard_and_survival_all.do",
+                    "data/working_survival.dta"],
+        "targets":  ["write/figures/hazard_and_survival_all.eps"],
+        "actions":  ["stata-mp -bq do ${PWD}/figures/fg_hazard_and_survival_all.do",
+                    "mv fg_hazard_and_survival_all.log logs/fg_hazard_and_survival_all.log",
+                    "if tail logs/fg_hazard_and_survival_all.log | egrep 'r(\d+)' -c; then tail logs/fg_hazard_and_survival_all.log && echo '!!! Stata dofile error?' && exit 1; else exit 0; fi"
+                    ] 
+    }
