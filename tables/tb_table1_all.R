@@ -54,17 +54,16 @@ library(XLConnect)
 library(Hmisc)
 
 rm(list=ls(all=TRUE))
-source("project_paths.r")
 
 # Load the necessary data
 # -----------------------
-load(paste0(PATH_DATA, '/paper-spotepi.RData'))
+load("../data/paper-spotepi.RData")
 wdt.original <- wdt
 wdt$sample_N <- 1
 dim(wdt)
 
 # Define file name
-table1.file <- paste0(PATH_TABLES, '/table1_all.xlsx')
+table1.file <- "../write/tables/table1_all.xlsx"
 
 # Define strata
 # NOTE: 2014-10-11 - just work with 2 way comparison for now
@@ -74,7 +73,7 @@ table1.file <- paste0(PATH_TABLES, '/table1_all.xlsx')
 vars.strata <-  NA
 
 # Define the vars
-source(paste0(PATH_SHARE, "/derive.R"))
+source("../share/derive.R")
 describe(wdt$sofa_score)
 wdt[, sofa2.r := gen.sofa.r(pf, fio2_std)]
 wdt[, odys := ifelse(

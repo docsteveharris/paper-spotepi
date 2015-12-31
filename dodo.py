@@ -140,3 +140,16 @@ def task_results_spotearly_R():
 #                |_|                                              
 
 
+
+def task_table1():
+    """Prepare Table 1"""
+    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    #   formatting and caption for table
+
+    return {
+        "file_dep": ["tables/tb_table1_all.R",
+                    "data/paper-spotepi.RData"],
+        "targets":  ["write/tables/table1_all.xlsx"],
+        "actions": ["R CMD BATCH tables/tb_table1_all.R ../logs/tb_table1_all.Rout"]
+    }
+
