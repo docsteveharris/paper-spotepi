@@ -166,3 +166,17 @@ def task_sfig_hazard_survival():
                     "if tail logs/fg_hazard_and_survival_all.log | egrep 'r(\d+)' -c; then tail logs/fg_hazard_and_survival_all.log && echo '!!! Stata dofile error?' && exit 1; else exit 0; fi"
                     ] 
     }
+
+def task_sfig_dead7_aps():
+    """Prepare supp figure dead7 vs APS (SOFA, ICNARC, NEWS)"""
+
+    return {
+        "file_dep": ["figures/fg_dead7_aps_severity.R",
+                    "data/paper-spotepi.RData"],
+        "targets":  [
+                    "write/figures/fg_dead7_sofa.jpg",
+                    "write/figures/fg_dead7_icnarc.jpg",
+                    "write/figures/fg_dead7_news.jpg"
+                    ],
+        "actions": ["R CMD BATCH figures/fg_dead7_aps_severity.R ../logs/fg_dead7_aps_severity.Rout"]
+    }

@@ -27,12 +27,10 @@
 
 rm(list=ls(all=TRUE))
 # setwd('/Users/steve/aor/academic/paper-spotearly/src/analysis')
-source("project_paths.r")
 
 # Load the necessary data
 # -----------------------
-load(paste0(PATH_DATA, '/paper-spotepi.RData'))
-ls()
+load("../data/paper-spotepi.RData")
 
 # Load dependencies
 # -----------------
@@ -89,10 +87,10 @@ gg.2 <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$icnarc0,
     r.severity=c(0,50),
     l.severity="ICNARC physiology score")
 
-# ggsave(filename=paste0(PATH_FIGURES, "/fg_dead7_imscore.png"), plot=gg.2,
+# ggsave(filename=paste0("write/figures", "/fg_dead7_imscore.png"), plot=gg.2,
 # width=5, height=4, scale=1.3, dpi=600
 # )
-ggsave(filename=paste0(PATH_FIGURES, "/fg_dead7_imscore.pdf"), plot=gg.2,
+ggsave(filename=paste0("write/figures", "/fg_dead7_imscore.jpg"), plot=gg.2,
 width=5, height=4, scale=1.3
 )
 
@@ -102,7 +100,7 @@ gg.2 <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$sofa_score,
     r.severity=c(0,15),
     l.severity="SOFA score")
 
-ggsave(filename=paste0(PATH_FIGURES, "/fg_dead7_sofa.pdf"), plot=gg.2,
+ggsave(filename=paste0("write/figures", "/fg_dead7_sofa.jpg"), plot=gg.2,
 width=5, height=4, scale=1.3
 )
 
@@ -113,7 +111,7 @@ gg.2 <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$news_score,
     r.severity=c(0,20),
     l.severity="NEWS score")
 
-ggsave(filename=paste0(PATH_FIGURES, "/fg_dead7_news.pdf"), plot=gg.2,
+ggsave(filename=paste0("write/figures", "/fg_dead7_news.jpg"), plot=gg.2,
 width=5, height=4, scale=1.3
 )
 
