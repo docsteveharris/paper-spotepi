@@ -22,10 +22,13 @@ Table 1 shows the baseline data for all ward patients assessed. Sepsis was repor
 Overall, `r dead7$n[2]` (`r dead7$p[2]`\%) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with `r dead7.d2$n[2]` (`r dead7.d2$p[2]`\%) of these deaths occuring in the first 48 hours (supplementary Figure 1). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (supplementary Figure 2). For example, there were `r d7.news1$n[2]` (`r d7.news1$p[2]`\%), `r d7.news2$n[2]` (`r d7.news2$p[2]`\%), and `r d7.news3$n[2]` (`r d7.news3$p[2]`\%) deaths within a week for NEWS low, medium and high risk classes respectively.
 
 ## Participating hospitals
+```{r include=FALSE, echo=FALSE}
+source("5_results_04hospitals.R")
+```
 
-The participating hospitals comprised 10 teaching and 38 general hospitals that each collected data between September 2010 and December 2011 for a median of 8 months (range 2--12 months). Each hospital contributed a median of 253 patients (range 80--1305) equivalent to 6 patients referred to critical care (IQR 3--9) per 1,000 overnight admissions. Critical Care Outreach Teams operated 24 hours/day and 7 days/week in 14 (29\%) hospitals, less than 24 hours/day in 19 (40\%) hospitals, and less than 7 days/week in 13 (27\%) hospitals.
+The participating hospitals comprised `r n.teach` teaching and `r n.dgh` general hospitals that each collected data between September 2010 and December 2011 for a median of `r smonths$q50` months (IQR `r smonths$iqr` months). Each hospital contributed a median of `r pts_q$q50` patients (IQR `r pts_q$iqr`) equivalent to `r pts_overnight$q50` patients referred to critical care (IQR `r pts_overnight$iqr`) per 1,000 overnight admissions. Critical Care Outreach Teams operated 24 hours/day and 7 days/week in `r ccot$n[4]` (`r ccot$p[4]`\%) hospitals, less than 24 hours/day in `r ccot$n[3]` (`r ccot$p[3]`\%) hospitals, and less than 7 days/week in `r ccot$n[2]` (`r ccot$p[2]`\%) hospitals.
 
-There was a median of 12 (IQR 9--18) critical care beds per hospital (mixed Level 2 --- typically intensive monitoring or single organ support, and Level 3 --- ventilated or multiple organ support), most often in a single physical location (45 hospitals). 
+There was a median of `r beds$q50` (IQR `r beds$iqr`) critical care beds per hospital (mixed Level 2 --- typically intensive monitoring or single organ support, and Level 3 --- ventilated or multiple organ support), most often in a single physical location (`r colocate$n[1]` hospitals). 
 
 ## Incidence models
 
