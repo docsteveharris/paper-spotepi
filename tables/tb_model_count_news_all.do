@@ -48,10 +48,6 @@
 
 * - [ ] NOTE(2015-12-01): under waf control
 clear
-include project_paths.do
-cap log close
-log using ${PATH_LOGS}tb_model_count_news_all.txt,  text replace
-pwd
 
 * CHANGED: 2014-02-26 - changed project reference
 * GenericSetupSteveHarris mas_spotepi tb_model_count_news_all, logon
@@ -61,11 +57,11 @@ set seed 3001
 * Occupancy by day (lagged and direct)
 * ------------------------------------
 * CHANGED: 2014-02-26 - now merge in the specific occupancy details and the lag
-use ${PATH_DATA}working_occupancy, clear
-merge m:1 icode using ${PATH_DATA}sites.dta, keepusing(lite_open lite_close)
+use ../data/working_occupancy, clear
+merge m:1 icode using ../data/sites.dta, keepusing(lite_open lite_close)
 drop _merge
 preserve
-use ${PATH_DATA}working_postflight.dta, clear
+use ../data/working_postflight.dta, clear
 contract icode
 drop _freq
 tempfile 2merge
@@ -118,11 +114,11 @@ global timing_vars 	winter weekend // occupancy for the *day* before
 
 * One row per day: now build the analysis data from this
 * ------------------------------------------------------
-save ${PATH_DATA}scratch/scratch.dta, replace
+save ../data/scratch/scratch.dta, replace
 
 * Prepare data from working_postflight
 * ------------------------------------
-use ${PATH_DATA}working_postflight.dta, clear
+use ../data/working_postflight.dta, clear
 cap drop ccot_p_*
 tabulate ccot_shift_pattern, generate(ccot_p_)
 su ccot_p_*
@@ -185,7 +181,7 @@ d
 tempfile 2merge
 save `2merge', replace
 
-use ${PATH_DATA}scratch/scratch.dta, clear
+use ../data/scratch/scratch.dta, clear
 gen vperday = 0
 label var vperday "Visits per day"
 * Merge just vperday this time
@@ -221,9 +217,9 @@ replace hes_overnight_c = hes_overnight - 50
 
 * Data preparation complete
 * -------------------------
-save ${PATH_DATA}scratch/scratch.dta, replace
+save ../data/scratch/scratch.dta, replace
 
-use ${PATH_DATA}scratch/scratch.dta, clear
+use ../data/scratch/scratch.dta, clear
 * Check missing model vars
 
 est drop _all
@@ -251,9 +247,9 @@ mkspline2 pts_hes_rcs = patients_perhesadmx_c, cubic nknots(4) displayknots
 xtgee vperday $site_vars pts_hes_rcs* $unit_vars $timing_vars ///
 	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 est store news_all_cubic
-est save ${PATH_DATA}estimates/news_all_cubic, replace
+est save ../data/estimates/news_all_cubic, replace
 // save the data for use with estimates again, 'all' saves estimates
-save ${PATH_DATA}count_news_all_cubic, replace all
+save ../data/count_news_all_cubic, replace all
 
 // now the linear model for the table
 * now the model without patients_perhesadmx for the final table
@@ -261,9 +257,9 @@ save ${PATH_DATA}count_news_all_cubic, replace all
 xtgee vperday $site_vars $ccot_vars $unit_vars $timing_vars ///
 	, family(poisson) link(log) force corr(ar 1) eform i(site) t(odate)
 est store news_all_linear
-est save ${PATH_DATA}estimates/news_all_linear, replace
+est save ../data/estimates/news_all_linear, replace
 // save the data for use with estimates again, 'all' saves estimates
-save ${PATH_DATA}count_news_all_linear, replace all
+save ../data/count_news_all_linear, replace all
 
 * CHANGED: 2014-03-19 - work out IRR for a week and a month
 lincom _cons, irr
@@ -300,8 +296,8 @@ use `estimates_file', clear
 gen table_order = `table_order'
 gen model_sequence = `model_sequence'
 local ++table_order
-save ${PATH_TABLES}tb_$table_name.dta, replace
-outsheet using "${PATH_TABLES}tb_$table_name.csv", ///
+save ../data/tb_$table_name.dta, replace
+outsheet using "../write/tables/tb_$table_name.csv", ///
      replace comma
 
 cap log close

@@ -3,34 +3,6 @@
 #  =======================
 teach <- ff.np('teaching', data=wdt.sites)
 # same as above but using dplyr
-tdt <- distinct(select(wdt,icode,teaching_hosp))
-with(tdt, CrossTable(teaching_hosp, prop.chisq=F, prop.t=F))
-
-summary(wdt.sites$patients)
-pts_q <- ff.mediqr('patients', data=wdt.sites, dp=0)
-pts_q
-summary(wdt.sites$studymonths_n)
-smonths <- ff.mediqr('studymonths_n', data=wdt.sites, dp=0)
-smonths
-summary(wdt.sites$pts_by_hes_n)
-pts_overnight <- ff.mediqr('pts_by_hes_n', data=wdt.sites, dp=0)
-pts_overnight
-# Overnight admissions per month by CCOT provision
-with(wdt.sites, tapply(pts_by_hes_n, ccot, summary))
-
-# Critical care outreach
-with(wdt.sites, CrossTable(ccot, prop.chisq=F, prop.t=F))
-beds <- ff.mediqr('cmp_beds_persite', data=wdt.sites, dp=0)
-beds
-colocate <- ff.np('units_incmp', data=wdt.sites, dp=0)
-
-tt$tails_all <- wdt.sites[,
-    (cmp_patients_permonth*tails_all_percent/100)]
-tails_all <- ff.mediqr('tails_all', data=tt, dp=0)
-tails_all
-tails_p <- ff.mediqr('tails_all_percent', data=wdt.sites, dp=0)
-tails_p
-
 #  ======================================
 #  = Effects of critical care occupancy =
 #  ======================================

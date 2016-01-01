@@ -180,3 +180,33 @@ def task_sfig_dead7_aps():
                     ],
         "actions": ["R CMD BATCH figures/fg_dead7_aps_severity.R ../logs/fg_dead7_aps_severity.Rout"]
     }
+
+def task_table_incidence_all():
+    """Run incidence model in Stata (all patients)"""
+
+    return {
+        "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["tables/tb_model_count_news_all.do",
+                    "data/working_postflight.dta",
+                    "data/sites.dta"],
+        "targets":  ["write/tables/tb_incidence_news_all.csv"],
+        "actions":  ["stata-mp -bq do ${PWD}/tables/tb_model_count_news_all.do",
+                    "mv tb_model_count_news_all.log logs/tb_model_count_news_all.log",
+                    "if tail logs/tb_model_count_news_all.log | egrep 'r(\d+)' -c; then tail logs/tb_model_count_news_all.log && echo '!!! Stata dofile error?' && exit 1; else exit 0; fi"
+                    ] 
+    }
+
+def task_table_incidence_high():
+    """Run incidence model in Stata (NEWS high risk)"""
+
+    return {
+        "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["tables/tb_model_count_news_high.do",
+                    "data/working_postflight.dta",
+                    "data/sites.dta"],
+        "targets":  ["write/tables/tb_incidence_news_high.csv"],
+        "actions":  ["stata-mp -bq do ${PWD}/tables/tb_model_count_news_high.do",
+                    "mv tb_model_count_news_high.log logs/tb_model_count_news_high.log",
+                    "if tail logs/tb_model_count_news_high.log | egrep 'r(\d+)' -c; then tail logs/tb_model_count_news_high.log && echo '!!! Stata dofile error?' && exit 1; else exit 0; fi"
+                    ] 
+    }

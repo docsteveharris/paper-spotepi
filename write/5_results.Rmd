@@ -32,8 +32,7 @@ There was a median of `r beds$q50` (IQR `r beds$iqr`) critical care beds per hos
 
 ## Incidence models
 
-The incidence model estimated that the critical care team in a typical[^typical hospital: 50k overnight admissions, non-teaching, 24/7 outreach, 11 critical care beds] hospital would assess 46 (95\%CI 50--54) patients per month of which 17 (95\%CI 17--18) patients would meet the definition of NEWS high risk at assessment. As critical care outreach provision decreased then the number of patients assessed fell (Table TTT). Winter was busier (IRR 1.22, 95\%CI 1.14--1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82-0.92) than non-winter weekday periods. When we included a measure of case finding (cases referred per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile ([sFigure
-FFF](<../out/figures/count_news_high_rcs.jpg>)).
+We estimated the mean incidence of referrals to critical care at 46 (95\%CI 50--54) patients per month of which 17 (95\%CI 17--18) patients would meet the definition of NEWS high risk at assessment. This was for a non-teaching hospital with 50,000 overnight admissions per year, and 24/7 CCOT provision. As critical care outreach provision decreased then the number of patients assessed fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14--1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82-0.92) than non-winter weekday periods. When we included a measure of case finding in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile (supplementary Figure 3).
 
 ## Critical care occupancy
 
