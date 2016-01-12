@@ -185,7 +185,7 @@ def task_table_incidence_all():
     """Run incidence model in Stata (all patients)"""
 
     return {
-        "uptodate": [False], # forces task to run - useful when debugging
+        # "uptodate": [False], # forces task to run - useful when debugging
         "file_dep": ["tables/tb_model_count_news_all.do",
                     "data/working_postflight.dta",
                     "data/sites.dta"],
@@ -200,7 +200,7 @@ def task_table_incidence_high():
     """Run incidence model in Stata (NEWS high risk)"""
 
     return {
-        "uptodate": [False], # forces task to run - useful when debugging
+        # "uptodate": [True], # forces task to run - useful when debugging
         "file_dep": ["tables/tb_model_count_news_high.do",
                     "data/working_postflight.dta",
                     "data/sites.dta"],
@@ -208,5 +208,20 @@ def task_table_incidence_high():
         "actions":  ["stata-mp -bq do ${PWD}/tables/tb_model_count_news_high.do",
                     "mv tb_model_count_news_high.log logs/tb_model_count_news_high.log",
                     "if tail logs/tb_model_count_news_high.log | egrep 'r(\d+)' -c; then tail logs/tb_model_count_news_high.log && echo '!!! Stata dofile error?' && exit 1; else exit 0; fi"
+                    ] 
+    }
+
+def task_sfig_count_news_high_rcs():
+    """Plot restricted cubic spline of incidence vs case finding model"""
+
+    return {
+        "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["tables/tb_model_count_news_high.do",
+                    "figures/fg_count_news_high_rcs.do"
+                    ],
+        "targets":  ["write/figures/count_news_high_rcs.eps"],
+        "actions":  ["stata-mp -bq do ${PWD}/figures/fg_count_news_high_rcs.do",
+                    "mv fg_count_news_high_rcs.log logs/fg_count_news_high_rcs.log",
+                    "if tail logs/fg_count_news_high_rcs.log | egrep 'r(\d+)' -c; then tail logs/fg_count_news_high_rcs.log && echo '!!! Stata dofile error?' && exit 1; else exit 0; fi"
                     ] 
     }

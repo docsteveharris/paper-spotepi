@@ -15,6 +15,8 @@
 * 2015-12-01
 * - file created by copying code at end of tb_model_count_news_high.do
 * - put under waf control
+* 2016-01-12
+* - switched to doit control
 
 
 *  ======================================================
@@ -22,20 +24,19 @@
 *  ======================================================
 
 clear
-include project_paths.do
 cap log close
-log using ${PATH_LOGS}fg_count_news_high_rcs.txt,  text replace
+log using ../logs/fg_count_news_high_rcs.txt,  text replace
 pwd
 
 * NOTE: 2014-03-13 - change scale to to per day vs per week
 
-use patients_perhesadmx using ${PATH_DATA}working_postflight, clear
+use patients_perhesadmx using ../data/working_postflight, clear
 set scheme shbw
 su patients_perhesadmx
 local patients_perhesadmx_mean = r(mean)
-use ${PATH_DATA}count_news_high_cubic, clear
+use ../data/count_news_high_cubic, clear
 gen patients_perhesadmx = patients_perhesadmx_c + `patients_perhesadmx_mean'
-est use ${PATH_DATA}estimates/news_high_cubic
+est use ../data/estimates/news_high_cubic
 eret li
 * est restore news_high_cubic
 est replay, eform
@@ -65,5 +66,5 @@ if c(os) == "Unix" local gext eps
 if c(os) == "MacOSX" local gext pdf
 graph rename count_news_high_rcs, replace
 graph display count_news_high_rcs
-graph export ${PATH_FIGURES}count_news_high_rcs.`gext' ///
+graph export ../write/figures/count_news_high_rcs.`gext' ///
     , name(count_news_high_rcs) replace
