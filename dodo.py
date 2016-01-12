@@ -225,3 +225,16 @@ def task_sfig_count_news_high_rcs():
                     "if tail logs/fg_count_news_high_rcs.log | egrep 'r(\d+)' -c; then tail logs/fg_count_news_high_rcs.log && echo '!!! Stata dofile error?' && exit 1; else exit 0; fi"
                     ] 
     }
+
+def task_sfig_occupancy_over_time():
+    """Plot occupacny over time"""
+
+    return {
+        "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["figures/fg_occupancy_over_time.R",
+                    "data/working_occupancy.dta"],
+        "targets":  [
+                    "write/figures/fg_occupancy_over_time.jpg"
+                    ],
+        "actions": ["R CMD BATCH figures/fg_occupancy_over_time.R ../logs/fg_occupancy_over_time.Rout"]
+    }

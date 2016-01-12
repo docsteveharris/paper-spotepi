@@ -28,6 +28,8 @@
 # ===
 # 2015-12-02
 # - file created
+# 2016-01-12
+# - placed under doit control
 
 # Load dependencies
 # -----------------
@@ -41,18 +43,15 @@ library(lubridate)
 
 rm(list=ls(all=TRUE))
 
-# Waf control
-source("project_paths.r")
-
 # Load the necessary data
 # -----------------------
 rdt <- data.table(read.dta(
-	paste0(PATH_DATA, '/working_occupancy.dta'
+	paste0('../data/', '/working_occupancy.dta'
 	)))
 
 # Check this is the correct data
 dim(rdt)
-assert_that(all.equal(dim(rdt),c(366072,43)))
+assert_that(all.equal(dim(rdt),c(366072,44))==TRUE)
 str(rdt)
 wdt <- rdt[,.(icode,icnno,otimestamp,
 		occupancy, occupancy_active,
@@ -96,8 +95,9 @@ gg1 <- gg +
 	xlab("Hours (starting at 00:00h Monday)") +
 	ylab("Clinical occupancy at capacity (%)") +
 	coord_cartesian(y=c(0,20))
+gg1
 
-ggsave(filename=paste0(PATH_FIGURES, "/fg_occupancy_over_time.pdf"),
+ggsave(filename=paste0("../write/figures", "/fg_occupancy_over_time.jpg"),
 	plot=gg1, width=6, height=3, scale=1.3)
 
 
@@ -121,6 +121,6 @@ gg1 <- gg +
 	ylab("Clinical occupancy at capacity (%)") +
 	coord_cartesian(y=c(0,20))
 
-# ggsave(filename=paste0(PATH_FIGURES, "/fg_occupancy_over_time.pdf"),
+# ggsave(filename=paste0("../write/figures", "/fg_occupancy_over_time.pdf"),
 # 	plot=gg1, width=6, height=3, scale=1.3)
 
