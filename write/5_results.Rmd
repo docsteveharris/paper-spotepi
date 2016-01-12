@@ -17,7 +17,7 @@ source("5_results_01start.R")
 source("5_results_03patients.R")
 ```
 
-Table 1 shows the baseline data for all ward patients assessed. Sepsis was reported in (`r sepsis$n[2]`, `r sepsis$p[2]`\%) patients; of these, the respiratory system was considered to be the source in half (`r s.resp.n`, `r s.resp.p`\%). Organ failure, defined as a SOFA score greater than or equal to two, was present in `r odys$n[2]` (`r odys$p[2]`\%) of patients. `r rdys$n[2]` patients (`r rdys$p[2]`\%) were in respiratory failure, `r kdys$n[2]` (`r kdys$p[2]`\%) were in renal failure, and `r shock$n[2]` (`r shock$p[2]`\%) were shocked. Organ support at the time of assessment was however uncommon (`r osupp$n[2]` patients, `r osupp$p[2]`\%).
+Table 1 shows the baseline data for all ward patients assessed. Sepsis was reported in (`r sepsis$n[2]`, `r sepsis$p[2]`\%) patients. Of these, the respiratory system was considered to be the source in half (`r s.resp.n`, `r s.resp.p`\%). Organ failure, defined as a SOFA score greater than or equal to two, was present in `r odys$n[2]` (`r odys$p[2]`\%) of patients. `r rdys$n[2]` patients (`r rdys$p[2]`\%) were in respiratory failure, `r kdys$n[2]` (`r kdys$p[2]`\%) were in renal failure, and `r shock$n[2]` (`r shock$p[2]`\%) were shocked. Organ support at the time of assessment was however uncommon (`r osupp$n[2]` patients, `r osupp$p[2]`\%).
 
 Overall, `r dead7$n[2]` (`r dead7$p[2]`\%) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with `r dead7.d2$n[2]` (`r dead7.d2$p[2]`\%) of these deaths occuring in the first 48 hours (supplementary Figure 1). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (supplementary Figure 2). For example, there were `r d7.news1$n[2]` (`r d7.news1$p[2]`\%), `r d7.news2$n[2]` (`r d7.news2$p[2]`\%), and `r d7.news3$n[2]` (`r d7.news3$p[2]`\%) deaths within a week for NEWS low, medium and high risk classes respectively.
 
@@ -30,13 +30,17 @@ The participating hospitals comprised `r n.teach` teaching and `r n.dgh` general
 
 There was a median of `r beds$q50` (IQR `r beds$iqr`) critical care beds per hospital (mixed Level 2 --- typically intensive monitoring or single organ support, and Level 3 --- ventilated or multiple organ support), most often in a single physical location (`r colocate$n[1]` hospitals). 
 
+## Critical care occupancy
+```{r include=FALSE, echo=FALSE}
+source("5_results_05occupancy.R")
+```
+
+There were `r room$n[1]` (`r room$p[1]`\%) patients assessed when the unit was full, `r room$n[2]` (`r room$p[2]`\%) assessed when there were either one or two beds available, and `r room$n[3]` (`r room$p[3]`\%) assessed when there were more than two beds available (Table TTT). Critical care occupancy fluctuated with time of the day, day of the week, and season of the year.([Supplementary Figure FFF](<sfigureFFF>)).
+
 ## Incidence models
 
 We estimated the mean incidence of referrals to critical care at 46 (95\%CI 50--54) patients per month of which 17 (95\%CI 17--18) patients would meet the definition of NEWS high risk at assessment. This was for a non-teaching hospital with 50,000 overnight admissions per year, and 24/7 CCOT provision. As critical care outreach provision decreased then the number of patients assessed fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14--1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82-0.92) than non-winter weekday periods. When we included a measure of case finding in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile (supplementary Figure 3).
 
-## Critical care occupancy
-
-There were 1221 (8\%) patients assessed when the unit was full, 3825 (25\%) assessed when there were either one or two beds available, and 10347 (67\%) assessed when there were more than two beds available (Table TTT). Critical care occupancy fluctuated with time of the day, day of the week, and season of the year.([Supplementary Figure FFF](<sfigureFFF>)).
 
 >>> insert discussion of pts with Rx limits; should flow nicely from mortality discussion above; then switch remaining discussion to pts w/o limits and pathways
 
