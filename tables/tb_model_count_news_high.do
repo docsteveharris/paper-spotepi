@@ -299,6 +299,6 @@ gen table_order = `table_order'
 gen model_sequence = `model_sequence'
 local ++table_order
 save ../data/tb_$table_name.dta, replace
-outsheet using "..write/tables/tb_$table_name.csv", ///
+outsheet using "../write/tables/tb_$table_name.csv", ///
      replace comma
 
