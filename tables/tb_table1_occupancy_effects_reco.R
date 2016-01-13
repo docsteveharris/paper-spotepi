@@ -87,7 +87,7 @@ wdt$sample_N <- 1
 wdt$aall <- 1
 
 # Define file name
-table.name <- 'tb_occupancy_effects_all_reco'
+table.name <- 'tb_occupancy_effects_reco'
 table.file <- paste0("write/tables", "/", table.name, ".xlsx")
 table.file
 

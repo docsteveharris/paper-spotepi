@@ -238,3 +238,28 @@ def task_sfig_occupancy_over_time():
                     ],
         "actions": ["R CMD BATCH figures/fg_occupancy_over_time.R ../logs/fg_occupancy_over_time.Rout"]
     }
+
+
+def task_tb_occupancy_effects_all():
+    """Prepare Table 2 - occupancy (all patients)"""
+    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    #   formatting and caption for table
+
+    return {
+        "file_dep": ["tables/tb_table1_occupancy_effects.R",
+                    "data/paper-spotepi.RData"],
+        "targets":  ["write/tables/tb_occupancy_effects_all.xlsx"],
+        "actions": ["R CMD BATCH tables/tb_table1_occupancy_effects.R ../logs/tb_table1_occupancy_effects.Rout"]
+    }
+
+def task_tb_occupancy_effects_reco():
+    """Prepare Table 2 - occupancy (recommended patients)"""
+    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    #   formatting and caption for table
+
+    return {
+        "file_dep": ["tables/tb_table1_occupancy_effects_reco.R",
+                    "data/paper-spotepi.RData"],
+        "targets":  ["write/tables/tb_occupancy_effects_reco.xlsx"],
+        "actions": ["R CMD BATCH tables/tb_table1_occupancy_effects_reco.R ../logs/tb_table1_occupancy_effects.Rout"]
+    }
