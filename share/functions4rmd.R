@@ -74,6 +74,11 @@ ff.mediqr <- function(var, data=wdt, dp=0) {
 ff.np <- function(var, data=wdt, dp=1) {
     # Return n and % for binary vars
     v <- with(data, get(var))
+    # Error checking - should be coercible to factor
+    if(nlevels(v)==0) {
+        v <- factor(v)
+        print(paste("WARNING", var, "is not a factor - ", nlevels(v), "levels found at conversion"))
+    }
     fmt <- paste("%.", dp, "f", sep="")
     v.yn  <- data[,.(n=.N,pct=100*.N/nrow(data)),by=v]
     setorder(v.yn, v)
@@ -83,6 +88,7 @@ ff.np <- function(var, data=wdt, dp=1) {
     # Return as list so you can use $ for subsetting
     return(list(n=v.n,p=v.p))
 }
+
 
 ff.prop.test <- function(var, byvar, data=wdt, dp=1) {
     # returns differences as percentages
