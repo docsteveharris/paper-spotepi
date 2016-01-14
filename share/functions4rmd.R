@@ -85,7 +85,7 @@ ff.np <- function(var, data=wdt, dp=1) {
     setorder(v.yn, v)
     print(v.yn)
     v.n <- sprintf("%.0f", v.yn$n)
-    v.p <- sprintf(fmt, v.yn$pct)
+    v.p <- paste0(sprintf(fmt, v.yn$pct), "%")
     # Return as list so you can use $ for subsetting
     return(list(n=v.n,p=v.p))
 }
