@@ -111,6 +111,7 @@ prep.wdt <- function(data=wdt) {
     tdt[, bedside.decision :=
         ifelse(rxlimits == 1, "rxlimits",
         ifelse(icu_accept == 0, "ward", "icu"))]
+    tdt[, bedside.decision := factor(bedside.decision, levels=c("icu", "ward", "rxlimits")), ]
 
     tdt[, sofa2.r := gen.sofa.r(pf, fio2_std)]
 
