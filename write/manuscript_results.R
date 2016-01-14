@@ -1,7 +1,7 @@
 #  =======================
 #  = Hospitals and sites =
 #  =======================
-teach <- ff.np('teaching', data=wdt.sites)
+teach <- ff.np(teaching, data=wdt.sites)
 # same as above but using dplyr
 #  ======================================
 #  = Effects of critical care occupancy =
@@ -54,7 +54,7 @@ with(wdt[icu_recommend==1], CrossTable(beds_none, bedside.decision))
 #  ==================================
 #  = Patients with treatment limits =
 #  ==================================
-rxlimits <- ff.np('rxlimits', data=wdt, dp=0)
+rxlimits <- ff.np(rxlimits, data=wdt, dp=0)
 
 age.by.rxlimits <- ff.t.test(wdt, 'age', 'rxlimits', dp=0)
 age.by.rxlimits
@@ -62,38 +62,38 @@ age.by.rxlimits
 sofa.by.rxlimits <- ff.t.test(wdt, 'sofa_score', 'rxlimits', dp=1)
 sofa.by.rxlimits
 
-dead7.rxlimits <- ff.np('dead7', dp=1, data=wdt[rxlimits==1])
-dead90.rxlimits <- ff.np('dead90', dp=1, data=wdt[rxlimits==1])
-dead1y.rxlimits <- ff.np('dead1y', dp=1, data=wdt[rxlimits==1])
+dead7.rxlimits <- ff.np(dead7, dp=1, data=wdt[rxlimits==1])
+dead90.rxlimits <- ff.np(dead90, dp=1, data=wdt[rxlimits==1])
+dead1y.rxlimits <- ff.np(dead1y, dp=1, data=wdt[rxlimits==1])
 
 #  ========================================================
 #  = Patients without Rx limits recommended **WARD** care =
 #  ========================================================
-ward <- ff.np('ward', dp=1, data=wdt)
+ward <- ff.np(ward, dp=1, data=wdt)
 
 age.by.ward <- ff.t.test(wdt[rxlimits==0], 'age', 'ward', dp=1)
 age.by.ward
 sofa.by.ward <- ff.t.test(wdt[rxlimits==0], 'sofa_score', 'ward', dp=1)
 sofa.by.ward
 
-recommend <- ff.np('recommend', dp=1, data=wdt)
-dead7.ward <- ff.np('dead7', dp=1, data=wdt[ward==1])
+recommend <- ff.np(recommend, dp=1, data=wdt)
+dead7.ward <- ff.np(dead7, dp=1, data=wdt[ward==1])
 with(wdt[rxlimits==0], CrossTable(dead7, recommend, prop.chisq=F, prop.t=F, chisq=T))
 
 
 wdt[,alive7noICU := ifelse(dead7==0 & icucmp==0,1,0)]
-alive7noICU.ward <- ff.np('alive7noICU', dp=1, data=wdt[ward==1])
-icucmp.ward <- ff.np('icucmp', dp=1, data=wdt[ward==1])
-icucmp.reassess <- ff.np('icu_accept', dp=1, data=wdt[ward==1 & icucmp==1])
+alive7noICU.ward <- ff.np(alive7noICU, dp=1, data=wdt[ward==1])
+icucmp.ward <- ff.np(icucmp, dp=1, data=wdt[ward==1])
+icucmp.reassess <- ff.np(icu_accept, dp=1, data=wdt[ward==1 & icucmp==1])
 wdt[,dead7noICU := ifelse(dead7==1 & icucmp==0,1,0)]
-dead7noicu.ward <- ff.np('dead7noICU', dp=1, data=wdt[ward==1])
+dead7noicu.ward <- ff.np(dead7noICU, dp=1, data=wdt[ward==1])
 
 
 #  =============================================
 #  = Patients recommended to **CRITICAL** care =
 #  =============================================
-recommend <- ff.np('recommend', dp=1, data=wdt)
-accept <- ff.np('accept', dp=1, data=wdt[recommend==1])
+recommend <- ff.np(recommend, dp=1, data=wdt)
+accept <- ff.np(accept, dp=1, data=wdt[recommend==1])
 
 # characteristics of those accepted
 with(wdt[recommend==1], tapply(age, accept, summary))
@@ -110,9 +110,9 @@ with(wdt[recommend==1], CrossTable(dead7, accept, prop.chisq=F, prop.t=F, chisq=
 with(wdt[recommend==1 & accept==1], CrossTable(dead7, icucmp, prop.chisq=F, prop.t=F, chisq=T))
 
 # outcomes for those recommended but not accepted
-alive7noICU.rec1.acc0 <- ff.np('alive7noICU', dp=1, data=wdt[recommend==1 & accept==0])
-icucmp.rec1.acc0 <- ff.np('icucmp', dp=1, data=wdt[recommend==1 & accept==0])
-dead7noicu.rec1.acc0 <- ff.np('dead7noICU', dp=1, data=wdt[recommend==1 & accept==0])
+alive7noICU.rec1.acc0 <- ff.np(alive7noICU, dp=1, data=wdt[recommend==1 & accept==0])
+icucmp.rec1.acc0 <- ff.np(icucmp, dp=1, data=wdt[recommend==1 & accept==0])
+dead7noicu.rec1.acc0 <- ff.np(dead7noICU, dp=1, data=wdt[recommend==1 & accept==0])
 
 #  =======================================
 #  = Delay to admission to critical care =
@@ -125,22 +125,22 @@ wdt.timing <- wdt[is.na(elgthtr) | elgthtr ==0]
 
 time2icu <- ff.mediqr('time2icu', data=wdt.timing, dp=0)
 time2icu
-early4 <- ff.np('early4', wdt.timing[icucmp==1])
+early4 <- ff.np(early4, wdt.timing[icucmp==1])
 
 # Recommended and accepted
 time2icu.acc1 <- ff.mediqr('time2icu', data=wdt.timing[recommend==1 & accept==1], dp=0)
 time2icu.acc1
-early4.acc1 <- ff.np('early4', wdt.timing[icucmp==1 & recommend==1 & accept==1])
+early4.acc1 <- ff.np(early4, wdt.timing[icucmp==1 & recommend==1 & accept==1])
 
 # Recommended not accepted
 time2icu.rec1.acc0 <- ff.mediqr('time2icu', data=wdt.timing[recommend==1 & accept==0], dp=0)
 time2icu.rec1.acc0
-early4.rec1.acc0 <- ff.np('early4', wdt.timing[icucmp==1 & recommend==1 & accept==0])
+early4.rec1.acc0 <- ff.np(early4, wdt.timing[icucmp==1 & recommend==1 & accept==0])
 
 # Not recommended but later admitted
 time2icu.ward <- ff.mediqr('time2icu', data=wdt.timing[ward==1], dp=0)
 time2icu.ward
-early4.ward <- ff.np('early4', wdt.timing[icucmp==1 & ward==1])
+early4.ward <- ff.np(early4, wdt.timing[icucmp==1 & ward==1])
 
 
 

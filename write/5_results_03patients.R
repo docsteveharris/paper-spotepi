@@ -6,9 +6,9 @@ assert_that("wdt" %in% ls())
 
 # Patients with sepsis
 tt$sepsis <- data.table(sepsis = wdt[,ifelse(sepsis %in% c(3,4),1,0)])
-sepsis <- ff.np('sepsis', data=tt$sepsis, dp=0)
+sepsis <- ff.np(sepsis, data=tt$sepsis, dp=0)
 # Sepsis site == 2 if resp (which is 2nd in list after NA)
-ssite <- ff.np('sepsis_site', data=wdt[sepsis %in% c(3,4)], dp=0)
+ssite <- ff.np(sepsis_site, data=wdt[sepsis %in% c(3,4)], dp=0)
 s.resp.n <- ssite$n[2]
 s.resp.p <- ssite$p[2]
 
@@ -17,14 +17,14 @@ wdt[, sofa2.r := gen.sofa.r(pf, fio2_std)]
 wdt[, odys := ifelse(
     (sofa_score>1 & sofa_r <= 1) |
     (!is.na(sofa2.r) & sofa2.r > 1),1,0)]
-odys <- ff.np('odys', data=wdt, dp=0)
+odys <- ff.np(odys, data=wdt, dp=0)
 
 # Respiratory failure
 tt$rdys <- data.table(rdys=wdt[, ifelse(!is.na(sofa2.r) & sofa2.r>1, 1,0)])
-rdys <- ff.np('rdys', data=tt$rdys, dp=0)
+rdys <- ff.np(rdys, data=tt$rdys, dp=0)
 # Renal failure
 tt$kdys <- data.table(kdys = wdt[,ifelse(sofa_k>1,1,0)])
-kdys <- ff.np('kdys', data=tt$kdys, dp=0)
+kdys <- ff.np(kdys, data=tt$kdys, dp=0)
 
 # Shock
 tt$shock <- data.table(shock = wdt[,
@@ -33,21 +33,21 @@ tt$shock <- data.table(shock = wdt[,
             | (!is.na(lactate) & lactate > 2.5 )
             | (!is.na(rxcvs_sofa) & rxcvs_sofa > 1)
             ,1,0)])
-shock <- ff.np('shock', data=tt$shock, dp=0)
+shock <- ff.np(shock, data=tt$shock, dp=0)
 
 # Organ support
 wdt[, osupp := ifelse( rxrrt==1 | rx_resp==2 | rxcvs == 2,1,0)]
-osupp <- ff.np('osupp', data=wdt, dp=0)
+osupp <- ff.np(osupp, data=wdt, dp=0)
 
 # Mortality summary
 # day 7 deaths
-dead7 <- ff.np('dead7', dp=1)
+dead7 <- ff.np(dead7, dp=1)
 # day 7 deaths in 1st 2 days
-dead7.d2 <- ff.np('dead2', dp=1, data=wdt[dead7==1])
+dead7.d2 <- ff.np(dead2, dp=1, data=wdt[dead7==1])
 
 # Severity of illness - NEWS risk
 describe(wdt$news_risk)
-d7.news1 <- ff.np('dead7', data=wdt[news_risk==1], dp=0)
-d7.news2 <- ff.np('dead7', data=wdt[news_risk==2], dp=0)
-d7.news3 <- ff.np('dead7', data=wdt[news_risk==3], dp=0)
+d7.news1 <- ff.np(dead7, data=wdt[news_risk==1], dp=0)
+d7.news2 <- ff.np(dead7, data=wdt[news_risk==2], dp=0)
+d7.news3 <- ff.np(dead7, data=wdt[news_risk==3], dp=0)
 

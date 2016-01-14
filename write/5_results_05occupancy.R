@@ -6,7 +6,7 @@ assert_that("wdt" %in% ls())
 
 lookfor("room")
 describe(wdt$room_cmp2)
-(room <- ff.np('room_cmp2', wdt[!is.na(room_cmp2)], dp=0))
+(room <- ff.np(room_cmp2, wdt[!is.na(room_cmp2)], dp=0))
 
 
 
