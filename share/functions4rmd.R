@@ -99,8 +99,8 @@ ff.prop.test <- function(var, byvar, data=wdt, dp=1) {
 
     byvar.var.d     <- byvar.var$estimate[1] - byvar.var$estimate[2]
 
-    est1            <- sprintf(fmt, 100*byvar.var$estimate[1])
-    est2            <- sprintf(fmt, 100*byvar.var$estimate[2])
+    est1            <- paste0(sprintf(fmt, 100*byvar.var$estimate[1]), "%")
+    est2            <- paste0(sprintf(fmt, 100*byvar.var$estimate[2]), "%")
     l95             <- sprintf(fmt, 100*abs(byvar.var$conf.int[1]))
     u95             <- sprintf(fmt, 100*abs(byvar.var$conf.int[2]))
 
@@ -111,8 +111,8 @@ ff.prop.test <- function(var, byvar, data=wdt, dp=1) {
         u95 <- x
     }
 
-    byvar.var.d     <- sprintf(fmt, 100*abs(byvar.var.d))
-    byvar.var.ci    <- paste(l95, '--', u95, sep='')
+    byvar.var.d     <- paste0(sprintf(fmt, 100*abs(byvar.var.d)), "%")
+    byvar.var.ci    <- paste0(l95, "--", u95, "%")
 
     return(list(
         table = t,
