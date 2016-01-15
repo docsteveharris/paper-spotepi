@@ -23,6 +23,12 @@ require(data.table)
 
 ff.t.test <- function(data=wdt, var, byvar, dp=1) {
     # Run a t-test and return formatted difference and CI
+    # First of all extract the args without requiring the user to use quotes
+    pars <- as.list(match.call()[-1])
+
+    var <- as.character(pars$var)
+    byvar <- as.character(pars$byvar)
+
     data <- data[,c(var, byvar),with=FALSE]
     fmt <- paste("%.", dp, "f", sep="")
 
