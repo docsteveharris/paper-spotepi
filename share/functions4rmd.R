@@ -69,8 +69,9 @@ median.difference <- function(x, i) {
 
 ff.mediqr <- function(var, data=wdt, dp=0) {
     # Return median and IQR
+    # Extract var with respect to data provided
+    v <- eval(substitute(var), data)
     fmt <- paste("%.", dp, "f", sep="")
-    v <- with(data, get(var))
     v.q <- sprintf(fmt, quantile(v, na.rm=TRUE))
     v.iqr <- paste(v.q[2], "--", v.q[4], sep="")
     return(list(q50=v.q[3], iqr=v.iqr))
