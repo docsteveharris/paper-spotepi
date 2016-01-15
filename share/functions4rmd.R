@@ -99,6 +99,12 @@ ff.np <- function(var, data=wdt, dp=1) {
 
 ff.prop.test <- function(var, byvar, data=wdt, dp=1) {
     # returns differences as percentages
+    # First of all extract the args without requiring the user to use quotes
+    pars <- as.list(match.call()[-1])
+
+    var <- as.character(pars$var)
+    byvar <- as.character(pars$byvar)
+
     data <- data[,c(var, byvar),with=FALSE]
     fmt <- paste("%.", dp, "f", sep="")
     t <- with(data, table(data[[2]], data[[1]]))
