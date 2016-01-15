@@ -56,12 +56,6 @@ We then tracked patient pathways over the following week.
 
 ### Patients without treatment limits initially refused critical care
 
-<!-- 
-     _ __ ___  ___ _   _ _ __ ___   ___ 
-    | '__/ _ \/ __| | | | '_ ` _ \ / _ \
-    | | |  __/\__ \ |_| | | | | | |  __/
-    |_|  \___||___/\__,_|_| |_| |_|\___|
- -->
 
 Patients referred to, but then refused, critical care (without treatment limitations) had a 7-day mortality of `r ward.dead7$p[2]` (`r ward.dead7$n[2]` deaths); `r ward.dead7.icu$n[1]` (`r ward.dead7.icu$p[1]`) of these deaths occurred on the ward, and `r ward.dead7.icu$n[2]` (`r ward.dead7.icu$p[2]`) deaths followed delayed admission. Overall, the initial decision to refuse was reversed in `r ward.icucmp$n[2]` patients (`r ward.icucmp$p[2]`) so by the end of the week `r ward.icu.or.dead7$n[2]` (`r ward.icu.or.dead7$p[2]`) patients had died or been admitted to critical care.
 
@@ -69,19 +63,26 @@ Patients referred to, but then refused, critical care (without treatment limitat
 
 ### Patients with treatment limits initially refused critical care
 
-These 2141 patients had a 7-day mortality of 41\% (881 deaths). The initial decision to refuse admission was reversed in just 76 patients (4\%) of whom 26 (34\%) died within the week.
+These `r decision$n[3]` patients had a 7-day mortality of `r limits.dead7$p[2]` (`r limits.dead7$n[2]` deaths). The initial decision to refuse admission was reversed in just `r limits.icucmp$n[2]` patients (`r limits.icucmp$p[2]`) of whom `r limits.icu.dead7$n[2]` (`r limits.icu.dead7$p[2]`) died within the week.
 
-Compared to those refused without a treatment limitation order, this cohort was older (77 vs 66 years, 95\%CI for difference 11--12 years), and more acutely unwell (3.6 vs 2.8 SOFA points, 95\%CI for difference 0.7--0.9). The final 90-day mortalities was substantial 65\% (1402 deaths), but 506 patients (24\%) survived a year despite the decision.
+Compared to those refused without a treatment limitation order, this cohort was older (`r age.by.limits$est2` vs `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell (`r sofa.by.limits$est2` vs `r sofa.by.limits$est1` SOFA points, 95\%CI for difference `r sofa.by.limits$ci`). The final 90-day mortalities was substantial `r limits.dead90$p[2]` (`r limits.dead90$n[2]` deaths), nonetheless `r limits.dead1y$n[1]` patients (`r limits.dead1y$p[1]`) survived a year despite the decision.
 
 ### Patients immediately accepted to critical care
 
-The 3546 (27\%) patients accepted to critical care at the initial bedside assessment had a 7-day mortality of 21\% (696 deaths). Just 40 (6\%) of those deaths occurred before admission was arranged, but a further 223 patients (6\%) were never admitted but survived regardless.
+The `r decision$n[1]` (`r decision$p[1]`) patients accepted to critical care at the initial bedside assessment had a 7-day mortality of `r icu.dead7$p[2]` (`r icu.dead7$n[2]` deaths). Just `r icu.dead7.pre$n[1]` (`r icu.dead7.pre$n[1]`) of those deaths occurred before admission was arranged, but a further `r icu.icucmp$n[1]` patients (`r icu.icucmp$p[1]`) were never admitted but survived regardless.
 
-Those offered admission were marginally younger (64 versus 66 years, 95\%CI 1--2), and more acutely unwell (4.1 vs 2.8 SOFA points, 95\%CI 1.2-1.3).
 
-The median delay between assessment and admission for these patients was 2 hours(IQR 1--4) compared to 12 hours for those refused without treatment limits (median additional delay 10 hours, IQR 9--11). This meant that 2250 (73\%) admissions were achieved within 4 hours for those initially accepted versus 322 (17\%) for those initially refused (risk difference 55\%, 95\%CI 53-58\%). 
+Those offered admission were marginally younger (`r age.by.icu$est1` versus `r age.by.icu$est2` years, 95\%CI `r age.by.icu$ci`), and more acutely unwell (`r sofa.by.icu$est1` vs `r sofa.by.icu$est2` SOFA points, 95\%CI `r sofa.by.icu$ci`).
+
+The median delay between assessment and admission for these patients was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`) compared to `r ward.delay$q50` hours (IQR `r ward.delay$iqr`) for those refused without treatment limits (median additional delay `r delay.by.accept$estimate` hours, IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`). This meant that `r icu.early4$n[2]` (`r icu.early4$p[2]`) admissions were achieved within 4 hours for those initially accepted versus `r ward.early4$n[2]` (`r ward.early4$p[2]`) for those initially refused (risk difference `r early4.by.accept$d`, 95\%CI `r early4.by.accept$ci`). 
 
 ### Variation in decision making
+<!-- 
+     _ __ ___  ___ _   _ _ __ ___   ___ 
+    | '__/ _ \/ __| | | | '_ ` _ \ / _ \
+    | | |  __/\__ \ |_| | | | | | |  __/
+    |_|  \___||___/\__,_|_| |_| |_|\___|
+ -->
 
 We built a multi-level (patients nested within hospitals) logistic regression model to examine factors associated with a decision to admit to critical care amongst those patients without a treatment limitation order. As with the univariate comparisons above, older patients were less likely to be admitted (OR 0.60 for patients over 80 years, 95\%CI 0.53--0.69), and sicker patients were more likely to be admitted (OR 1.07 per ICNARC physiology point, 95\%CI 1.06--1.07). Similarly, patients already receiving organ support (OR 95\%CI), or
 clinically judged to be peri-arrest (OR 95\%CI) were much more likely to be admitted.
