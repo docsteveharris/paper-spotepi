@@ -271,8 +271,11 @@ def task_tb_model_icu_accept():
     #   formatting and caption for table
 
     return {
+        # "uptodate": [False], # forces task to run - useful when debugging
         "file_dep": ["tables/tb_model_icu_accept.R",
                     "data/paper-spotepi.RData"],
         "targets":  ["write/tables/tb_model_accept_all.xlsx"],
-        "actions": ["R CMD BATCH tables/tb_model_icu_accept.R ../logs/tb_model_icu_accept.Rout"]
+        # Debugging version
+        # "actions": ["R CMD BATCH tables/tb_model_icu_accept.R --subgrp=all --nsims=4 ../logs/tb_model_icu_accept_all.Rout"]
+        "actions": ["R CMD BATCH tables/tb_model_icu_accept.R --subgrp=all --nsims=100 ../logs/tb_model_icu_accept_all.Rout"]
     }

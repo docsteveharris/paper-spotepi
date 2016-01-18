@@ -44,57 +44,35 @@
 # - moved under waf control
 # 2015-12-08
 # - duplicated from paper-spotearly
+# 2016-01-18
+# - converted to use same vars as mortality models
+# - also now takes command line options or defaults up front for outcomes
 
 # Notes
 # =====
 
 
-# // spotepi tb_model_ward_survival_final variables
-# local patient_vars ///
-#   ib1.age_k ///
-#   male ///
-#   ib0.sepsis_dx ///
-#   delayed_referral ///
-#   ib1.v_ccmds ///
-#   icnarc_score ///
-#   ib2.room_cmp
-
-# global patient_vars `patient_vars'
-
-# local timing_vars ///
-#   out_of_hours ///
-#   weekend ///
-#   winter
-
-# global timing_vars `timing_vars'
-
-# local site_vars ///
-#   teaching_hosp ///
-#   hes_overnight_c ///
-#   hes_emergx_c ///
-#   cmp_beds_max_c ///
-#   cmp_throughput ///
-#   patients_perhesadmx_c ///
-#   ib3.ccot_shift_pattern
-
-# global site_vars `site_vars'
-
-
-# * NOTE: 2014-06-25 - use this data to ensure comparability with time2icu
-# use ../data/working_survival_single.dta, clear
-# xtset site
-# xtlogit icu_accept $all_vars, or
-
-# // now produce table order
-# global table_order ///
-#   hes_overnight hes_emergx ccot_shift_pattern patients_perhesadmx ///
-#   ccot_shift_pattern small_unit cmp_beds_max ///
-#   gap_here ///
-#   weekend out_of_hours room_cmp ///
-#   gap_here ///
-#   age male sepsis_dx v_ccmds periarrest icnarc0
+#  ====================
+#  = Code starts here =
+#  ====================
 
 rm(list=ls(all=TRUE))
+
+#  =================================================================
+#  = Parse command line options or assign defaults if not provided =
+#  =================================================================
+
+"usage: 
+    tb_model_icu_accept [options]
+
+options:
+    --help            help   
+    --subgrp=SUBGRP   All patients or subgrp [default: all]
+    --nsims=NSIMS     number of simulations for bootstrap [default: 5]" -> doc
+
+require(docopt) # load the docopt library to parse
+# opts <- docopt(doc, "--subgrp=icu_recommend --nsims=5") # for debugging
+opts <- docopt(doc)
 
 library(Hmisc)
 library(ggplot2)
@@ -111,13 +89,10 @@ load("../data/paper-spotepi.RData")
 wdt.original <- wdt
 wdt <- prep.wdt(wdt.original)
 wdt$sample_N <- 1
+wdt$all <- 1
 
 names(wdt)
 nrow(wdt)
-
-#  ===================
-#  = Key global vars =
-#  ===================
 
 # Redefine working data - drop rx limits
 # ---------------------
@@ -125,33 +100,36 @@ wdt <- wdt[rxlimits==0]
 nrow(wdt)
 assert_that(nrow(wdt)==13017)
 
-nsims <- 2              # simulations for bootstrap
-subgrp <- "all"         # define subgrp
+nsims  <- opts$nsims          # simulations for bootstrap
+subgrp <- opts$subgrp         # define subgrp
+
+wdt <- wdt[get(opts$subgrp)==1]
+
+print(str(opts))
+print(nrow(wdt))
 
 if (subgrp=="all") {
-    nrow(wdt <- wdt)
     assert_that(nrow(wdt)==13017)
 }
 
-if (subgrp=="reco") {
-    nrow(wdt <- wdt[icu_recommend==1])
+if (subgrp=="icu_recommend") {
     assert_that(nrow(wdt)==4976)
 }
 
 
-table.name <- paste0("model_accept_", subgrp)
+table.name <- paste0("model_accept_", subgrp, "_sims", opts$nsims)
 
 # add nsims to file names since you'll be gutted if you overwrite a major simulation
-# do not include sims in output name else doit will fail
 table.name <- paste0(table.name)
-table.path <- paste0("../write/tables", "/")
-table.xlsx <- paste0(table.path, 'tb_', table.name, '.xlsx')
-table.file <- paste(table.path, 'tb_', table.name, '.xlsx', sep='')
 
+table.path <- paste0("../write/tables", "/")
 data.path <- "../data/"
-# include sims here for reference, do not add to doit
-table.name.RData <- paste0(table.name, "_sim", nsims)
-table.RData <- paste0(data.path, table.name.RData, '.RData', sep='')
+
+table.xlsx  <- paste0(table.path, 'tb_', table.name, '.xlsx')
+table.RData <- paste0(data.path, 'tb_', table.name, '.RData')
+
+print(table.xlsx)
+print(table.RData)
 
 #  ==========================
 #  = Define your predictors =
@@ -197,8 +175,8 @@ wdt[, `:=`(
     ccot_shift_pattern  = relevel(factor(ccot_shift_pattern), 4),
     icode               = factor(icode)
     )]
-# Check that relevelled correctly
-assert_that(table(wdt$room_cmp2)[1]==8805)
+# Check that relevelled correctly to biggest category
+assert_that(table(wdt$room_cmp2)[1]==max(table(wdt$room_cmp2)))
 
 f.accept <- reformulate(termlabels = vars, response = 'icu_accept')
 f.accept
@@ -405,7 +383,7 @@ MOR.nopt.95ci
 # -------------------
 
 ls()
-wb <- loadWorkbook(table.file, create = TRUE)
+wb <- loadWorkbook(table.xlsx, create = TRUE)
 setStyleAction(wb, XLC$"STYLE_ACTION.NONE") # no formatting applied
 
 sheet1 <-'model_details'
