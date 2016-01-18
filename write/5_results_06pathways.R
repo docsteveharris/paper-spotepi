@@ -44,7 +44,7 @@ tdt[, surv7 := !dead7]
 (icu.dead7.pre <- ff.np(icucmp, tdt[bedside.decision=="icu" & dead7==1], dp=0))
 (icu.icucmp <- ff.np(icucmp, tdt[bedside.decision=="icu" & dead7==0], dp=0))
 
-(age.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], age, bedside.decision, dp=0))
+(age.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], age, bedside.decision, dp=1))
 (sofa.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], sofa_score, bedside.decision, dp=1))
 
 # Delay to admission
