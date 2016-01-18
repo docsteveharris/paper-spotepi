@@ -1,6 +1,6 @@
 # author: Steve Harris
 # date: 2014-10-17
-# subject: ICU accept model in R
+# subject: ICU accept model in R within subgroup recommended
 
 # Readme
 # ======
@@ -44,6 +44,8 @@
 # - moved under waf control
 # 2015-12-08
 # - duplicated from paper-spotearly
+# 2015-12-13
+# - duplicated from full model
 
 # Notes
 # =====
@@ -95,6 +97,9 @@
 #   age male sepsis_dx v_ccmds periarrest icnarc0
 
 rm(list=ls(all=TRUE))
+ls()
+# setwd('/Users/steve/aor/p-academic/paper-spotearly/src/analysis')
+source("project_paths.r")
 
 library(Hmisc)
 library(ggplot2)
@@ -102,8 +107,9 @@ library(data.table)
 library(lme4)
 library(XLConnect)
 library(assertthat)
+library(boot)
 
-load(paste0("../data/", "/paper-spotepi.RData"))
+load(paste0(PATH_DATA, '/paper-spotepi.RData'))
 wdt.original <- wdt
 wdt$sample_N <- 1
 names(wdt)
@@ -111,11 +117,11 @@ nrow(wdt)
 
 # Redefine working data
 # ---------------------
-wdt <- wdt[rxlimits==0]
+wdt <- wdt[rxlimits==0 & icu_recommend==1]
 
 # Define file name
-table.name <- 'model_icu_accept'
-table.path <- "../write/tables/"
+table.name <- 'model_icu_accept_vRecommnended'
+table.path <- paste0(PATH_TABLES, '/')
 table.file <- paste(table.path, 'tb_', table.name, '.xlsx', sep='')
 table.file
 table.R <- paste(table.path, table.name, '.R', sep='')
@@ -123,17 +129,17 @@ table.R
 
 # Inspect the data
 # ----------------
-gg.age <- qplot(age, icu_accept, data=wdt, geom = c('smooth') )
-gg.age  +
-    geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
-    geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
-    coord_cartesian(ylim=c(0,1))
+# gg.age <- qplot(age, icu_accept, data=wdt, geom = c('smooth') )
+# gg.age  +
+#     geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
+#     geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
+#     coord_cartesian(ylim=c(0,1))
 
-gg.icnarc <- qplot(icnarc0, icu_accept, data=wdt, geom = c('smooth') )
-gg.icnarc   +
-    geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
-    geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
-    coord_cartesian(ylim=c(0,1))
+# gg.icnarc <- qplot(icnarc0, icu_accept, data=wdt, geom = c('smooth') )
+# gg.icnarc   +
+#     geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
+#     geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
+#     coord_cartesian(ylim=c(0,1))
 
 
 # Redefine new vars
@@ -262,11 +268,7 @@ tdt <- wdt[, c(vars, "id", "icode", "icu_accept"), with=FALSE]
 f.accept.xt <- update(f.accept, . ~ . + (1|icode))
 f.accept.xt
 # m.xt <- glmer(f.accept.xt , family = 'binomial', data = wdt) # original or default
-relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
-warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", max(abs(relgrad))) )
 m.xt.boot <- glmer(f.accept.xt , family = 'binomial', data = tdt, nAGQ = 0)
-relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
-warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", max(abs(relgrad))) )
 # - [ ] NOTE(2015-12-11): boot function now returns MOR and predictions
 table(m.xt.boot@frame$room_cmp2)
 rBoot <- function(m) {
@@ -321,7 +323,7 @@ rBoot <- function(m) {
 # system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=2))
 system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=100))
 
-names(bMer$t0) <-
+names(bMer$t0) <-     
         c("Median.OR",
         "p.beds1", "p.beds2", "p.beds3",
         "p.extra2v1", "n2.extra",
@@ -331,8 +333,8 @@ names(bMer$t0) <-
 rBoot95ci <- function(b, this.i=1) {
     b95ci <- boot.ci(b, type=c("norm"), index=this.i)
     return(c(
-        parm = names(b$t0[this.i]),
-        est = b$t0[this.i],
+        parm = names(b$t0[this.i]), 
+        est = b$t0[this.i], 
         l95 = b95ci$normal[,2],
         u95 = b95ci$normal[,3])
     )
