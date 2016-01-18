@@ -212,7 +212,8 @@ def task_table_incidence_high():
     }
 
 def task_sfig_count_news_high_rcs():
-    """Plot restricted cubic spline of incidence vs case finding model"""
+    """Plot restricted cubic spline of incidence vs case finding model
+    (Supplementary Figure 3"""
 
     return {
         "uptodate": [False], # forces task to run - useful when debugging
@@ -262,4 +263,16 @@ def task_tb_occupancy_effects_reco():
                     "data/paper-spotepi.RData"],
         "targets":  ["write/tables/tb_occupancy_effects_reco.xlsx"],
         "actions": ["R CMD BATCH tables/tb_table1_occupancy_effects_reco.R ../logs/tb_table1_occupancy_effects.Rout"]
+    }
+
+def task_tb_model_icu_accept():
+    """Prepare Table 3 - decision to admit"""
+    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    #   formatting and caption for table
+
+    return {
+        "file_dep": ["tables/tb_model_icu_accept.R",
+                    "data/paper-spotepi.RData"],
+        "targets":  ["write/tables/tb_model_accept_all.xlsx"],
+        "actions": ["R CMD BATCH tables/tb_model_icu_accept.R ../logs/tb_model_icu_accept.Rout"]
     }

@@ -102,65 +102,103 @@ library(data.table)
 library(lme4)
 library(XLConnect)
 library(assertthat)
+library(boot)
 
-load(paste0("../data/", "/paper-spotepi.RData"))
+
+# Define vars in standardised manner
+source("../share/spotepi_variable_prep.R")
+load("../data/paper-spotepi.RData")
 wdt.original <- wdt
+wdt <- prep.wdt(wdt.original)
 wdt$sample_N <- 1
+
 names(wdt)
 nrow(wdt)
 
-# Redefine working data
+#  ===================
+#  = Key global vars =
+#  ===================
+
+# Redefine working data - drop rx limits
 # ---------------------
 wdt <- wdt[rxlimits==0]
+nrow(wdt)
+assert_that(nrow(wdt)==13017)
 
-# Define file name
-table.name <- 'model_icu_accept'
-table.path <- "../write/tables/"
+nsims <- 2              # simulations for bootstrap
+subgrp <- "all"         # define subgrp
+
+if (subgrp=="all") {
+    nrow(wdt <- wdt)
+    assert_that(nrow(wdt)==13017)
+}
+
+if (subgrp=="reco") {
+    nrow(wdt <- wdt[icu_recommend==1])
+    assert_that(nrow(wdt)==4976)
+}
+
+
+table.name <- paste0("model_accept_", subgrp)
+
+# add nsims to file names since you'll be gutted if you overwrite a major simulation
+# do not include sims in output name else doit will fail
+table.name <- paste0(table.name)
+table.path <- paste0("../write/tables", "/")
+table.xlsx <- paste0(table.path, 'tb_', table.name, '.xlsx')
 table.file <- paste(table.path, 'tb_', table.name, '.xlsx', sep='')
-table.file
-table.R <- paste(table.path, table.name, '.R', sep='')
-table.R
 
-# Inspect the data
-# ----------------
-gg.age <- qplot(age, icu_accept, data=wdt, geom = c('smooth') )
-gg.age  +
-    geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
-    geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
-    coord_cartesian(ylim=c(0,1))
+data.path <- "../data/"
+# include sims here for reference, do not add to doit
+table.name.RData <- paste0(table.name, "_sim", nsims)
+table.RData <- paste0(data.path, table.name.RData, '.RData', sep='')
 
-gg.icnarc <- qplot(icnarc0, icu_accept, data=wdt, geom = c('smooth') )
-gg.icnarc   +
-    geom_rug(data=wdt[icu_accept==1], sides='t', position='jitter', alpha=1/50) +
-    geom_rug(data=wdt[icu_accept==0], sides='b', position='jitter', alpha=1/50) +
-    coord_cartesian(ylim=c(0,1))
+#  ==========================
+#  = Define your predictors =
+#  ==========================
+vars.patient <- c(
+    "age_k",
+    "male",
+    "sepsis_dx",
+    "osupp2",
+    # "v_ccmds",
+    "icnarc_score",
+    "periarrest"
+    # - [ ] NOTE(2016-01-18): drop reco from model b/c will examine as subgrp
+    # "cc.reco"
+    )
 
+vars.timing <- c(
+    "out_of_hours",
+    "weekend",
+    "winter",
+    "room_cmp2"
+    )
 
-# Redefine new vars
-# -----------------
-wdt[, room_cmp2 := cut2(open_beds_cmp, c(1,3), minmax=T )]
+vars.site <- c(
+    "teaching_hosp",
+    "hes_overnight_c",
+    "cmp_beds_max_c",
+    "ccot_shift_pattern"
+    )
 
-# Define your variables
-# ---------------------
-vars.patient    <- c('age_k', 'male', 'sepsis_dx', 'v_ccmds', 'delayed_referral', 'periarrest', 'icnarc_score')
-vars.timing     <- c('out_of_hours', 'weekend', 'winter', 'room_cmp2')
-vars.site       <- c('teaching_hosp', 'hes_overnight_c', 'hes_emergx_c',
-                    'cmp_beds_max_c', 'cmp_throughput', 'patients_perhesadmx_c',
-                    'ccot_shift_pattern')
-vars            <- c(vars.site, vars.timing, vars.patient)
+# vars <- c(vars.site, vars.timing, vars.patient)
+# - [ ] NOTE(2016-01-18): exclude site level vars
+vars <- c(vars.timing, vars.patient)
 
+table(wdt$room_cmp2)
 # Model specification
 # -------------------
 wdt[, `:=`(
     age_k               = relevel(factor(age_k), 2),
     v_ccmds             = relevel(factor(v_ccmds), 2),
     sepsis_dx           = relevel(factor(sepsis_dx), 1),
-    room_cmp2            = relevel(factor(room_cmp2), 3),
+    room_cmp2            = relevel(factor(room_cmp2), "[ 3,21]"),
     ccot_shift_pattern  = relevel(factor(ccot_shift_pattern), 4),
     icode               = factor(icode)
     )]
-
-describe(wdt$age_k)
+# Check that relevelled correctly
+assert_that(table(wdt$room_cmp2)[1]==8805)
 
 f.accept <- reformulate(termlabels = vars, response = 'icu_accept')
 f.accept
@@ -319,7 +357,7 @@ rBoot <- function(m) {
 }
 # rBoot(m.xt.boot)
 # system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=2))
-system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=100))
+system.time(bMer <- bootMer(m.xt.boot, rBoot, nsim=nsims))
 
 names(bMer$t0) <-
         c("Median.OR",
@@ -344,7 +382,7 @@ rBoot95ci(bMer, 2)
 
 # Calculate MOR excluding patient level vars
 f.accept.xt
-f.accept.xt.nopt <- reformulate(termlabels = c(vars.timing, vars.site),
+f.accept.xt.nopt <- reformulate(termlabels = c(vars.timing),
     response = 'icu_accept')
 f.accept.xt.nopt <-  update(f.accept.xt.nopt, . ~ . + (1|icode))
 f.accept.xt.nopt
@@ -356,7 +394,7 @@ MOR4boot <- function(m) {
     Median.OR <- exp(sqrt(2*re.variance)*qnorm(.75))
     return(Median.OR)
 }
-system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=100))
+system.time(bMer.nopt <- bootMer(m.xt.nopt.boot, MOR4boot, nsim=nsims))
 MOR.nopt.95ci <- boot.ci(bMer, type=c("norm"))
 MOR.nopt.95ci <- c(MOR.nopt.95ci$t0, MOR.nopt.95ci$normal[,2:3])
 str(MOR.nopt.95ci)
@@ -402,6 +440,6 @@ saveWorkbook(wb)
 # ---------------------------------------------
 model_icu_accept <- m.xt
 model_icu_accept.fmt <- m.xt.fmt
-save(model_icu_accept, model_icu_accept.fmt, file=table.R)
+save(model_icu_accept, model_icu_accept.fmt, file=table.RData)
 
 
