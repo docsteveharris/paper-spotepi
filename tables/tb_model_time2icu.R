@@ -1,6 +1,6 @@
 # author: Steve Harris
 # date: 2015-12-15
-# subject: Delay to admission amongst those recommended
+# subject: Time to ICU within competing risk for death without ICU
 
 # Readme
 # ======
@@ -8,6 +8,7 @@
 
 # Todo
 # ====
+# - [ ] TODO(2016-01-19): competing risks model with frailty!
 
 
 # Log
@@ -104,112 +105,91 @@ wdt$all <- 1
 wdt <- wdt[rxlimits==0]
 assert_that(nrow(wdt)==13017)
 
-#        _  _                                        
-#      _| || |_                                      
-#     |_  __  _|  _ __ ___  ___ _   _ _ __ ___   ___ 
-#      _| || |_  | '__/ _ \/ __| | | | '_ ` _ \ / _ \
-#     |_  __  _| | | |  __/\__ \ |_| | | | | | |  __/
-#       |_||_|   |_|  \___||___/\__,_|_| |_| |_|\___|
-#                                                    
-#                                                    
-
 
 #  ==========================
 #  = Define your predictors =
 #  ==========================
-vars.patient <- c(
-    "age_k",
-    "male",
-    "sepsis_dx",
-    "osupp2",
-    # "v_ccmds",
-    "icnarc_score",
-    "periarrest"
-    # - [ ] NOTE(2016-01-18): drop reco from model b/c will examine as subgrp
-    # "cc.reco"
-    )
+# - [ ] NOTE(2016-01-19): these are hand entered below - **BE CAREFUL**
+# commented out here to avoid confusion
+# vars.patient <- c(
+#     "age_k",
+#     "male",
+#     "sepsis_dx",
+#     "osupp2",
+#     # "v_ccmds",
+#     "icnarc_score",
+#     "periarrest"
+#     # - [ ] NOTE(2016-01-18): drop reco from model b/c will examine as subgrp
+#     # "cc.reco"
+#     )
 
-vars.timing <- c(
-    "out_of_hours",
-    "weekend",
-    "winter",
-    "room_cmp2"
-    )
+# vars.timing <- c(
+#     "out_of_hours",
+#     "weekend",
+#     "winter",
+#     "room_cmp2"
+#     )
 
-vars.site <- c(
-    "teaching_hosp",
-    "hes_overnight_c",
-    "cmp_beds_max_c",
-    "ccot_shift_pattern"
-    )
+# vars <- c(vars.timing, vars.patient)
 
-vars <- c(vars.timing, vars.patient)
+# Check that relevelled correctly to biggest category
+assert_that(table(wdt$room_cmp2)[1]==max(table(wdt$room_cmp2)))
 
-# R doesn't like leading underscores from stata 
-# str(wdt.surv1[,.(id,_t,_d)])
-str(wdt.surv1[,c("id","_t","_d"),with=FALSE])
 
 #  =========================
 #  = Competing risks model =
 #  =========================
-
 # Set up competing risks data
-wdt.surv1[,.(id,site,dt1,dt2,dt3,dt4)]
-setnames(wdt.surv1,"_t", "stata_t")
-setnames(wdt.surv1,"_t0", "stata_t0")
-setnames(wdt.surv1,"_d", "stata_d")
-wdt.surv1[,.(id,site,stata_t0,stata_t,stata_d)]
 
 # Minimum of time2icu or death
-wdt.surv1[, t.cr :=
+wdt[, t.cr :=
     ifelse(is.na(time2icu), 24*stata_t,
     ifelse(time2icu/24 < stata_t, time2icu, 24*stata_t))]
 # Censor at 7d
-wdt.surv1[,t.cr:=ifelse(t.cr>168,168,t.cr)]
-wdt.surv1[,.(id,site,time2icu,stata_t,t.cr)]
+wdt[,t.cr:=ifelse(t.cr>168,168,t.cr)]
+wdt[,.(id,site,time2icu,stata_t,t.cr)]
 
-
-wdt.surv1[, event := 
+wdt[, event := 
     ifelse(is.na(time2icu) & stata_t<=7 & stata_d==1, "dead",
     ifelse(is.na(time2icu) & stata_t>7, "survive",
     ifelse(time2icu/24 < stata_t, "icu", "survive")))]
-wdt.surv1[, event := factor(event)]
-wdt.surv1[,.(id,site,time2icu,stata_t,t.cr,icucmp,stata_d,event)]
+wdt[, event := factor(event)]
+wdt[,.(id,site,time2icu,stata_t,t.cr,icucmp,stata_d,event)]
 
 # Try competing risks model
-str(wdt.surv1$event)
+str(wdt$event)
 
-tdt <- wdt.surv1
+# Will only work with complete cases so filter
 c <- (complete.cases(
-        tdt[,c("t.cr", "event", "icu_accept",
+        wdt[,c("t.cr", "event", "icu_accept",
                 vars.patient, vars.timing), with=FALSE]))
-nrow(tdt)
-tdt <- tdt[c]
-nrow(tdt)
+nrow(wdt)
+wdt <- wdt[c]
+dim(wdt)
 
-(m0 <- coxph(Surv(t.cr, event=="dead") ~ 1, data=tdt))
+(m0 <- coxph(Surv(t.cr, event=="dead") ~ 1, data=wdt))
 
 # Create design matrix and drop the intercept
+# - [ ] NOTE(2016-01-19): these are hand entered into the model here
+# do not assume that changes above are important
 cov1 <- model.matrix(
     ~ icu_accept +
-    age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
-    icnarc_score +
+    age_k + male + sepsis_dx + osupp2 + icnarc_score + periarrest +
     out_of_hours + weekend + winter + room_cmp2,
-data=tdt)[,-1]
-assert_that(sum(complete.cases(cov1))==nrow(tdt))
+data=wdt)[,-1]
+assert_that(sum(complete.cases(cov1))==nrow(wdt))
 
 # For reference, although you are not planning on using this
 # Subdistribution hazard for death
-# m1.cr.dead <- crr(ftime=tdt$t, fstatus=tdt$event, cov1=cov1, failcode="dead", cencode="survive" )
+# m1.cr.dead <- crr(ftime=wdt$t, fstatus=wdt$event, cov1=cov1, failcode="dead", cencode="survive" )
 
 # Subdistribution hazard for ICU admission
-m1.cr.icu <- crr(ftime=tdt$t.cr, fstatus=tdt$event,
+m1.cr.icu <- crr(ftime=wdt$t.cr, fstatus=wdt$event,
         cov1=cov1, failcode="icu", cencode="survive",
         )
 m1.cr.icu
 # Extract confidence intervals etc
 summary(m1.cr.icu)
-str(summary(m1.cr.icu))
 
 # Prepare the columns
 (e <- summary(m1.cr.icu))
@@ -226,23 +206,31 @@ CI.exp <- e$conf.int[,3:4]
 #  =============
 #  = Cox model =
 #  =============
+#        _  _                                        
+#      _| || |_                                      
+#     |_  __  _|  _ __ ___  ___ _   _ _ __ ___   ___ 
+#      _| || |_  | '__/ _ \/ __| | | | '_ ` _ \ / _ \
+#     |_  __  _| | | |  __/\__ \ |_| | | | | | |  __/
+#       |_||_|   |_|  \___||___/\__,_|_| |_| |_|\___|
+#                                                    
+#                                                    
 
 # Variable definitions for cox model
-s <- with(tdt, Surv(time2icu, icucmp))
-with(tdt, Surv(time2icu, time2icu > 0))
-tdt[,`:=` (
+s <- with(wdt, Surv(time2icu, icucmp))
+with(wdt, Surv(time2icu, time2icu > 0))
+wdt[,`:=` (
     admit=ifelse(is.na(time2icu),0,1),
     t=ifelse(is.na(time2icu),168,time2icu)
     )]
-describe(tdt$admit)
-describe(tdt$t)
+describe(wdt$admit)
+describe(wdt$t)
 
 # Run your model
 # --------------
-Surv(tdt$t, tdt$admit)
+Surv(wdt$t, wdt$admit)
 
 # Null model
-m0 <- coxph(Surv(t, admit) ~ 1, data=tdt)
+m0 <- coxph(Surv(t, admit) ~ 1, data=wdt)
 m0$loglik
 
 # Build model for those accepted else will just be reporting 'decision'
@@ -251,7 +239,7 @@ m1 <- coxph(Surv(t, admit) ~
     age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
     icnarc_score +
     out_of_hours + weekend + winter + room_cmp2,
-    data=tdt)
+    data=wdt)
 summary(m1)
 
 # Log likelihood
@@ -266,7 +254,7 @@ m1$loglik
 
 # Model with frailty
 require(coxme)
-m0.xt <- coxme(Surv(t, admit) ~ 1 + (1|site), data=tdt)
+m0.xt <- coxme(Surv(t, admit) ~ 1 + (1|site), data=wdt)
 m0.xt
 m0.xt$loglik
 
@@ -276,7 +264,7 @@ m1.xt <- coxme(Surv(t, admit) ~
     icnarc_score +
     out_of_hours + weekend + winter + room_cmp2 +
     (1|site),
-    data=tdt)
+    data=wdt)
 summary(m1.xt)
 
 ## Log likelihood
@@ -323,7 +311,7 @@ CI.exp   <- exp(round(confint(m1.xt), 3))
 # -------------------
 
 ls()
-wb <- loadWorkbook(table.file, create = TRUE)
+wb <- loadWorkbook(table.xlsx, create = TRUE)
 setStyleAction(wb, XLC$"STYLE_ACTION.NONE") # no formatting applied
 
 sheet1 <-'model_details'
@@ -331,8 +319,8 @@ removeSheet(wb, sheet1)
 createSheet(wb, name = sheet1)
 sheet1.df <- rbind(
     c('table name', table.name),
-    c('observations', nrow(tdt)),
-    c('observations analysed', nrow(tdt)),
+    c('observations', nrow(wdt)),
+    c('observations analysed', nrow(wdt)),
     c("MHR", MHR)
     )
 writeWorksheet(wb, sheet1.df, sheet1)
