@@ -103,18 +103,16 @@ assert_that(nrow(wdt)==13017)
 nsims  <- opts$nsims          # simulations for bootstrap
 subgrp <- opts$subgrp         # define subgrp
 
-wdt <- wdt[get(opts$subgrp)==1]
-
-print(str(opts))
-print(nrow(wdt))
-
 if (subgrp=="all") {
     assert_that(nrow(wdt)==13017)
+} else if (subgrp=="icu_recommend") {
+    wdt <- wdt[get(opts$subgrp)==1]
+    assert_that(nrow(wdt)==4976)
+} else {
+    stop(paste("ERROR?:", subgrp, "not one of 'all' nor 'icu_recommend'"))
 }
 
-if (subgrp=="icu_recommend") {
-    assert_that(nrow(wdt)==4976)
-}
+
 
 
 table.name <- paste0("model_accept_", subgrp, "_sims", opts$nsims)
