@@ -16,19 +16,20 @@
 # - file created by duplicating from tb_model_icu_accept_vRecommended
 # - initial version complete
 # - dropped site level covariates
+# 2016-01-19
+# - remove from waf control
+# - update to standard predictors
+# - include accept var
+# - make sure MHR extracted OK
+# - add in command line options via docopt if need subsetting etc
 
 # Notes
 # =====
 rm(list=ls(all=TRUE))
-ls()
-# setwd('/Users/steve/aor/p-academic/paper-spotearly/src/analysis')
-source("project_paths.r")
 
 #  ==========================
 #  = Set-up and development =
 #  ==========================
-# install.packages("cmprsk", type="source", dependencies=TRUE)
-# install.packages("frailtypack", type="source", dependencies=TRUE)
 
 library(Hmisc)
 library(ggplot2)
@@ -43,13 +44,13 @@ library(cmprsk)
 # --------------------
 # - [ ] NOTE(2015-12-16): move this to a package/library
 
-format.results.table <- function(t, est.name="beta.exp", dp=2, p.dp=3) {
+format.results.table <- function(t, est.name="beta.exp", dp=2, dp.p=3) {
     # t must be a matrix of results in the following order
     # (est,L95,U95,p)
     # dp = number of decimal places for pretty printing
-    # p.dp = number for p values
+    # dp.p = number for p values
     dp.fmt <- paste0("%.", dp, "f")
-    p.dp.fmt <- paste0("%.", p.dp, "f")
+    dp.p.fmt <- paste0("%.", dp.p, "f")
 
     t.fmt <- data.frame(cbind(vars = row.names(t), t))
     colnames(t.fmt)[2] <- est.name
@@ -65,7 +66,7 @@ format.results.table <- function(t, est.name="beta.exp", dp=2, p.dp=3) {
     t.fmt$star   <- ifelse(as.numeric(as.character(t.fmt$p)) < 0.05, '*', '')
     t.fmt$star   <- ifelse(as.numeric(as.character(t.fmt$p)) < 0.01, '**', t.fmt$star)
     t.fmt$star   <- ifelse(as.numeric(as.character(t.fmt$p)) < 0.001, '***', t.fmt$star)
-    t.fmt$p      <- sprintf(p.dp.fmt, round(as.numeric(as.character(t.fmt$p)), p.dp))
+    t.fmt$p      <- sprintf(dp.p.fmt, round(as.numeric(as.character(t.fmt$p)), dp.p))
     t.fmt$p      <- ifelse(t.fmt$p == '0.000', '<0.001', t.fmt$p)
 
     # Now reorder columns and drop L95 U95
@@ -73,49 +74,76 @@ format.results.table <- function(t, est.name="beta.exp", dp=2, p.dp=3) {
     return(t.fmt)
 }
 
+# Define output file names and paths
+table.name <- paste0("model_time2icu")
+table.path <- paste0("../write/tables/")
+data.path <- "../data/"
+table.xlsx  <- paste0(table.path, 'tb_', table.name, '.xlsx')
+table.RData <- paste0(data.path, 'tb_', table.name, '.RData')
 
-load(paste0(PATH_DATA, '/paper-spotepi.RData'))
-wdt.surv1.original <- wdt.surv1
-wdt.surv1$sample_N <- 1
-names(wdt.surv1)
-nrow(wdt.surv1)
+# Define vars in standardised manner
+source("../share/spotepi_variable_prep.R")
+load("../data/paper-spotepi.RData")
+wdt.original <- wdt
+wdt <- prep.wdt(wdt.surv1)
+names(wdt)
 
-# Redefine working data
+# Merge stata survival variables into wdt
+# R doesn't like leading underscores from stata 
+setnames(wdt.surv1,"_t", "stata_t")
+setnames(wdt.surv1,"_t0", "stata_t0")
+setnames(wdt.surv1,"_d", "stata_d")
+wdt.surv1[,.(id,stata_t0,stata_t,stata_d)]
+wdt <- merge(wdt, wdt.surv1[,.(id,stata_t0,stata_t,stata_d)], by="id")
+
+wdt$sample_N <- 1
+wdt$all <- 1
+
+# Redefine working data - drop rx limits
 # ---------------------
-wdt.surv1 <- wdt.surv1[rxlimits==0 & icu_recommend==1]
-describe(wdt.surv1$icu_accept)
+wdt <- wdt[rxlimits==0]
+assert_that(nrow(wdt)==13017)
 
-# Define file name
-table.name <- "model_time2icu_vRecommended"
-table.path <- paste0(PATH_TABLES, '/')
-table.file <- paste(table.path, 'tb_', table.name, '.xlsx', sep='')
-table.file
-table.R <- paste(table.path, table.name, '.R', sep='')
-table.R
+#        _  _                                        
+#      _| || |_                                      
+#     |_  __  _|  _ __ ___  ___ _   _ _ __ ___   ___ 
+#      _| || |_  | '__/ _ \/ __| | | | '_ ` _ \ / _ \
+#     |_  __  _| | | |  __/\__ \ |_| | | | | | |  __/
+#       |_||_|   |_|  \___||___/\__,_|_| |_| |_|\___|
+#                                                    
+#                                                    
 
-# Redefine new vars
-# -----------------
-wdt.surv1[, room_cmp2 := cut2(open_beds_cmp, c(1,3), minmax=T )]
 
-# Define your variables
-# ---------------------
-vars.patient    <- c('age_k', 'male', 'sepsis_dx', 'v_ccmds', 'delayed_referral', 'periarrest', 'icnarc_score')
-vars.timing     <- c('out_of_hours', 'weekend', 'winter', 'room_cmp2')
-vars.site       <- c('teaching_hosp', 'hes_overnight_c', 'hes_emergx_c',
-                    'cmp_beds_max_c', 'cmp_throughput', 'patients_perhesadmx_c',
-                    'ccot_shift_pattern')
-vars            <- c(vars.site, vars.timing, vars.patient)
+#  ==========================
+#  = Define your predictors =
+#  ==========================
+vars.patient <- c(
+    "age_k",
+    "male",
+    "sepsis_dx",
+    "osupp2",
+    # "v_ccmds",
+    "icnarc_score",
+    "periarrest"
+    # - [ ] NOTE(2016-01-18): drop reco from model b/c will examine as subgrp
+    # "cc.reco"
+    )
 
-# Model specification
-# -------------------
-wdt.surv1[, `:=`(
-    age_k               = relevel(factor(age_k), 2),
-    v_ccmds             = relevel(factor(v_ccmds), 2),
-    sepsis_dx           = relevel(factor(sepsis_dx), 1),
-    room_cmp2            = relevel(factor(room_cmp2), 3),
-    ccot_shift_pattern  = relevel(factor(ccot_shift_pattern), 4),
-    icode               = factor(icode)
-    )]
+vars.timing <- c(
+    "out_of_hours",
+    "weekend",
+    "winter",
+    "room_cmp2"
+    )
+
+vars.site <- c(
+    "teaching_hosp",
+    "hes_overnight_c",
+    "cmp_beds_max_c",
+    "ccot_shift_pattern"
+    )
+
+vars <- c(vars.timing, vars.patient)
 
 # R doesn't like leading underscores from stata 
 # str(wdt.surv1[,.(id,_t,_d)])
