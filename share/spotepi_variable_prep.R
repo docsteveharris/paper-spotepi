@@ -137,7 +137,7 @@ prep.wdt <- function(data=wdt) {
         v_ccmds             = relevel(factor(v_ccmds), 2),
         cc.reco             = relevel(factor(cc.reco), 2),
         sepsis_dx           = relevel(factor(sepsis_dx), 1),
-        room_cmp2            = relevel(factor(room_cmp2), 3),
+        room_cmp2            = relevel(factor(room_cmp2), "[ 3,21]"),
         ccot_shift_pattern  = relevel(factor(ccot_shift_pattern), 4),
         icode               = factor(icode)
         )]

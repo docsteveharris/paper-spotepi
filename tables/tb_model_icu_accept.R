@@ -175,17 +175,6 @@ if (opts$siteonly) {
     vars <- c(vars.timing, vars.patient)
 }
 
-table(wdt$room_cmp2)
-# Model specification
-# -------------------
-wdt[, `:=`(
-    age_k               = relevel(factor(age_k), 2),
-    v_ccmds             = relevel(factor(v_ccmds), 2),
-    sepsis_dx           = relevel(factor(sepsis_dx), 1),
-    room_cmp2            = relevel(factor(room_cmp2), "[ 3,21]"),
-    ccot_shift_pattern  = relevel(factor(ccot_shift_pattern), 4),
-    icode               = factor(icode)
-    )]
 # Check that relevelled correctly to biggest category
 assert_that(table(wdt$room_cmp2)[1]==max(table(wdt$room_cmp2)))
 
