@@ -47,6 +47,8 @@
 # 2016-01-18
 # - converted to use same vars as mortality models
 # - also now takes command line options or defaults up front for outcomes
+# 2016-01-19
+# - command line option to run without patient level risk factors
 
 # Notes
 # =====
@@ -68,11 +70,14 @@ rm(list=ls(all=TRUE))
 options:
     --help            help   
     --subgrp=SUBGRP   All patients or subgrp [default: all]
-    --nsims=NSIMS     number of simulations for bootstrap [default: 5]" -> doc
+    --nsims=NSIMS     number of simulations for bootstrap [default: 5]
+    -s, --siteonly    Exclude patient level predictors" -> doc
 
 require(docopt) # load the docopt library to parse
 # opts <- docopt(doc, "--subgrp=icu_recommend --nsims=5") # for debugging
 opts <- docopt(doc)
+# print(opts)
+# stop("***JUST DEBUGGING***")
 
 library(Hmisc)
 library(ggplot2)
@@ -113,9 +118,11 @@ if (subgrp=="all") {
 }
 
 
-
-
-table.name <- paste0("model_accept_", subgrp, "_sims", opts$nsims)
+if (opts$siteonly) {
+    table.name <- paste0("model_accept_", subgrp, "_sims", opts$nsims, "_siteonly")
+} else {
+    table.name <- paste0("model_accept_", subgrp, "_sims", opts$nsims)
+}
 
 # add nsims to file names since you'll be gutted if you overwrite a major simulation
 table.name <- paste0(table.name)
@@ -158,9 +165,15 @@ vars.site <- c(
     "ccot_shift_pattern"
     )
 
-# vars <- c(vars.site, vars.timing, vars.patient)
-# - [ ] NOTE(2016-01-18): exclude site level vars
-vars <- c(vars.timing, vars.patient)
+#  =================================================================
+#  = Use command line to select patient level predictors in or out =
+#  =================================================================
+if (opts$siteonly) {
+    # Exclude patient level to permit comparison of MOR with/withouta
+    vars <- c(vars.timing)
+} else {
+    vars <- c(vars.timing, vars.patient)
+}
 
 table(wdt$room_cmp2)
 # Model specification

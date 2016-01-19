@@ -275,12 +275,12 @@ def task_tb_model_icu_accept_all():
         "file_dep": ["tables/tb_model_icu_accept.R",
                     "data/paper-spotepi.RData"],
         # Debugging version
-        "targets":  ["write/tables/tb_model_accept_all_sims10.xlsx"],
-        # "targets":  ["write/tables/tb_model_accept_all_sims100.xlsx"],
+        # "targets":  ["write/tables/tb_model_accept_all_sims10.xlsx"],
+        "targets":  ["write/tables/tb_model_accept_all_sims100.xlsx"],
         # Use Rscript not R CMD BATCH b/c accepts command line args then tee pipes to file and stout
         # Debugging version
-        "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=all --nsims=10 | tee ../logs/tb_model_icu_accept_all.Rout"]
-        # "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=all --nsims=100 | tee ../logs/tb_model_icu_accept_all.Rout"]
+        # "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=all --nsims=10 | tee ../logs/tb_model_icu_accept_all.Rout"]
+        "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=all --nsims=100 | tee ../logs/tb_model_icu_accept_all.Rout"]
     }
 
 def task_tb_model_icu_accept_recommend():
@@ -295,9 +295,26 @@ def task_tb_model_icu_accept_recommend():
         "file_dep": ["tables/tb_model_icu_accept.R",
                     "data/paper-spotepi.RData"],
         # Debugging version
-        "targets":  ["write/tables/tb_model_accept_recommend_sims10.xlsx"],
-        # "targets":  ["write/tables/tb_model_accept_recommend_sims100.xlsx"],
+        # "targets":  ["write/tables/tb_model_accept_recommend_sims10.xlsx"],
+        "targets":  ["write/tables/tb_model_accept_recommend_sims100.xlsx"],
         # Debugging version
-        "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=icu_recommend --nsims=10 | tee ../logs/tb_model_icu_accept_recommend.Rout"]
-        # "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=icu_recommend --nsims=100 | tee ../logs/tb_model_icu_accept_recommend.Rout"]
+        # "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=icu_recommend --nsims=10 | tee ../logs/tb_model_icu_accept_recommend.Rout"]
+        "actions": ["Rscript tables/tb_model_icu_accept.R --subgrp=icu_recommend --nsims=100 | tee ../logs/tb_model_icu_accept_recommend.Rout"]
+    }
+
+def task_tb_model_icu_accept_all_siteonly():
+    """Extract Median Odds Ratio without adjustment for patient level factors"""
+    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    #   formatting and caption for table
+    # - [ ] NOTE(2016-01-19): **UNCOMMENT BOTH TARGET AND ACTION LINES WHEN SWITCHING TO LIVE VERSION
+    return {
+        # "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["tables/tb_model_icu_accept.R",
+                    "data/paper-spotepi.RData"],
+        # Debugging version
+        # "targets":  ["write/tables/tb_model_accept_all_sims10_siteonly.xlsx"],
+        "targets":  ["write/tables/tb_model_accept_all_sims100_siteonly.xlsx"],
+        # Use Rscript not R CMD BATCH b/c accepts command line args then tee pipes to file and stout
+        # Debugging version
+        "actions": ["Rscript tables/tb_model_icu_accept.R --siteonly --subgrp=all --nsims=100 | tee ../logs/task_tb_model_icu_accept_all_siteonly.Rout"]
     }
