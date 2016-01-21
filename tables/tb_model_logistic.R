@@ -1,9 +1,14 @@
 # author: Steve Harris
 # date: 2014-10-17
-# subject: ICU accept model in R
+# subject: Multi-level logistic regression model at bedside assessment
 
 # Readme
 # ======
+
+# Possible outcomes include
+# - icu_accept
+# - early4
+# - dead90
 
 
 # Todo
@@ -49,6 +54,9 @@
 # - also now takes command line options or defaults up front for outcomes
 # 2016-01-19
 # - command line option to run without patient level risk factors
+# 2016-01-21
+# - modified so that dependent var can now also be selected
+
 
 # Notes
 # =====
@@ -65,19 +73,34 @@ rm(list=ls(all=TRUE))
 #  =================================================================
 
 "usage: 
-    tb_model_icu_accept [options]
+    tb_model_logistic [options]
 
 options:
-    --help            help   
-    --subgrp=SUBGRP   All patients or subgrp [default: all]
-    --nsims=NSIMS     number of simulations for bootstrap [default: 5]
-    -s, --siteonly    Exclude patient level predictors" -> doc
+    --help              help  (print this)
+    -d, --describe      describe this model
+    --outcome=OUTCOME   Outcome (dependent) variable [default: icu_accept]
+    --subgrp=SUBGRP     All patients or subgrp [default: all]
+    --nsims=NSIMS       number of simulations for bootstrap [default: 5]
+    -s, --siteonly      Exclude patient level predictors" -> doc
 
 require(docopt) # load the docopt library to parse
 # opts <- docopt(doc, "--subgrp=icu_recommend --nsims=5") # for debugging
 opts <- docopt(doc)
-# print(opts)
-# stop("***JUST DEBUGGING***")
+if (opts$d) {
+    write("
+***********************************************************************
+Multi-level logistic regression model with patients nested within sites
+***********************************************************************
+Outcome variable intended to be one of
+- icu_accept
+- early4
+- dead90 etc
+Predictors are a consolidated version of the information
+available at the bedside but currently exclude all site level
+information
+", stdout())
+    quit()
+}
 
 library(Hmisc)
 library(ggplot2)
@@ -107,6 +130,8 @@ assert_that(nrow(wdt)==13017)
 
 nsims  <- opts$nsims          # simulations for bootstrap
 subgrp <- opts$subgrp         # define subgrp
+outcome <- opts$outcome       # define outcome
+
 
 if (subgrp=="all") {
     assert_that(nrow(wdt)==13017)
@@ -117,12 +142,22 @@ if (subgrp=="all") {
     stop(paste("ERROR?:", subgrp, "not one of 'all' nor 'icu_recommend'"))
 }
 
+if (outcome=="icu_accept") {
+    model.name <- "accept"
+} else if (outcome=="early4") {
+    model.name <- "early4"
+} else {
+    stop(paste("ERROR:", outcome, "not one of icu_accept or early4"))
+}
+
+model.name <- paste0("model_", model.name, "_")
 
 if (opts$siteonly) {
-    table.name <- paste0("model_accept_", subgrp, "_sims", opts$nsims, "_siteonly")
+    table.name <- paste0(model.name, subgrp, "_sims", opts$nsims, "_siteonly")
 } else {
-    table.name <- paste0("model_accept_", subgrp, "_sims", opts$nsims)
+    table.name <- paste0(model.name, subgrp, "_sims", opts$nsims)
 }
+
 
 # add nsims to file names since you'll be gutted if you overwrite a major simulation
 table.name <- paste0(table.name)
@@ -178,12 +213,13 @@ if (opts$siteonly) {
 # Check that relevelled correctly to biggest category
 assert_that(table(wdt$room_cmp2)[1]==max(table(wdt$room_cmp2)))
 
-f.accept <- reformulate(termlabels = vars, response = 'icu_accept')
-f.accept
+# Now use the outcome variable provided
+f.outcome <- reformulate(termlabels = vars, response = outcome)
+f.outcome
 
 # Run your model
 # --------------
-m <- glm(f.accept ,
+m <- glm(f.outcome ,
     family = 'binomial', data = wdt)
 summary(m)
 
@@ -197,9 +233,9 @@ m.eform
 
 # Run a formula with site level effects
 # -------------------------------------
-f.accept.xt <- update(f.accept, . ~ . + (1|icode))
-f.accept.xt
-m.xt <- glmer(f.accept.xt , family = 'binomial', data = wdt) # original or default
+f.outcome.xt <- update(f.outcome, . ~ . + (1|icode))
+f.outcome.xt
+m.xt <- glmer(f.outcome.xt , family = 'binomial', data = wdt) # original or default
 summary(m.xt)
 # NOTE: 2015-07-22 - [ ] model fails to converge
 # Checks as per CrossValidated post
@@ -211,7 +247,7 @@ max(abs(relgrad))
 # TODO: 2014-10-19 - [ ] different results in stata xtlogit therefore explore glmer
 # NB: Stata xtlogit uses Gauss-Hermite adaptive quadrature
 # NB: glmer uses the Laplace transform - ?less accurate but faster?
-# m.xt.nAGQ7 <- glmer(f.accept.xt , family = 'binomial', data = wdt, nAGQ=7)
+# m.xt.nAGQ7 <- glmer(f.outcome.xt , family = 'binomial', data = wdt, nAGQ=7)
 # summary(m.xt.nAGQ7)
 
 # Display your results
@@ -274,13 +310,13 @@ m.xt.fmt        <- m.xt.fmt[ ,c(1,2,7,6,8,4,5)]
 # - [ ] NOTE(2015-12-10): using nAGQ=0 to spped this process up
 #       also only doing 100 replicates at present
 # first model with adjustment for patient level factors
-tdt <- wdt[, c(vars, "id", "icode", "icu_accept"), with=FALSE]
-f.accept.xt <- update(f.accept, . ~ . + (1|icode))
-f.accept.xt
-# m.xt <- glmer(f.accept.xt , family = 'binomial', data = wdt) # original or default
+tdt <- wdt[, c(vars, "id", "icode", outcome), with=FALSE]
+f.outcome.xt <- update(f.outcome, . ~ . + (1|icode))
+f.outcome.xt
+# m.xt <- glmer(f.outcome.xt , family = 'binomial', data = wdt) # original or default
 relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
 warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", max(abs(relgrad))) )
-m.xt.boot <- glmer(f.accept.xt , family = 'binomial', data = tdt, nAGQ = 0)
+m.xt.boot <- glmer(f.outcome.xt , family = 'binomial', data = tdt, nAGQ = 0)
 relgrad <- with(m.xt@optinfo$derivs,solve(Hessian,gradient))
 warning(paste("Model failed to converge: beware if gradient>0.001: Gradient=", max(abs(relgrad))) )
 # - [ ] NOTE(2015-12-11): boot function now returns MOR and predictions
@@ -359,12 +395,12 @@ rBoot95ci(bMer, 2)
 
 
 # Calculate MOR excluding patient level vars
-f.accept.xt
-f.accept.xt.nopt <- reformulate(termlabels = c(vars.timing),
-    response = 'icu_accept')
-f.accept.xt.nopt <-  update(f.accept.xt.nopt, . ~ . + (1|icode))
-f.accept.xt.nopt
-m.xt.nopt.boot <- glmer(f.accept.xt.nopt , family = 'binomial', data = tdt, nAGQ = 0)
+f.outcome.xt
+f.outcome.xt.nopt <- reformulate(termlabels = c(vars.timing),
+    response = outcome)
+f.outcome.xt.nopt <-  update(f.outcome.xt.nopt, . ~ . + (1|icode))
+f.outcome.xt.nopt
+m.xt.nopt.boot <- glmer(f.outcome.xt.nopt , family = 'binomial', data = tdt, nAGQ = 0)
 MOR4boot <- function(m) {
 
     # Median Odds Ratio
@@ -416,8 +452,8 @@ saveWorkbook(wb)
 
 # Save the formatted table for use in Rmarkdown
 # ---------------------------------------------
-model_icu_accept <- m.xt
-model_icu_accept.fmt <- m.xt.fmt
-save(model_icu_accept, model_icu_accept.fmt, file=table.RData)
+model_icu <- m.xt
+model_icu.fmt <- m.xt.fmt
+save(model_icu, model_icu.fmt, file=table.RData)
 
 
