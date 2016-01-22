@@ -56,7 +56,7 @@
 # - command line option to run without patient level risk factors
 # 2016-01-21
 # - modified so that dependent var can now also be selected
-
+#   also permits adding in icu_accept as predictor where early4 is the outcome
 
 # Notes
 # =====
@@ -110,8 +110,8 @@ library(XLConnect)
 library(assertthat)
 library(boot)
 
-
 # Define vars in standardised manner
+setwd("/Users/steve/aor/academic/paper-spotepi/src")
 source("../share/spotepi_variable_prep.R")
 load("../data/paper-spotepi.RData")
 wdt.original <- wdt
@@ -144,12 +144,19 @@ if (subgrp=="all") {
 
 if (outcome=="icu_accept") {
     model.name <- "accept"
+    vars.plus <- c()
+    wdt <- wdt
 } else if (outcome=="early4") {
     model.name <- "early4"
+    vars.plus <- c("icu_accept")
+    # Drop theatre admissions from timing analysis
+    describe(wdt$elgthtr)
+    wdt <- wdt[is.na(elgthtr) | elgthtr==0]
 } else {
     stop(paste("ERROR:", outcome, "not one of icu_accept or early4"))
 }
 
+# Define model name to be used in filename outputs
 model.name <- paste0("model_", model.name, "_")
 
 if (opts$siteonly) {
@@ -157,7 +164,6 @@ if (opts$siteonly) {
 } else {
     table.name <- paste0(model.name, subgrp, "_sims", opts$nsims)
 }
-
 
 # add nsims to file names since you'll be gutted if you overwrite a major simulation
 table.name <- paste0(table.name)
@@ -168,8 +174,8 @@ data.path <- "../data/"
 table.xlsx  <- paste0(table.path, 'tb_', table.name, '.xlsx')
 table.RData <- paste0(data.path, 'tb_', table.name, '.RData')
 
-print(table.xlsx)
-print(table.RData)
+# print(table.xlsx)
+# print(table.RData)
 
 #  ==========================
 #  = Define your predictors =
@@ -185,6 +191,9 @@ vars.patient <- c(
     # - [ ] NOTE(2016-01-18): drop reco from model b/c will examine as subgrp
     # "cc.reco"
     )
+
+# Add in extra predictors based on the outcome being examined
+vars.patient <- c(vars.patient, vars.plus)
 
 vars.timing <- c(
     "out_of_hours",
