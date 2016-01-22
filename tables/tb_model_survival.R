@@ -25,73 +25,128 @@
 # - bootstrapping added
 # - file made generic to model survival at different times
 
-# Notes
-# =====
+#  ====================
+#  = Code starts here =
+#  ====================
+
 rm(list=ls(all=TRUE))
-ls()
-# setwd('/Users/steve/aor/p-academic/paper-spotearly/src/analysis')
-source("project_paths.r")
+
+#  =================================================================
+#  = Parse command line options or assign defaults if not provided =
+#  =================================================================
+
+"usage: 
+    tb_model_survival [options]
+
+options:
+    --help              help  (print this)
+    -d, --describe      describe this model
+    --censor=CENSOR     censor survival [default: 90]
+    --subgrp=SUBGRP     All patients or subgrp [default: all]
+    --nsims=NSIMS       number of simulations for bootstrap [default: 5]
+    -s, --siteonly      Exclude patient level predictors" -> doc
+
+require(docopt) # load the docopt library to parse
+opts <- docopt(doc)
+# print(str(opts))
+if (opts$d) {
+    write("
+***********************************************************************
+Multi-level cox survival model with patients nested within sites
+***********************************************************************
+Survival model with censoring at 90 days etc
+Predictors are a consolidated version of the information
+available at the bedside but currently exclude all site level
+information
+Possible subgroups include
+- all
+- rxlimits
+- nolimits
+- recommend
+", stdout())
+    quit()
+}
 
 #  ==========================
 #  = Set-up and development =
 #  ==========================
 # Generic packages
-library(data.table)
-library(Hmisc)
-library(ggplot2)
-library(XLConnect)
+require(data.table)
+require(Hmisc)
+require(ggplot2)
+require(XLConnect)
 
 # Survival analysis
-library(survival)
-library(coxme)
-library(cmprsk)
+require(survival)
+require(coxme)
+require(cmprsk)
 
 # Code management and user functions
-library(assertthat)
-library(datascibc)
-library(scipaper) # contains model2table
+# Format results table
+require(assertthat)
+require(datascibc)
+require(scipaper) # contains model2table
 
 #  =============
 #  = Load data =
 #  =============
-source(paste0(PATH_SHARE, "/spotepi_variable_prep.R"))
-load(paste0(PATH_DATA, '/paper-spotepi.RData'))
+setwd("/Users/steve/aor/academic/paper-spotepi/src")
+source("../share/spotepi_variable_prep.R")
+load("../data/paper-spotepi.RData")
+
 names(wdt.surv1)
 tdt <- prep.wdt(wdt.surv1)
 dim(tdt)
 
 # Check data correct
-assert_that(all.equal(dim(tdt), c(15158,81)))
+assert_that(all.equal(dim(tdt), c(15158,84)))
 
-#  ===========================================
-#  = KEY GLOBAL VARS AND SUBSETTIG OPERATION =
-#  ===========================================
+nsims    <- opts$nsims              # simulations for bootstrap
+subgrp   <- opts$subgrp             # define subgrp
+t.censor <- as.integer(opts$censor) # define censor
 
-t.censor <- 90          # censor survival time (days)
-nsims <- 200              # simulations for bootstrap
-subgrp <- "all"         # define subgrp
-
+# Define model name and check subgroups
 if (subgrp=="all") {
-    nrow(tdt <- tdt)
     assert_that(nrow(tdt)==15158)
-}
-
-if (subgrp=="nolimits") {
-    nrow(tdt <- tdt[rxlimits==0])
+    model.name <- "all"
+    vars.plus <- c()
+} else if (subgrp=="nolimits") {
+    tdt <- tdt[get(opts$subgrp)==0]
     assert_that(nrow(tdt)==13017)
+    model.name <- "nolimits"
+    vars.plus <- c()
+} else if (subgrp=="rxlimits") {
+    tdt <- tdt[get(opts$subgrp)==1]
+    assert_that(nrow(tdt)==2141)
+    model.name <- "rxlimits"
+    vars.plus  <- c()
+} else if (subgrp=="recommend") {
+    tdt <- tdt[get(opts$subgrp)==1]
+    assert_that(nrow(tdt)==4976)
+    model.name <- "recommend"
+    vars.plus  <- c()
+} else {
+    stop(paste("ERROR?:", subgrp, "not recognised"))
 }
 
-#  ========================================
-#  = Define path and filenames for output =
-#  ========================================
-table.name <- paste0("model_dead", t.censor, subgrp)
 
-# add nsims to file names since you'll be gutted if you overwrite a major simulation
-table.name <- paste0(table.name, "_sim", nsims)
-table.path <- paste0(PATH_TABLES, '/')
-table.xlsx <- paste0(table.path, 'tb_', table.name, '.xlsx')
-data.path <- paste0(PATH_DATA, '/')
-table.RData <- paste0(data.path, table.name, '.RData', sep='')
+# Define model name to be used in filename outputs
+model.name <- paste0("survival_", model.name, "_")
+
+if (opts$siteonly) {
+    table.name <- paste0(model.name, "_sims", opts$nsims, "_siteonly")
+} else {
+    table.name <- paste0(model.name, "_sims", opts$nsims)
+}
+
+table.path <- paste0("../write/tables", "/")
+data.path <- "../data/"
+
+table.xlsx  <- paste0(table.path, 'tb_', table.name, '.xlsx')
+table.RData <- paste0(data.path, 'tb_', table.name, '.RData')
+
+# print(table.xlsx)
+# print(table.RData)
 
 
 #  =====================
@@ -105,9 +160,12 @@ vars.patient <- c(
     "osupp2",
     # "v_ccmds",
     "icnarc_score",
-    "periarrest",
-    "cc.reco"
+    "periarrest"
+    # "cc.reco"
     )
+
+# Add in extra predictors based on the outcome being examined
+vars.patient <- c(vars.patient, vars.plus)
 
 vars.timing <- c(
     "out_of_hours",
@@ -123,19 +181,30 @@ vars.site <- c(
     "ccot_shift_pattern"
     )
 
-vars <- c(vars.site, vars.timing, vars.patient)
+#  =================================================================
+#  = Use command line to select patient level predictors in or out =
+#  =================================================================
+if (opts$siteonly) {
+    # Exclude patient level to permit comparison of MOR with/withouta
+    vars <- c(vars.timing)
+} else {
+    vars <- c(vars.timing, vars.patient)
+}
 
 #  =============================
 #  = Set up survival structure =
 #  =============================
 # t = time, f=failure event
-tdt[, t:=ifelse(t.trace>t.censor, 24*t.censor, 24*t.trace)]
+tdt[, t:=ifelse(t.trace>t.censor, t.censor, t.trace)]
 tdt[, f:=ifelse(dead==1 & t.trace <= t.censor ,1,0)]
 head(tdt[,.(site,id,t.trace,dead,t,f)])
 describe(tdt$t)
 describe(tdt$f)
 
-# Function for resampling clustered data
+#  ========================================================
+#  = Function for resampling clustered data for bootstrap =
+#  ========================================================
+# use this function to bootstrap coefficients and MHR from model
 rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
     require(data.table)
 
@@ -157,9 +226,6 @@ rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
     bdt[, id.within := NULL] # drop id.within
     return(bdt)
 }
-
-
-# Now use this function to bootstrap coefficients and MHR from model
 
 #  =============================
 #  = Define formulae for model =
@@ -186,7 +252,6 @@ fm.me <- formula(
 #  =============================================
 #  = Extract confidence intervals by bootstrap =
 #  =============================================
-
 # Now pack this together into a single function
 coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
     
@@ -218,17 +283,18 @@ coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
 # r <- (sapply(1:20,  function(i) coxph.rsample(fm=fm.xt, data=tdt)))
 
 
-# Cox ME version (for all patients without Rx limits)
-# ---------------------------------------------------
-d <- tdt
+# Cox ME version 
+# --------------
 
 # Single level model in coxph (for sanity checks)
-m1 <- coxph(fm.ph, data=d)
+m1 <- coxph(fm.ph, data=tdt)
 m1.confint <- cbind(summary(m1)$conf.int[,c(1,3:4)], p=(summary(m1)$coefficients[,5]))
 (m1.confint <- model2table(m1.confint, est.name="HR"))
 
+message(paste("BE PATIENT: Running", nsims, "simulations"))
 r1.system.time <- system.time(r <- (sapply(1:nsims,
-     function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
+     function(i) coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE))))
+message(paste("You waited", round(r1.system.time[3]), "seconds"))
 
 r1 <- t(apply(r, 1,
     function(x) {
@@ -244,85 +310,18 @@ r1 <- t(apply(r, 1,
     ))
 
 r1
-(r1.raw <- r1[1:nrow(r1)-1,c(1:4)])
-(r1.mhr <- c(r1[nrow(r1),c(5:7)],p=NA))
 # Bind single level model estimates for visual checks
+(r1.raw <- r1[1:nrow(r1)-1,c(1:4)])
 (r1.raw <- cbind(r1.raw, m1.confint))
+
+(r1.mhr <- c(r1[nrow(r1),c(5:7)],p=NA, rep(NA,5)))
+
 (r1.raw <- rbind(r1.raw, r1.mhr))
+row.names(r1.raw)[17] <- "MHR"
 (r1.fmt <- model2table(r1.raw[,1:4], est.name="HR"))
 
-
-# Cox ME version (for patients refused)
-# -------------------------------------
-d <- tdt[icu_accept==0]
-
-# Single level model in coxph (for sanity checks)
-m2 <- coxph(fm.ph, data=d)
-m2.confint <- cbind(summary(m2)$conf.int[,c(1,3:4)], p=(summary(m2)$coefficients[,5]))
-(m2.confint <- model2table(m2.confint, est.name="HR"))
-
-r2.system.time <- system.time(r.refuse <- (sapply(1:nsims,
-     function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
-r2.system.time
-
-r2 <- t(apply(r.refuse, 1,
-    function(x) {
-            c(
-            mean.exp=exp(mean(x)),
-            q.exp=quantile(exp(x), probs=c(0.05,0.95)) ,
-            p=1-pnorm(abs(mean(x)/sd(x))),
-            mean=mean(x),
-            q=quantile(x, probs=c(0.05,0.95))
-            # se=sd(x),
-            # z=mean(x)/sd(x),
-        )}
-    ))
-
-r2
-(r2.raw <- r2[1:nrow(r2)-1,c(1:4)])
-(r2.mhr <- c(r2[nrow(r2),c(5:7)],p=NA))
-# Bind single level model estimates for visual checks
-(r2.raw <- cbind(r2.raw, m2.confint))
-(r2.raw <- rbind(r2.raw, r2.mhr))
-(r2.fmt <- model2table(r2.raw[,1:4], est.name="HR"))
-
-# Cox ME version (for patients refused but recommended)
-# -----------------------------------------------------
-d <- tdt[icu_accept==0 & icu_recommend==1]
-
-# Single level model in coxph (for sanity checks)
-m3 <- coxph(fm.ph, data=d)
-m3.confint <- cbind(summary(m3)$conf.int[,c(1,3:4)], p=(summary(m3)$coefficients[,5]))
-m3.confint <- model2table(m3.confint, est.name="HR")
-
-r3.system.time <- system.time(r.refused.recommended <- (sapply(1:nsims,
-     function(i) coxph.rsample(fm=fm.me, data=d, coxme=TRUE))))
-r3.system.time[1]
-
-r3 <- t(apply(r.refused.recommended, 1,
-    function(x) {
-            c(
-            mean.exp=exp(mean(x)),
-            q.exp=quantile(exp(x), probs=c(0.05,0.95)) ,
-            p=1-pnorm(abs(mean(x)/sd(x))),
-            mean=mean(x),
-            q=quantile(x, probs=c(0.05,0.95))
-            # se=sd(x),
-            # z=mean(x)/sd(x),
-        )}
-    ))
-
-r3
-(r3.raw <- r3[1:nrow(r3)-1,c(1:4)])
-(r3.mhr <- c(r3[nrow(r3),c(5:7)],p=NA))
-# Bind single level model estimates for visual checks
-(r3.raw <- cbind(r3.raw, m3.confint))
-(r3.raw <- rbind(r3.raw, r3.mhr))
-(r3.fmt <- model2table(r3.raw[,1:4], est.name="HR"))
-
-
 # Save models since it is these that take ages to run
-save(list=c("r1","r2","r3"),file=table.RData)
+save(r1,file=table.RData)
 
 # Now export to excel
 # -------------------
@@ -338,9 +337,7 @@ sheet1.df <- rbind(
     c('observations', nrow(tdt)),
     c('observations analysed', nrow(tdt)),
     c('bootstap sims', nsims),
-    c('r1 system.time', r1.system.time[1]),
-    c('r2 system.time', r2.system.time[1]),
-    c('r3 system.time', r3.system.time[1])
+    c('r1 system.time', r1.system.time[1])
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
@@ -353,26 +350,5 @@ sheet3 <- 'fmt.subgrp'
 removeSheet(wb, sheet3)
 createSheet(wb, name = sheet3)
 writeWorksheet(wb, r1.fmt, sheet3)
-
-
-sheet4 <- 'raw.refused'
-removeSheet(wb, sheet4)
-createSheet(wb, name = sheet4)
-writeWorksheet(wb, cbind(vars = row.names(r2.raw), r2.raw), sheet4)
-
-sheet5 <- 'fmt.refused'
-removeSheet(wb, sheet5)
-createSheet(wb, name = sheet5)
-writeWorksheet(wb, r2.fmt, sheet5)
-
-sheet6 <- 'raw.refused.recommended'
-removeSheet(wb, sheet6)
-createSheet(wb, name = sheet6)
-writeWorksheet(wb, cbind(vars = row.names(r3.raw), r3.raw), sheet6)
-
-sheet7 <- 'fmt.refused.recommended'
-removeSheet(wb, sheet7)
-createSheet(wb, name = sheet7)
-writeWorksheet(wb, r3.fmt, sheet7)
 
 saveWorkbook(wb)
