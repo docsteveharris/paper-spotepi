@@ -49,6 +49,7 @@ options:
 require(docopt) # load the docopt library to parse
 opts <- docopt(doc)
 # print(str(opts))
+
 if (opts$d) {
     write("
 ***********************************************************************
@@ -111,19 +112,19 @@ if (subgrp=="all") {
     model.name <- "all"
     vars.plus <- c()
 } else if (subgrp=="nolimits") {
-    tdt <- tdt[get(opts$subgrp)==0]
+    tdt <- tdt[rxlimits==0]
     assert_that(nrow(tdt)==13017)
     model.name <- "nolimits"
     vars.plus <- c()
 } else if (subgrp=="rxlimits") {
-    tdt <- tdt[get(opts$subgrp)==1]
+    tdt <- tdt[rxlimits==1]
     assert_that(nrow(tdt)==2141)
     model.name <- "rxlimits"
     vars.plus  <- c()
 } else if (subgrp=="recommend") {
-    tdt <- tdt[get(opts$subgrp)==1]
+    tdt <- tdt[icu_recommend==1 & rxlimits==0]
     assert_that(nrow(tdt)==4976)
-    model.name <- "recommend"
+    model.name <- "recommend_nolimits"
     vars.plus  <- c()
 } else {
     stop(paste("ERROR?:", subgrp, "not recognised"))
@@ -332,12 +333,14 @@ setStyleAction(wb, XLC$"STYLE_ACTION.NONE") # no formatting applied
 sheet1 <-'model_details'
 removeSheet(wb, sheet1)
 createSheet(wb, name = sheet1)
+sheet1.msg <- "on raw.subgrp cols G:J come from the single level model and are there to provide a sanity check against the full multilevel model"
 sheet1.df <- rbind(
     c('table name', table.name),
     c('observations', nrow(tdt)),
     c('observations analysed', nrow(tdt)),
     c('bootstap sims', nsims),
-    c('r1 system.time', r1.system.time[1])
+    c('r1 system.time', r1.system.time[1]),
+    c('*NOTE*', sheet1.msg)
     )
 writeWorksheet(wb, sheet1.df, sheet1)
 
