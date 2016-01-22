@@ -36,19 +36,19 @@ summary(m)
 #  =================================
 #  = Pathways following assessment =
 #  =================================
-with(wdt, CrossTable(icu_recommend))
-with(wdt, CrossTable(icu_recommend, rxlimits))
-with(wdt[icu_recommend==0], CrossTable(icu_accept, rxlimits))
+with(tdt, CrossTable(icu_recommend))
+with(tdt, CrossTable(icu_recommend, rxlimits))
+with(tdt[icu_recommend==0], CrossTable(icu_accept, rxlimits))
 
-with(wdt, CrossTable(bedside.decision))
-with(wdt, CrossTable(dead7, bedside.decision))
-with(wdt, CrossTable(icucmp, bedside.decision))
-with(wdt[bedside.decision=="ward"], CrossTable(dead7, icucmp))
-with(wdt[bedside.decision=="ward"], CrossTable(icu_recommend))
-with(wdt[bedside.decision=="ward" & icu_recommend==1], CrossTable(dead7, icucmp))
-with(wdt, CrossTable(beds_none2, bedside.decision))
-with(wdt, CrossTable(beds_none, bedside.decision))
-with(wdt[icu_recommend==1], CrossTable(beds_none, bedside.decision))
+with(tdt, CrossTable(bedside.decision))
+with(tdt, CrossTable(dead7, bedside.decision))
+with(tdt, CrossTable(icucmp, bedside.decision))
+with(tdt[bedside.decision=="ward"], CrossTable(dead7, icucmp))
+with(tdt[bedside.decision=="ward"], CrossTable(icu_recommend))
+with(tdt[bedside.decision=="ward" & icu_recommend==1], CrossTable(dead7, icucmp))
+with(tdt, CrossTable(beds_none2, bedside.decision))
+with(tdt, CrossTable(beds_none, bedside.decision))
+with(tdt[icu_recommend==1], CrossTable(beds_none, bedside.decision))
 
 
 #  ==================================
@@ -102,7 +102,7 @@ age.by.accept
 
 lookfor("age")
 describe(wdt$age80_b)
-ff.prop.test(var="age80", byvar="accept", data=wdt[rxlimits==0,.(accept,age80=age<=80)], )
+ff.prop.test(var=age80, byvar=accept, data=wdt[rxlimits==0,.(accept,age80=age<=80)], )
 
 sofa.by.accept <- ff.t.test(wdt[recommend==1], 'sofa_score', 'accept', dp=1)
 sofa.by.accept

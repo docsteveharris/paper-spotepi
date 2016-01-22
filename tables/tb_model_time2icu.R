@@ -9,6 +9,9 @@
 # Todo
 # ====
 # - [ ] TODO(2016-01-19): competing risks model with frailty!
+#       can't see an easy way to do this
+#       therefore ignore frailty and just build CR model here
+#       separately build early4 model to get at intersite variability
 
 
 # Log
@@ -23,6 +26,8 @@
 # - include accept var
 # - make sure MHR extracted OK
 # - add in command line options via docopt if need subsetting etc
+# 2016-01-21
+# - dropping hierarchical portion of model
 
 # Notes
 # =====
@@ -31,17 +36,21 @@ rm(list=ls(all=TRUE))
 #  ==========================
 #  = Set-up and development =
 #  ==========================
-
+# Generic packages
+library(data.table)
 library(Hmisc)
 library(ggplot2)
-library(data.table)
 library(XLConnect)
-library(assertthat)
+# Survival analysis
 library(survival)
 library(coxme)
 library(cmprsk)
 
+# Code management and user functions
 # Format results table
+library(assertthat)
+library(datascibc)
+library(scipaper) # contains model2table
 # --------------------
 # - [ ] NOTE(2015-12-16): move this to a package/library
 
@@ -111,26 +120,26 @@ assert_that(nrow(wdt)==13017)
 #  ==========================
 # - [ ] NOTE(2016-01-19): these are hand entered below - **BE CAREFUL**
 # commented out here to avoid confusion
-# vars.patient <- c(
-#     "age_k",
-#     "male",
-#     "sepsis_dx",
-#     "osupp2",
-#     # "v_ccmds",
-#     "icnarc_score",
-#     "periarrest"
-#     # - [ ] NOTE(2016-01-18): drop reco from model b/c will examine as subgrp
-#     # "cc.reco"
-#     )
+vars.patient <- c(
+    "age_k",
+    "male",
+    "sepsis_dx",
+    "osupp2",
+    # "v_ccmds",
+    "icnarc_score",
+    "periarrest"
+    # - [ ] NOTE(2016-01-18): drop reco from model b/c will examine as subgrp
+    # "cc.reco"
+    )
 
-# vars.timing <- c(
-#     "out_of_hours",
-#     "weekend",
-#     "winter",
-#     "room_cmp2"
-#     )
+vars.timing <- c(
+    "out_of_hours",
+    "weekend",
+    "winter",
+    "room_cmp2"
+    )
 
-# vars <- c(vars.timing, vars.patient)
+vars <- c(vars.timing, vars.patient)
 
 # Check that relevelled correctly to biggest category
 assert_that(table(wdt$room_cmp2)[1]==max(table(wdt$room_cmp2)))
@@ -203,109 +212,6 @@ CI.exp <- e$conf.int[,3:4]
 (m1.cr.icu.eform <- cbind(beta.exp, CI.exp, p))
 (m1.cr.icu.fmt <- format.results.table(m1.cr.icu.eform, est.name="HR"))
 
-#  =============
-#  = Cox model =
-#  =============
-#        _  _                                        
-#      _| || |_                                      
-#     |_  __  _|  _ __ ___  ___ _   _ _ __ ___   ___ 
-#      _| || |_  | '__/ _ \/ __| | | | '_ ` _ \ / _ \
-#     |_  __  _| | | |  __/\__ \ |_| | | | | | |  __/
-#       |_||_|   |_|  \___||___/\__,_|_| |_| |_|\___|
-#                                                    
-#                                                    
-
-# Variable definitions for cox model
-s <- with(wdt, Surv(time2icu, icucmp))
-with(wdt, Surv(time2icu, time2icu > 0))
-wdt[,`:=` (
-    admit=ifelse(is.na(time2icu),0,1),
-    t=ifelse(is.na(time2icu),168,time2icu)
-    )]
-describe(wdt$admit)
-describe(wdt$t)
-
-# Run your model
-# --------------
-Surv(wdt$t, wdt$admit)
-
-# Null model
-m0 <- coxph(Surv(t, admit) ~ 1, data=wdt)
-m0$loglik
-
-# Build model for those accepted else will just be reporting 'decision'
-m1 <- coxph(Surv(t, admit) ~
-    icu_accept +
-    age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
-    icnarc_score +
-    out_of_hours + weekend + winter + room_cmp2,
-    data=wdt)
-summary(m1)
-
-# Log likelihood
-m1$loglik
-
-## Chi-squared value comparing this model to the null model
-(-2 * (m0$loglik - logLik(m1)))
-
-#  =========================================
-#  = Cox model with random effect for site =
-#  =========================================
-
-# Model with frailty
-require(coxme)
-m0.xt <- coxme(Surv(t, admit) ~ 1 + (1|site), data=wdt)
-m0.xt
-m0.xt$loglik
-
-m1.xt <- coxme(Surv(t, admit) ~
-    icu_accept +
-    age_k + male + sepsis_dx + v_ccmds + delayed_referral + periarrest +
-    icnarc_score +
-    out_of_hours + weekend + winter + room_cmp2 +
-    (1|site),
-    data=wdt)
-summary(m1.xt)
-
-## Log likelihood
-m1.xtlogLik <- m1.xt$loglik + c(0, 0, m1.xt$penalty)
-m1.xtlogLik
-
-## -2 logLik difference
-(-2 * (m1.xtlogLik["NULL"] - m1.xtlogLik["Penalized"]))
-
-## -2 logLik difference
-(logLikDiffNeg2 <- -2 * (logLik(m1.xt) - m1.xtlogLik["Integrated"]))
-
-## Degree of freedom difference
-(dfDiff <- m1.xt$df[1] - 1)
-
-## P value for the random effects: significant random effects across centers
-pchisq(q = as.numeric(logLikDiffNeg2), df = dfDiff, lower.tail = FALSE)
-
-# Median Hazard ratio
-# -------------------
-summary(m1.xt)
-VarCorr(m1.xt) # variance
-# MHR <- exp(sqrt(2*var)*phi-1(0.75))
-(MHR <- exp(sqrt(2*VarCorr(m1.xt)$site) * qnorm(0.75)))
-
-# Prepare the columns
-print(m1.xt)
-# - [ ] NOTE(2015-12-16): no closed form solution for confidence
-#   intervals - would need to bootstrap or similar
-#   For now, just report the frailty model and ignore the clustering here
-(beta <- fixef(m1.xt))
-(beta.exp <- exp(fixef(m1.xt)))
-(se   <- sqrt(diag(vcov(m1.xt))))
-p    <- 1 - pchisq((beta/se)^2, 1)
-CI   <- round(confint(m1.xt), 3)
-CI.exp   <- exp(round(confint(m1.xt), 3))
-
-# (m1.xt.eform <- cbind(beta.exp, se = exp(beta), CI.exp, p))
-(m1.xt.eform <- cbind(beta.exp, CI.exp, p))
-
-(m1.xt.eform.fmt <- format.results.table(m1.xt.eform, est.name="HR"))
 
 # Now export to excel
 # -------------------
@@ -320,20 +226,9 @@ createSheet(wb, name = sheet1)
 sheet1.df <- rbind(
     c('table name', table.name),
     c('observations', nrow(wdt)),
-    c('observations analysed', nrow(wdt)),
-    c("MHR", MHR)
+    c('observations analysed', nrow(wdt))
     )
 writeWorksheet(wb, sheet1.df, sheet1)
-
-sheet2 <- 'raw.frailty'
-removeSheet(wb, sheet2)
-createSheet(wb, name = sheet2)
-writeWorksheet(wb, cbind(vars = row.names(m1.xt.eform), m1.xt.eform), sheet2)
-
-sheet3 <- 'results.frailty'
-removeSheet(wb, sheet3)
-createSheet(wb, name = sheet3)
-writeWorksheet(wb, m1.xt.eform.fmt, sheet3)
 
 sheet4 <- 'raw.cr.icu'
 removeSheet(wb, sheet4)
