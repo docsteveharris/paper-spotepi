@@ -117,7 +117,7 @@ gen.sofa.c <- function(bpsys, bpdia, rxcvs_drug=NULL, rxcvs_dose=NULL) {
         sofa.c
 
     }
-    print(describe(sofa.c))
+    # print(describe(sofa.c))
     # print(sum(chk.possible))
     # print(sum(!is.na(sofa.c)))
     # TODO: 2015-01-10 - [ ] @later test fails? - close though
@@ -148,9 +148,9 @@ gen.sofa.c <- function(bpsys, bpdia, rxcvs_drug=NULL, rxcvs_dose=NULL) {
 gen.sofa.r <- function(pf, rxfio2, sf=NULL) {
     # attach(wdt.long)
     # Print these descriptions so you know what you have passed to the function
-    print(describe(pf))
-    print(describe(sf))
-    print(describe(rxfio2))
+    # print(describe(pf))
+    # print(describe(sf))
+    # print(describe(rxfio2))
     mv <- c("IPPV", "NIV", "CPAP")
     # Generate a vector of responses
     # Handle missing data by updating in 2 stages
@@ -165,7 +165,7 @@ gen.sofa.r <- function(pf, rxfio2, sf=NULL) {
     sofa.r <- ifelse(!is.na(update), update, sofa.r)
     update <- ifelse(pf >= 300/7.6 & pf < 400/7.6, 1, NA)
     sofa.r <- ifelse(!is.na(update), update, sofa.r)
-    print(describe(sofa.r))
+    # print(describe(sofa.r))
 
     # Use SF ratio if available for scores
     # PF takes priority and update only if not available
@@ -185,7 +185,7 @@ gen.sofa.r <- function(pf, rxfio2, sf=NULL) {
         # Do not assign zero if ventilated
         update <- ifelse(is.na(pf) & sf >= 440 & !(rxfio2 %in% mv), 0, NA)
         sofa.r <- ifelse(!is.na(update), update, sofa.r)
-        print(describe(sofa.r))
+        # print(describe(sofa.r))
     }
     # Test if PF != NA then sofa.r exists
     assert_that(sum(is.na(sofa.r)) <= sum(is.na(pf)))
@@ -241,8 +241,8 @@ gen.sofa.p <- function(platelets, rxplat=NULL) {
     automatically assumes SOFA >= 2
     '
     # attach(wdt.long)
-    print(describe(platelets))
-    print(describe(rxplat))
+    # print(describe(platelets))
+    # print(describe(rxplat))
     assert_that(identical(names(table(wdt.long$rxplat)),c("FALSE","TRUE")))
     # NB cut ranges are (a,b] i.e. a<x<=y
     sofa.p <- cut(
@@ -257,7 +257,7 @@ gen.sofa.p <- function(platelets, rxplat=NULL) {
             platelets >= 150 , 2, NA)
         sofa.p <- ifelse(!is.na(update), update, sofa.p)
     }
-    print(describe(sofa.p))
+    # print(describe(sofa.p))
     # detach(wdt.long)
     return(sofa.p)
 }
@@ -269,7 +269,7 @@ gen.sofa.h <- function(bili) {
     Defines SOFA liver score based on bilirubin
     '
     attach(wdt.long)
-    print(describe(bili))
+    # print(describe(bili))
     # NB cut ranges are (a,b] i.e. a<x<=y
     sofa.h <- cut(
         bili,
@@ -277,7 +277,7 @@ gen.sofa.h <- function(bili) {
         labels=c(0,1,2,3,4))
     # Cut returns a factor unless labels = FALSE
     sofa.h <- as.numeric(levels(sofa.h))[sofa.h]
-    print(describe(sofa.h))
+    # print(describe(sofa.h))
     # detach(wdt.long)
     return(sofa.h)
 }
@@ -286,7 +286,7 @@ gen.sofa.h <- function(bili) {
 gen.sofa.n <- function(gcst, avpu=NULL, rxsed=NULL) {
     attach(wdt.long)
     # Print these descriptions so you know what you have passed to the function
-    print(describe(gcst))
+    # print(describe(gcst))
     sofa.n <- cut(
         gcst,
         c(2,6,9,12,14,15),
@@ -295,16 +295,16 @@ gen.sofa.n <- function(gcst, avpu=NULL, rxsed=NULL) {
 
     # Now set to NA if patient sedated
     if (!is.null(rxsed)) {
-        print(describe(rxsed))
+        # print(describe(rxsed))
         update <- ifelse(rxsed %in% c("True", "TRUE", TRUE), NA, sofa.n)
         describe(update)
         sofa.n <- ifelse(is.na(update), NA, update)
-        print(describe(sofa.n))
+        # print(describe(sofa.n))
     }
 
     # Now use AVPU if provided
     if (!is.null(avpu)) {
-        print(describe(avpu))
+        # print(describe(avpu))
         update <- ifelse(avpu %in% c("Alert - not confused"), 0, NA)
         sofa.n <- ifelse(!is.na(update), update, sofa.n)
 
@@ -321,7 +321,7 @@ gen.sofa.n <- function(gcst, avpu=NULL, rxsed=NULL) {
         sofa.n <- ifelse(!is.na(update), update, sofa.n)
     }
 
-    print(describe(sofa.n))
+    # print(describe(sofa.n))
     # detach(wdt.long)
     return(sofa.n)
 }
@@ -334,8 +334,8 @@ gen.sofa.k <- function(creatinine, urine24, urine1=NULL, rxrrt=NULL) {
 
     # Attach if debugging
     # attach(chk.dt)
-    print(creatinine)
-    print(urine24)
+    # print(creatinine)
+    # print(urine24)
     # NB cut ranges are (a,b] i.e. a<x<=y
     sofa.k <- cut(
         creatinine,
@@ -343,7 +343,7 @@ gen.sofa.k <- function(creatinine, urine24, urine1=NULL, rxrrt=NULL) {
         labels= c(0,1,2,3,4))
     sofa.k
     sofa.k <- as.numeric(levels(sofa.k))[sofa.k]
-    print(describe(sofa.k))
+    # print(describe(sofa.k))
 
     # If RRT information provided
     if (!is.null(rxrrt)) {
@@ -351,7 +351,7 @@ gen.sofa.k <- function(creatinine, urine24, urine1=NULL, rxrrt=NULL) {
             rxrrt %in% c("TRUE", "True", TRUE), 4, NA)
         sofa.k <- ifelse(!is.na(update), update, sofa.k)
     }
-    print(describe(sofa.k))
+    # print(describe(sofa.k))
 
     # Don't use hourly urines for now - not part of SOFA definition
     if (is.null(urine1)) {
@@ -367,7 +367,7 @@ gen.sofa.k <- function(creatinine, urine24, urine1=NULL, rxrrt=NULL) {
     update <- ifelse(urine.sofa >=0 & urine.sofa < 200, 4, NA)
     sofa.k <- ifelse(!is.na(update), max(update,sofa.k,na.rm=TRUE), sofa.k)
 
-    print(describe((sofa.k)))
+    # print(describe((sofa.k)))
     return(sofa.k)
     # detach(chk.dt)
 }
