@@ -47,11 +47,6 @@ tdt[, surv7 := !dead7]
 (age.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], age, bedside.decision, dp=1))
 (sofa.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], sofa_score, bedside.decision, dp=1))
 
-# Delay to admission
-# - [ ] NOTE(2016-01-15): should also exclude death at visit but there aren't any??
-table(wdt$v_disposal) 
-tdt.timing <- tdt[is.na(elgthtr) | elgthtr == 0]
-
 # (time2icu <- ff.mediqr(time2icu, data=tdt.timing, dp=0))
 (icu.delay <- ff.mediqr(time2icu, data=tdt.timing[bedside.decision=="icu"], dp=0))
 (ward.delay <- ff.mediqr(time2icu, data=tdt.timing[bedside.decision=="ward"], dp=0))
