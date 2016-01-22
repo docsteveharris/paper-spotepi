@@ -20,10 +20,12 @@ load("../data/paper-spotepi.RData")
 wdt.original <- wdt
 tdt <- prep.wdt(wdt)
 names(tdt)
-# empty list to store rmd vars
-tt <- list()                     
 
 # Delay to admission population
 # - [ ] NOTE(2016-01-15): should also exclude death at visit but there aren't any??
 table(wdt$v_disposal) 
 tdt.timing <- tdt[is.na(elgthtr) | elgthtr == 0]
+
+# empty list to store rmd vars
+tt <- list()                     
+

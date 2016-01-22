@@ -76,6 +76,9 @@ There were `r room$n[1]` (`r room$p[1]`) patients assessed when the unit was ful
 As occupancy at the time of assessment increased, patients were less likely to be immediately, or ever, accepted to critical care; less likely to be admitted promptly; and, more likely to die on the ward without critical admission (Table 3, Cochran-Armitage test for trend p<0.0001 for all measures).
 
 ## Determinants of decision making at the bedside assessment
+```{r include=FALSE, echo=FALSE}
+source("5_results_07models.R")
+```
 
 We defined patients initially refused (without treatment limits) as the control group, and built a multi-level (patients nested within hospitals) logistic regression model to examine factors associated with a decision to admit. As with the univariate comparisons above, older patients were less likely to be admitted (OR 0.60 for patients over 80 years, 95\%CI 0.53--0.69), and sicker patients were more likely to be admitted (OR 1.07 per ICNARC physiology point (e.g. an increase in heart rate from 105 to 115), 95\%CI 1.06--1.07). Similarly, patients already receiving organ support (OR 1.83 95\%CI 1.55--2.16), or clinically judged to be peri-arrest (OR 6.32 95\%CI 5.18--7.70) were much more likely to be admitted.
 

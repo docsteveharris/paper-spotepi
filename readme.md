@@ -1,5 +1,5 @@
-Readme
-======
+# Paper Spot Epi 
+
 Avoiding all analyses of the 'effectiveness' of ICU (i.e. effect of decision to admit, or early admission)
 Factors affecting outcome for patients _not_ admitted
 Examining the effect of occupancy
@@ -8,16 +8,12 @@ Examining the effect of occupancy
 Recast results to emphasise interest in outcomes of patients referred to and not immediately admitted (esp. those with a recommendation for critical care)
 
 inbox:
-=====
+	- double check occupancy order in markdown now you have re-levelled room_cmp2 
 
 @continue:
 	- one tricky later paragraph
-	✔ start work converting participating hospitals to Rmarkdown @resume(2016-01-01) @done (16-01-01 18:18)
-	- incidence models paragraph 
-		- incidence table 
-			- tb_model_count_news_all
-			- tb_model_count_news_high
-		- incidence figure
+	- see @resume tag below
+		- tidy up decision models to use cleaner set of predictors as per mortality model
 
 @next:
 	- redo predictors
@@ -25,7 +21,6 @@ inbox:
 			- drop site level predictors except from incidence model
 				- simplify site level predictors (drop ?emergency admissions, CMP throughput) ... or just remove through out
 			- switch to ccmds 2 or 3 (now) (back from osupp)
-	 
 	- bootstrap CI 
 		- check/read about which SE to use after bootstrap (simple vs ...)
 			at present assuming central limit theorem holds and sampling by bootstrap creates this distn then use Z
@@ -38,17 +33,16 @@ inbox:
 	methods:
 		- explain why mortality analysis in subgroup of patients rejected
 	results:
-		- tables
-			- table 1
-		- figures
-			- fig 1: consort diagram 
-				- repeat for subgroup recommended?
-			- sfig 1: occupancy over time 
-		- move treatment limits cohort earlier in results and then ignore further
-			then remaining discussion is around fate of patients without treatment limits remaining on the ward (and comparison with those immediately admitted)
-		- run full simulation for survival models
-		- run survival model in full cohort
-			maybe add in interaction between room_cmp and recommendation
+		
+		- occupancy univariate effects table
+			- fix errors in recommended subgroup table @done(2016-01-22)
+		- outcome models
+			- basic mortality description
+			- run survival model in full cohort
+				- ensure matches  structure of other models
+				- run MHR bootstrap (since don't need competing risks)
+				maybe add in interaction between room_cmp and recommendation
+		
 	discussion
 
 @later:
@@ -127,9 +121,9 @@ TRY - drop survival errors early so that you have the same number of patients in
 - median hazard ratio??
 	
 	* So to estimate the MHR you now need to
-	  local twoinvtheta2 = 2 / (e(theta)^2)
-    local mhr = exp(sqrt(2*e(theta))*invF(`twoinvtheta2',`twoinvtheta2',0.75))
-    di "MHR: `mhr'" 
+		local twoinvtheta2 = 2 / (e(theta)^2)
+	local mhr = exp(sqrt(2*e(theta))*invF(`twoinvtheta2',`twoinvtheta2',0.75))
+	di "MHR: `mhr'" 
 
 - produced relative survival estimates using strel2 from LSHTM
 - combined all this code into wr06_mortality.do
@@ -144,9 +138,9 @@ TRY - drop survival errors early so that you have the same number of patients in
 
 - re-run tb_model_ward_severity.do: works much better and figure no longer has Ulster as an outlier
 - recreated hes_providers table in spot db after correcting the total admissions for Northern Ireland sites in the [original spreadsheet](/Users/steve/analysis/spot_study/data/DoH/140318_IS_HES_Providers_EWNI_compiled_by_hand.xls)
-    - this meant re-running import_excel.py, index_table.py, and make_table.py
-    - then re-creating the derived tables sites_within_hes and sites_early
-    - then running cr_sites.do
+	- this meant re-running import_excel.py, index_table.py, and make_table.py
+		- then re-creating the derived tables sites_within_hes and sites_early
+	- then running cr_sites.do
 
 140313
 
@@ -172,6 +166,41 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 
 
 Archive:
+	- tables @done(2016-01-18) @project(results)
+		- table 1 @done(2016-01-18)
+	- sfig 1: occupancy over time	@done(2016-01-18) @project(results)
+	- tidy up vars to match limited subset @done(2016-01-18) @project(results)
+	- command line option for sims and subgroup @resume @done(2016-01-19) @project(results)
+	- for all patients @done(2016-01-19) @project(results)
+	- for those recommended @done(2016-01-19) @project(results)
+	- siteonly @done(2016-01-19) @project(results)
+	- effect of occupancy @done(2016-01-19) @project(results)
+	- inter-site variability @done(2016-01-19) @project(results)
+	- comparison by using model without patient level vars @done(2016-01-19) @project(results)
+	- all @done(2016-01-19) @project(results)
+	- delay to admission models @done(2016-01-22) @project(results)
+		for the purpose of demonstrating that decision making is key
+		hence need to include icu_accept
+		- convert to updated set of predictors @done(2016-01-21)
+		- add back in decision and work with 
+			- full cohort
+			- recommended subgroup
+			- 
+		- effect of occupancy
+		- intersite variability
+			cannot get at this in a competing risks model - could use early4 in a logistic regression to estimate this, but capture the hazard ratios from the main competing risks models
+			- build early4 model as per accept
+				- adjust code @done(2016-01-21)
+				- update doit @resume @done(2016-01-22)
+	✔ start work converting participating hospitals to Rmarkdown @resume(2016-01-01) @done (16-01-01 18:18) @project(@continue)
+	- occupancy paragraph	@done(2016-01-13) @project(@continue)
+		- occupancy table @done(2016-01-13)
+		- occupancy figure @done(2016-01-12)
+	- incidence models paragraph @done(2016-01-13) @project(@continue)
+		- incidence table 
+			- ta_model_count_news_all @done(2016-01-12)
+			- tb_model_count_news_high @done(2016-01-12)
+		- incidence figure @done(2016-01-12)
 	✔ patient characteristics paragraph @done (15-12-31 11:47) @project(inbox)
 	✔ table 1 @done (15-12-31 12:28) @project(inbox)
 	✔ supp figure 1 (mortality pattern) @done (15-12-31 12:49) @project(inbox)
@@ -182,7 +211,7 @@ Archive:
 	+ exp(sqrt(2*V*invnormal(0.75)) where V is the random effects variance when the random effects are normally distributed @project(FIXME)
 	+ need to transform the above equation to work with the gamma distribution since this is used for the random effects in stata @project(FIXME)
 	+ frailty in stata has mean 1 (assumed) and variance \theta (which is estimated from the data) @project(FIXME)
-	+ the invnormal(0.75) term now needs to be replaced with the upper quartile from the an F distribution which has a numerator and denominator (2V,2V) (see ref [Bengtsson and Dribe, 2010, #60939] appendix)  @project(FIXME)
+	+ the invnormal(0.75) term now needs to be replaced with the upper quartile from the an F distribution which has a numerator and denominator (2V,2V) (see ref [Bengtsson and Dribe, 2010, #60939] appendix)	@project(FIXME)
 	+ sites_within_hes @project(FIXME)
 	+ sites_within_cmpd @project(FIXME)
 	+ sites_early @project(FIXME)
@@ -192,7 +221,7 @@ Archive:
 	+ fs_ prefix for "figure supplementary" @project(FIXME)
 	+ fg_ prefix for "figure" @project(FIXME)
 	- skim and check methods @done(2015-12-19) @project(@continue)
-	- incidence figures from GEE model  @done(2015-12-29) @project(results)
+	- incidence figures from GEE model	@done(2015-12-29) @project(results)
 		- report model as supplementary table?
 		- remove elective emergency indicator
 		- swap beds_none for room_cmp2
@@ -203,7 +232,7 @@ Archive:
 	- basic @done(2015-12-29) @project(results)
 	- add in major groups @done(2015-12-29) @project(results)
 	- write abstract @done(2015-12-18)
-		- report  occupancy and decision from time2icu model
+		- report	occupancy and decision from time2icu model
 		- report mortality models
 			- run mortality model in cohort not recommended without limits
 				this asks the qn: who should be offered critical care esp if you use combined endpoint of death or admission to critical care in the next week
@@ -245,7 +274,7 @@ Archive:
 	- fix tb_model_count_news_high @done(2015-12-01)
 		- problem with number of sites @done(2015-12-01)
 		- check constant for IRR @done(2015-12-01)
-	    - place under waf control @done(2015-12-01)
+		- place under waf control @done(2015-12-01)
 	* - [ ] TODO(2015-12-01): test code for figure count_news_high @done(2015-12-01)
-	    - place under waf control @done(2015-12-01)
+		- place under waf control @done(2015-12-01)
 
