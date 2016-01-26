@@ -45,6 +45,7 @@ options:
     -d, --describe      describe this model
     --censor=CENSOR     censor survival [default: 90]
     --subgrp=SUBGRP     All patients or subgrp [default: all]
+    --tsplit=TSPLIT     Cut-points for survSplit [default: c(7)]
     --nsims=NSIMS       number of simulations for bootstrap [default: 5]
     -s, --siteonly      Exclude patient level predictors" -> doc
 
@@ -107,6 +108,7 @@ assert_that(all.equal(dim(tdt), c(15158,84)))
 nsims    <- opts$nsims              # simulations for bootstrap
 subgrp   <- opts$subgrp             # define subgrp
 t.censor <- as.integer(opts$censor) # define censor
+eval(parse(text=paste("tsplit <-", opts$tsplit))) # define survSplit
 
 # Define model name and check subgroups
 if (subgrp=="all") {
@@ -243,7 +245,12 @@ fm.ph <- formula(
 # time-varying
 fm.tv <- formula(
         paste("Surv(t0, t, f)",
-        paste(c(vars.patient, vars.timing, "icnarc_score:factor(period)"),
+        paste(c(
+            vars.patient,
+            vars.timing,
+            "icnarc_score:factor(period)",
+            "periarrest:factor(period)"
+            ),
         collapse = "+"), sep = "~"))
 
 # Formula for old version of coxph with frailty (coxme now recommended but slow)
@@ -253,6 +260,7 @@ fm.xt <- formula(
             vars.patient,
             vars.timing,
             "icnarc_score:factor(period)",
+            "periarrest:factor(period)",
             "frailty(site, dist=\"gamma\")"),
         collapse = "+"), sep = "~"))
 
@@ -263,6 +271,7 @@ fm.me <- formula(
             vars.patient,
             vars.timing,
             "icnarc_score:factor(period)",
+            "periarrest:factor(period)",
             "(1|site)"),
         collapse = "+"), sep = "~"))
 
@@ -270,13 +279,13 @@ fm.me <- formula(
 #  = Extract confidence intervals by bootstrap =
 #  =============================================
 # Now pack this together into a single function
-coxph.rsample <- function(fm=fm.xt, data=tdt, tsplit=c(0,2,7), coxme=FALSE) {
+coxph.rsample <- function(fm=fm.xt, data=tdt, ssplit=tsplit, coxme=FALSE) {
     
     # Resample with replacement the data
     d <- rsample2(tdt, id.unit="pid", id.cluster="site")
 
     # Post-resampling split the data to permit non-proportional hazards
-    d <- data.table(survSplit(d, cut=tsplit,
+    d <- data.table(survSplit(d, cut=ssplit,
         start="t0", end="t", event="f", episode="period"))
 
     # By default usse coxph with frailty
@@ -307,15 +316,33 @@ coxph.rsample <- function(fm=fm.xt, data=tdt, tsplit=c(0,2,7), coxme=FALSE) {
 
 # Split the data to manage time-varying characteristics of severity
 # --------------
-tdt.survSplit <- survSplit(tdt, cut=c(0,2,7),
+tdt.survSplit <- survSplit(tdt, cut=tsplit,
     start="t0", end="t", event="f", episode="period")
 tdt.survSplit <- data.table(tdt.survSplit)
 setorder(tdt.survSplit, id, period)
+print(head(tdt.survSplit[,.(id, period, t0, t, f)], 20))
 
 # Single level model in coxph (for sanity checks)
 m1 <- coxph(fm.ph, data=tdt.survSplit)
 m1.confint <- cbind(summary(m1)$conf.int[,c(1,3:4)], p=(summary(m1)$coefficients[,5]))
 (m1.confint <- model2table(m1.confint, est.name="HR"))
+
+# Check schoenfeld residuals / FALSE so only runs interactively
+if(FALSE) {
+    m1.zph <- cox.zph(m1, transform="log")
+    print(m1.zph)
+    plot(m1.zph[10]) # icnarc_score
+    ggplot(data=data.frame(x=exp(m1.zph[10]$x), y=m1.zph[10]$y),
+        aes(x=x, y=icnarc_score)) +
+        geom_smooth()
+
+    plot(m1.zph[11]) # periarrest
+    ggplot(data=data.frame(x=exp(m1.zph[11]$x), y=m1.zph[11]$y),
+        aes(x=x, y=periarrest)) +
+        geom_smooth()
+    stop("Just plotted residuals, not meant for command line calls")
+}
+
 
 # Time-varying effect for severity
 m1.tvc <- coxph(fm.tv, data=tdt.survSplit)
