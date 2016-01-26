@@ -24,6 +24,8 @@
 # - file duplicated again fr model_time2icu_vRecommend
 # - bootstrapping added
 # - file made generic to model survival at different times
+# 2016-01-26
+# - updated to work with time-varying co-efficient for severity
 
 #  ====================
 #  = Code starts here =
@@ -234,32 +236,50 @@ rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
 
 # Formula for single level model in coxph
 fm.ph <- formula(
-        paste("Surv(t, f)",
+        paste("Surv(t0, t, f)",
         paste(c(vars.patient, vars.timing),
+        collapse = "+"), sep = "~"))
+
+# time-varying
+fm.tv <- formula(
+        paste("Surv(t0, t, f)",
+        paste(c(vars.patient, vars.timing, "icnarc_score:factor(period)"),
         collapse = "+"), sep = "~"))
 
 # Formula for old version of coxph with frailty (coxme now recommended but slow)
 fm.xt <- formula(
         paste("Surv(t, f)",
-        paste(c(vars.patient, vars.timing, "frailty(site, dist=\"gamma\")"),
+        paste(c(
+            vars.patient,
+            vars.timing,
+            "icnarc_score:factor(period)",
+            "frailty(site, dist=\"gamma\")"),
         collapse = "+"), sep = "~"))
 
 # Formula for coxme
 fm.me <- formula(
         paste("Surv(t, f)",
-        paste(c(vars.patient, vars.timing, "(1|site)"),
+        paste(c(
+            vars.patient,
+            vars.timing,
+            "icnarc_score:factor(period)",
+            "(1|site)"),
         collapse = "+"), sep = "~"))
 
 #  =============================================
 #  = Extract confidence intervals by bootstrap =
 #  =============================================
 # Now pack this together into a single function
-coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
+coxph.rsample <- function(fm=fm.xt, data=tdt, tsplit=c(0,2,7), coxme=FALSE) {
     
     # Resample with replacement the data
     d <- rsample2(tdt, id.unit="pid", id.cluster="site")
 
-    # By default usses coxph with frailty
+    # Post-resampling split the data to permit non-proportional hazards
+    d <- data.table(survSplit(d, cut=tsplit,
+        start="t0", end="t", event="f", episode="period"))
+
+    # By default usse coxph with frailty
 
     if (coxme) {
         m1.xt <- coxme(fm, data=d)
@@ -279,18 +299,28 @@ coxph.rsample <- function(fm=fm.xt, data=tdt, coxme=FALSE) {
     return(c(est, mhr=MHR))
 }
 
+# For testing the above
 # coxph.rsample(fm=fm.xt, data=tdt, coxme=FALSE)
 # coxph.rsample(fm=fm.me, data=tdt, coxme=TRUE)
 # r <- (sapply(1:20,  function(i) coxph.rsample(fm=fm.xt, data=tdt)))
 
 
-# Cox ME version 
+# Split the data to manage time-varying characteristics of severity
 # --------------
+tdt.survSplit <- survSplit(tdt, cut=c(0,2,7),
+    start="t0", end="t", event="f", episode="period")
+tdt.survSplit <- data.table(tdt.survSplit)
+setorder(tdt.survSplit, id, period)
 
 # Single level model in coxph (for sanity checks)
-m1 <- coxph(fm.ph, data=tdt)
+m1 <- coxph(fm.ph, data=tdt.survSplit)
 m1.confint <- cbind(summary(m1)$conf.int[,c(1,3:4)], p=(summary(m1)$coefficients[,5]))
 (m1.confint <- model2table(m1.confint, est.name="HR"))
+
+# Time-varying effect for severity
+m1.tvc <- coxph(fm.tv, data=tdt.survSplit)
+m1.tvc.confint <- cbind(summary(m1.tvc)$conf.int[,c(1,3:4)], p=(summary(m1.tvc)$coefficients[,5]))
+(m1.tvc.confint <- model2table(m1.tvc.confint, est.name="HR"))
 
 message(paste("BE PATIENT: Running", nsims, "simulations"))
 r1.system.time <- system.time(r <- (sapply(1:nsims,
@@ -313,12 +343,12 @@ r1 <- t(apply(r, 1,
 r1
 # Bind single level model estimates for visual checks
 (r1.raw <- r1[1:nrow(r1)-1,c(1:4)])
-(r1.raw <- cbind(r1.raw, m1.confint))
+(r1.raw <- cbind(r1.raw, m1.tvc.confint))
 
 (r1.mhr <- c(r1[nrow(r1),c(5:7)],p=NA, rep(NA,5)))
 
 (r1.raw <- rbind(r1.raw, r1.mhr))
-row.names(r1.raw)[17] <- "MHR"
+row.names(r1.raw)[19] <- "MHR"
 (r1.fmt <- model2table(r1.raw[,1:4], est.name="HR"))
 
 # Save models since it is these that take ages to run
