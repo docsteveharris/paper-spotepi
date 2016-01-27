@@ -317,9 +317,18 @@ if(FALSE) {
     m1.zph <- cox.zph(m1, transform="log")
     print(m1.zph)
     plot(m1.zph[10]) # icnarc_score
-    ggplot(data=data.frame(x=exp(m1.zph[10]$x), y=m1.zph[10]$y),
+    pplot1 <- ggplot(data=data.frame(x=exp(m1.zph[10]$x), y=m1.zph[10]$y),
         aes(x=x, y=icnarc_score)) +
-        geom_smooth()
+        geom_smooth() +
+        geom_hline(yintercept=0, linetype=2) +
+        xlab("Days following assessment") +
+        ylab("Smoothed exponentiated\n Schoenfeld residuals\nfor ICNARC physiology score") +
+        scale_x_continuous(breaks=c(0,30,60,90)) +
+        coord_cartesian(xlim=c(0,90), ylim=c(-0.1,0.1)) +
+        theme_minimal()
+    pplot1
+    ggsave("write/figures/schoenfeld_residuals_icnarc_score.jpg", width=6, height=6)
+
 
     plot(m1.zph[11]) # periarrest
     ggplot(data=data.frame(x=exp(m1.zph[11]$x), y=m1.zph[11]$y),
