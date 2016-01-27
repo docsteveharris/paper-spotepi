@@ -169,9 +169,6 @@ vars.patient <- c(
     # "cc.reco"
     )
 
-# Add in extra predictors based on the outcome being examined
-vars.patient <- c(vars.patient, vars.plus)
-
 vars.timing <- c(
     "out_of_hours",
     "weekend",
@@ -185,16 +182,6 @@ vars.site <- c(
     "cmp_beds_max_c",
     "ccot_shift_pattern"
     )
-
-#  =================================================================
-#  = Use command line to select patient level predictors in or out =
-#  =================================================================
-if (opts$siteonly) {
-    # Exclude patient level to permit comparison of MOR with/withouta
-    vars <- c(vars.timing)
-} else {
-    vars <- c(vars.timing, vars.patient)
-}
 
 #  =============================
 #  = Set up survival structure =
@@ -232,6 +219,19 @@ rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
     return(bdt)
 }
 
+#  =================================================================
+#  = Use command line to select patient level predictors in or out =
+#  =================================================================
+if (opts$siteonly) {
+    # Exclude patient level to permit comparison of MOR with/withouta
+    vars     <- c(vars.timing)
+    vars.tvc <- c()
+} else {
+    vars     <- c(vars.timing, vars.patient)
+    vars.tvc <- c("icnarc_score:factor(period)", "periarrest:factor(period)")
+}
+            
+
 #  =============================
 #  = Define formulae for model =
 #  =============================
@@ -239,40 +239,25 @@ rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
 # Formula for single level model in coxph
 fm.ph <- formula(
         paste("Surv(t0, t, f)",
-        paste(c(vars.patient, vars.timing),
+        paste(c(vars),
         collapse = "+"), sep = "~"))
 
 # time-varying
 fm.tv <- formula(
         paste("Surv(t0, t, f)",
-        paste(c(
-            vars.patient,
-            vars.timing,
-            "icnarc_score:factor(period)",
-            "periarrest:factor(period)"
-            ),
+        paste(c(vars, vars.tvc ),
         collapse = "+"), sep = "~"))
 
 # Formula for old version of coxph with frailty (coxme now recommended but slow)
 fm.xt <- formula(
         paste("Surv(t, f)",
-        paste(c(
-            vars.patient,
-            vars.timing,
-            "icnarc_score:factor(period)",
-            "periarrest:factor(period)",
-            "frailty(site, dist=\"gamma\")"),
+        paste(c(vars, vars.tvc, "frailty(site, dist=\"gamma\")"),
         collapse = "+"), sep = "~"))
 
 # Formula for coxme
 fm.me <- formula(
         paste("Surv(t, f)",
-        paste(c(
-            vars.patient,
-            vars.timing,
-            "icnarc_score:factor(period)",
-            "periarrest:factor(period)",
-            "(1|site)"),
+        paste(c(vars, vars.tvc, "(1|site)"),
         collapse = "+"), sep = "~"))
 
 #  =============================================
@@ -375,7 +360,7 @@ r1
 (r1.mhr <- c(r1[nrow(r1),c(5:7)],p=NA, rep(NA,5)))
 
 (r1.raw <- rbind(r1.raw, r1.mhr))
-row.names(r1.raw)[19] <- "MHR"
+row.names(r1.raw)[nrow(r1.raw)] <- "MHR"
 (r1.fmt <- model2table(r1.raw[,1:4], est.name="HR"))
 
 # Save models since it is these that take ages to run
