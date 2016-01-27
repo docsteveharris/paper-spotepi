@@ -94,6 +94,11 @@ The modelling was repeated but now with the delivery of admission to critical ca
 The associations between prompt admission and patient level predictors were broadly similar with younger and sicker patients being admitted more promptly (Table TTT). However, patients assessed during the winter, while being more likely to be offered critical care, were now less likely to be admitted promptly (OR 0.76, 95\%CI 0.64--0.90). The strongest predictor of prompt admission was a decision to admit at the initial bedside assessment (OR 69 95\%CI 59--81). Even though the decision to admit was included in the model, occupancy stil had a marked effect (OR 0.27 [95\%CI 0.19--0.37] for a prompt admission for the `r room.timing$n[2]` (`r room.timing$p[2]`) patients assessed when critical care was full). Hospital level variation, with respect to the delivery of prompt admission, persisted (MOR 1.89, 95\%CI 1.63--2.21).
 
 ## Determinants of 90-day mortality
+```{r include=FALSE, echo=FALSE}
+source("5_results_08survival.R")
+```
+
+Amongst patients without treatment limits, there were `r t.surv$n.cum[2]` deaths by the end of the first day, `r t.surv$n[3]` by the end of the first week, `r t.surv$n[4]` by the end of the first month, and `r t.surv$n[5]`  by 90 days. The risk of death at these time points was `r t.surv$fail[2]`, `r t.surv$fail[3]`, `r t.surv$fail[4]`, and `r t.surv$fail[5]` respectively (Kaplan-Meier failure function).
 
 <!-- 
      _ __ ___  ___ _   _ _ __ ___   ___ 
@@ -103,8 +108,9 @@ The associations between prompt admission and patient level predictors were broa
 -->
 
 
+During the week following the ward visit the majority of deaths amongst those without treatment limits occurred on the ward including a substantial minority of those recommended for critical care.
 
-There were 706 deaths by the end of the first day, 2,787 by the end of the first week, 4,561 by the end of the first month, and 6,989 by the end of the first year. The risk of death at these time points was 4·5\%, 17·9\%, 29·2\%, and 44·8\% respectively (Kaplan-Meier failure function). The period of greatest risk immediately followed the referral, falls rapidly, but remained elevated even at one-year (excess mortality 0·103 deaths/patient-year, 95\%CI 0·076--0·130.([Figure 4][figure4]).[Cancer Research UK Cancer Survival Group, 2006, \#91622]
+The period of greatest risk immediately followed the referral, falls rapidly, but remained elevated even at one-year (excess mortality 0·103 deaths/patient-year, 95\%CI 0·076--0·130.([Figure 4][figure4]).[Cancer Research UK Cancer Survival Group, 2006, \#91622]
 
 During the week following the ward visit, the majority (1767, 63·4\%) of deaths occurred without admission to critical care. The majority of these patients (934, 52·9\%) had no treatment limitation order reported at the time of their initial evaluation ([Figure 5][figure5]). These patients were less unwell (SOFA score -0·68, 95\%CI -0·46 to -0·91), but older (6·3 years, 95\%CI 5·1--7·5) than those deaths occurring in ICU ([supplementary Table 4](<stb04_ward_vs_icu_deaths.ods>)). A small proportion (66, 7·1\%) of the ward deaths had been accepted to critical care, but died before the admission was realised. In contrast, among those with treatment limitation orders, 472 (23·1\%) patients survived to one year without admission to critical care in that first week.
 

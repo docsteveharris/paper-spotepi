@@ -133,7 +133,7 @@ prep.wdt <- function(data=wdt) {
 
     # Relevel variables
     tdt[, `:=`(
-        age_k               = relevel(factor(age_k), 2),
+        age_k               = relevel(factor(age_k), 1),
         v_ccmds             = relevel(factor(v_ccmds), 2),
         cc.reco             = relevel(factor(cc.reco), 2),
         sepsis_dx           = relevel(factor(sepsis_dx), 1),
