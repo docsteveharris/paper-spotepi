@@ -24,7 +24,7 @@ There was a median of `r beds$q50` (IQR `r beds$iqr`) critical care beds per hos
 ## Incidence of critical care referrals
 <!-- numbers here from stata log files for table -->
 
-We estimated the mean incidence of referrals to critical care at 46 (95\%CI 50--54) patients per month of which 17 (95\%CI 17--18) patients would meet the definition of NEWS high risk at assessment. This was for a non-teaching hospital with 50,000 overnight admissions per year, and 24/7 CCOT provision. As critical care outreach provision decreased then the number of patients assessed fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14--1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82-0.92) than non-winter weekday periods. When we included a measure of case finding in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile (supplementary Figure 3).
+We estimated the mean incidence of referrals to critical care at 46 (95\%CI 50--54) patients per month of which 17 (95\%CI 17--18) patients met the definition of NEWS high risk at assessment. This was for a non-teaching hospital with 50,000 overnight admissions per year, and 24/7 CCOT provision. As critical care outreach provision decreased then the number of patients assessed fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14--1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82-0.92) than non-winter weekday periods. When we included a measure of case finding in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile (supplementary Figure 3).
 
 ## Patient characteristics
 ```{r include=FALSE, echo=FALSE}
@@ -100,21 +100,11 @@ source("5_results_08survival.R")
 
 Amongst patients without treatment limits, there were `r t.surv$n.cum[2]` deaths by the end of the first day, `r t.surv$n[3]` by the end of the first week, `r t.surv$n[4]` by the end of the first month, and `r t.surv$n[5]`  by 90 days. The risk of death at these time points was `r t.surv$fail[2]`, `r t.surv$fail[3]`, `r t.surv$fail[4]`, and `r t.surv$fail[5]` respectively (Kaplan-Meier failure function).
 
-<!-- 
-     _ __ ___  ___ _   _ _ __ ___   ___ 
-    | '__/ _ \/ __| | | | '_ ` _ \ / _ \
-    | | |  __/\__ \ |_| | | | | | |  __/
-    |_|  \___||___/\__,_|_| |_| |_|\___|
--->
+A series of models were fitted with 90-day survival as the dependent variable for patients without treatment limits. The final best model (Table TTT) incorporated a time-varying effect for acute physiological severity such that its effect was attenuated after the first week (supplementary Figure FFF).
 
+Other patient level risk factors were consistent with the existing literature on outcomes in similar patients: older patients, and those with sepsis (other than genito-urinary) had worse outcomes.[Harrison, 2007] Patients assessed during the winter months, over the weekend, and out-of-hours did not have a significantly worse adjusted survival than baseline.
 
-During the week following the ward visit the majority of deaths amongst those without treatment limits occurred on the ward including a substantial minority of those recommended for critical care.
+Critical care occupancy did not affect adjusted mortality in the multi-level model (e.g. HR 1.03, 95\%CI 0.90--1.17 for patients assessed when the critical care was full). A single level model, constructed in case occupancy was mediated rather than confounded by the effect of hospital, similarly could not exclude a null effect (HR 1.07, 95\%CI 1.00--1.15).
 
-The period of greatest risk immediately followed the referral, falls rapidly, but remained elevated even at one-year (excess mortality 0·103 deaths/patient-year, 95\%CI 0·076--0·130.([Figure 4][figure4]).[Cancer Research UK Cancer Survival Group, 2006, \#91622]
-
-During the week following the ward visit, the majority (1767, 63·4\%) of deaths occurred without admission to critical care. The majority of these patients (934, 52·9\%) had no treatment limitation order reported at the time of their initial evaluation ([Figure 5][figure5]). These patients were less unwell (SOFA score -0·68, 95\%CI -0·46 to -0·91), but older (6·3 years, 95\%CI 5·1--7·5) than those deaths occurring in ICU ([supplementary Table 4](<stb04_ward_vs_icu_deaths.ods>)). A small proportion (66, 7·1\%) of the ward deaths had been accepted to critical care, but died before the admission was realised. In contrast, among those with treatment limitation orders, 472 (23·1\%) patients survived to one year without admission to critical care in that first week.
-
-A series of models were fitted with 90-day survival as the dependent variable. The final best model [Table 4](<tb03_ward_survival_final.ods>) incorporated a time-varying effect for acute physiological severity so that the effect of severity on survival was greatest in the first days following assessment (see supplementary [supplementary Figure 1](<sfig01_survival_icnarc0_ssresidual.pdf>)). Other patient level risk factors were consistent with the existing literature on outcomes in similar patients: older patients, males, patients receiving a higher level of care, and those with sepsis (other than genito-urinary) had worse outcomes.[Harrison, 2007] Patients admitted during the winter months had an adjusted hazard ratio of 1·12 (95\%CI 1·04--1·20), but neither time of day, nor day of the week affected survival. 
-
-At the hospital level, with the exception of the two hospitals without a CCOT service, there was weak stepwise decrease in survival as the provision of CCOT services expanded. No other hospital level factors were associated with outcome. The final best model demonstrated significant hospital level variation (variance 0·030, 95\%CI 0·013--0·046, [supplementary Figure 2](<sfig02_survival_reffects.pdf>)). This gives a Median Hazard Ratio (MHR) between hospitals of 1·28 in the final model which was not markedly affected by adjustment for patient characteristics (MHR 1·29 in a model excluding these).
+The full multi-level model demonstrated significant hospital level variation in survival (MHR 1.28, 95\%CI 1.22--1.34) which was little altered by adjustment for patient level risk factors (MHR 1.29, 95\%CI 1.22--1.35).
 
