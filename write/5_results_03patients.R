@@ -41,9 +41,9 @@ osupp <- ff.np(osupp, data=wdt, dp=0)
 
 # Mortality summary
 # day 7 deaths
-dead7 <- ff.np(dead7, dp=1)
+dead7 <- ff.np(dead7, dp=0)
 # day 7 deaths in 1st 2 days
-dead7.d2 <- ff.np(dead2, dp=1, data=wdt[dead7==1])
+dead7.d2 <- ff.np(dead2, dp=0, data=wdt[dead7==1])
 
 # Severity of illness - NEWS risk
 describe(wdt$news_risk)

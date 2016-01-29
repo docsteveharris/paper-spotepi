@@ -9,6 +9,7 @@ Recast results to emphasise interest in outcomes of patients referred to and not
 
 inbox:
 	- double check occupancy order in markdown now you have re-levelled room_cmp2 
+	- check levels of age category predictors in models (k1 not k0 as baseline)
 
 @continue:
 	- one tricky later paragraph
@@ -32,23 +33,77 @@ inbox:
 			emphasise USP that we have followed all patients
 	methods:
 		- explain why mortality analysis in subgroup of patients rejected
+		- add in 
+			Cox proportional hazards were used to model survival with a shared frailty (random effect) for hospitals which was is reported as a Median Hazard Ratio (MHR).[Bengtsson and Dribe, 2010, #60939] The proportional hazards assumption was checked by inspecting plots of smoothed exponentiated standardised Schoënfeld residuals, and re-entering terms using time-varying co-efficients where necessary.
+	
 	results:
 		
-		- occupancy univariate effects table
-			- fix errors in recommended subgroup table @done(2016-01-22)
-		- outcome models
-			- basic mortality description
-			- run survival model in full cohort
-				- ensure matches  structure of other models
-				- run MHR bootstrap (since don't need competing risks)
-				maybe add in interaction between room_cmp and recommendation
+		- determinants of decision to admit
+			- convert predicted additional  admissions to percentages
+				 We estimated that in this sample had there been no limitations on capacity then an additional 122 patients (95\%CI 53-186) would have been admitted.
 		
-	discussion
+		- sort out table and figure numbering
+		- comments to move to the discussion
+			- suggesting that, unless there are unmeasured patient level risk factors more important than those already measured, this variability is not due to incomplete risk adjustment.
+			
+		- remove occupancy from the survival model and add in decision making/promptness @today
+				
+				
+		
+		
+	
+	discussion:
+		you are going to write about how the factors in play at the bedside assessment affect decision making, care and outcome
+		you can safely leave the causal pathway of	decision making acting through delivery of care to the IV paper 
+		
+	figures:
+		
+		- figure 1 (strobe plus pathways)
+			- a strobe
+			- b recommended
+			- c decision
+		- figure 2 (time2icu) @next
+			borrow from spot early code
+		
+		- supplementary
+			- incidence and case finding
+			- daily hazard
+			- severity of illness and outcome
+			- critical care occupancy
+			- schoenfeld_residuals_icnarc_score.jpg
+			
+		- maybe
+			- time 2 icu figure
+	
+	tables:
+		
+		- table 1 (baseline characteristics)
+			- modifications 
+						- with age categories
+						- peri-arrest status
+						- assessment timing
+		
+		- table 2 (occupancy effects)
+		- convert to tables 3a and 3b
+			- table 3 (determinants of decision to admit)
+			- table 4 (determinants of prompt admission)
+		- add early admission and decision to admit into the survival model? @today
+		- table 4 
+			add as additional column to table 3?
+			
+		
+		- supplementary
+			- incidence table
+				- caption
+					The bottom line shows the monthly incidence of patients categorised by NEWS Risk Class referred to, and assessed on the ward by critical care. Above this, incidence rate ratios (IRR) with 95%CI	are reported for hospital, and timing factors. 
+			
+		- maybe
+			- table 1 repeat but comparison of accept vs refused vs limits
+			- table 2 repeat (decision effects)
+				- effect of recommendation
+				- effect of decision
 
 @later:
-	
-	
-	
 	- writing
 		- model decision to admit as binary excluding patients with a treatment limitation order
 			- tidying tasks
@@ -75,6 +130,10 @@ inbox:
 			- for patients recommended to critical care
 			show similar outcomes, in discussion then comment on incomplete adjustment which sets up next paper
 		- table comparing the three pathways
+		- incidence table
+					- incidence model and table
+							- re-run as 12 hourly model to allow calculation of shift	incidence (out of hours vs in hours) @later
+		
 
 
 
@@ -166,6 +225,35 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 
 
 Archive:
+	- supplementary figure for schoenfeld residuals @done(2016-01-28) @project(results)
+	- run survival model in full cohort @done(2016-01-27) @project(results)
+		- report multi-level and single level model @done(2016-01-27)
+		if the effect of occupancy is due to site then the multi-level model may hide this is occupancy is strongly collinear with site
+		need to try and fit an interaction between site and occupancy
+		probably too complicated so just report both models - and pick one for the main results and one for the ESM
+	- recommended subgroup @done(2016-01-27) @project(results)
+	- all @done(2016-01-26) @project(results)
+	- check @done(2016-01-26) @project(results)
+	- check @done(2016-01-26) @project(results)
+	- check @done(2016-01-26) @project(results)
+	- redo with centred age cat @done(2016-01-27) @project(results)
+		- all accept
+		- recommend accept
+	- check @done(2016-01-26) @project(results)
+	- redo with centred age cat @done(2016-01-27) @project(results)
+	- check @done(2016-01-26) @project(results)
+	- redo with centred age cat @done(2016-01-27) @project(results)
+	- check @done(2016-01-27) @project(results)
+	- move age cat to 18-39 then don't need to redo the others @done(2016-01-27) @project(results)
+	- run survival model with icu_accept? @done(2016-01-27) @project(results)
+		probably not since this implies assessment of the decision 
+	- add in time-varying component to acute severity score @done(2016-01-26) @project(results)
+	- run a survival model without patient level covariates to report stability of MHR @done(2016-01-27) @project(results)
+	- consider looking for an occupancy severity interaction @done(2016-01-27) @project(results)
+	- occupancy univariate effects table @done(2016-01-22) @project(results)
+	- ensure matches	structure of other models @done(2016-01-22) @project(results)
+	- run MHR bootstrap (since don't need competing risks) @done(2016-01-22) @project(results)
+	- fix errors in recommended subgroup table @done(2016-01-22) @project(results)
 	- tables @done(2016-01-18) @project(results)
 		- table 1 @done(2016-01-18)
 	- sfig 1: occupancy over time	@done(2016-01-18) @project(results)
@@ -278,3 +366,4 @@ Archive:
 	* - [ ] TODO(2015-12-01): test code for figure count_news_high @done(2015-12-01)
 		- place under waf control @done(2015-12-01)
 
+I

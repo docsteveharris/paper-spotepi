@@ -21,6 +21,8 @@ assert_that(all.equal(dim(tdt.surv), c(13017,84)))
 #  = Set up survival structure =
 #  =============================
 # t = time, f=failure event
+t.censor <- 90 # censoring time
+
 tdt.surv[, t:=ifelse(t.trace>t.censor, t.censor, t.trace)]
 tdt.surv[, f:=ifelse(dead==1 & t.trace <= t.censor ,1,0)]
 head(tdt.surv[,.(site,id,t.trace,dead,t,f)])
@@ -33,7 +35,7 @@ m.surv <- survfit(m~1)
 # Extract survival with 95%CI at times
 (m.surv.summ <- summary(m.surv, times=c(0,1,7,30,90)))
 str(m.surv.summ)
-pp <- function(x, dp=1) {
+pp <- function(x, dp=0) {
 	x   <- 1-x
 	fmt <- paste("%.", dp, "f", sep="")
 	x   <- paste0(sprintf(fmt, 100*x), "%")
@@ -41,8 +43,8 @@ pp <- function(x, dp=1) {
 }
 # Convert survival to failure, and format as percentages
 (t.surv <- with(m.surv.summ, data.table(time, n.risk, n.event,
-	surv=pp(surv), lower=pp(lower), upper=pp(upper))))
-t.surv[, n.cum := cumsum(n.event)]
+	fail=pp(surv), lower=pp(lower), upper=pp(upper))))
+t.surv[, n := cumsum(n.event)]
 t.surv
 t.surv$n.cum[2]
 
