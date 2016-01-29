@@ -6,4 +6,4 @@ International reports indicate that episodes of deterioration are common, and ha
 
 Critical care provision in the NHS is constrained despite a one-third increase in funding for beds in 2000. In 2010, the United Kingdom (UK) was ranked 24 out of 28 European countries in terms of provision of critical care beds per capita population.[@Rhodes:2012kb] Similar results are found when the comparison is with North American health care systems.[@Wunsch:2008kk] This ought to imply that access to critical care for the deteriorating ward patient is correspondingly constrained, and that delay to admission to critical care is a problem. 
 
-We set out to measure the incidence, the disposition, and the outcome of the deteriorating ward patient referred to critical care, and the factors affecting the decision making around, and the timing of, admission.
+We set out to measure the incidence, the disposition, and the outcome of the deteriorating ward patient referred to critical care, and the key clinical events in the week following the initial ward assessment by critical care.
