@@ -1,6 +1,7 @@
 # Uncomment when coding
 # rm(list=ls(all=TRUE))
-# source("write/5_results_01start.R")
+# setwd("~/aor/academic/paper-spotepi/src/write")
+source("../write/5_results_01start.R")
 require(assertthat)
 assert_that("wdt" %in% ls())
 
@@ -60,4 +61,7 @@ names(delay.by.accept)
 (ward.early4 <- ff.np(early4, tdt.timing[bedside.decision == "ward" & icucmp == 1], dp=0))
 tdt.timing[, late4 := !early4]
 (early4.by.accept <- ff.prop.test(late4, icu_accept, data=tdt.timing[bedside.decision != "rxlimits" & icucmp == 1], dp=0))
+
+## Early proportions
+(recommend.early4 <- ff.np(early4, tdt.timing[icu_recommend==1], dp=0))
 

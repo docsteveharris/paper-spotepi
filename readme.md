@@ -39,23 +39,25 @@ inbox:
 	results:
 		
 		- determinants of decision to admit
-			- convert predicted additional  admissions to percentages
+			- convert predicted additional	admissions to percentages
 				 We estimated that in this sample had there been no limitations on capacity then an additional 122 patients (95\%CI 53-186) would have been admitted.
 		
 		- sort out table and figure numbering
 		- comments to move to the discussion
 			- suggesting that, unless there are unmeasured patient level risk factors more important than those already measured, this variability is not due to incomplete risk adjustment.
-			
-		- remove occupancy from the survival model and add in decision making/promptness @today
-				
-				
 		
-		
+		- add decision making into survival model 
+			not because you are interested in its effect, but because you wish to examine the MHR after adjusting for decision - and whether or not that is how 'site' contributes to outcome
+		- add in mortality in first 7 days vs 90 days - perhaps to supp figure caption
+	
+	
+	
+	
 	
 	discussion:
 		you are going to write about how the factors in play at the bedside assessment affect decision making, care and outcome
 		you can safely leave the causal pathway of	decision making acting through delivery of care to the IV paper 
-		
+	
 	figures:
 		
 		- figure 1 (strobe plus pathways)
@@ -71,7 +73,7 @@ inbox:
 			- severity of illness and outcome
 			- critical care occupancy
 			- schoenfeld_residuals_icnarc_score.jpg
-			
+		
 		- maybe
 			- time 2 icu figure
 	
@@ -90,13 +92,13 @@ inbox:
 		- add early admission and decision to admit into the survival model? @today
 		- table 4 
 			add as additional column to table 3?
-			
+		
 		
 		- supplementary
 			- incidence table
 				- caption
 					The bottom line shows the monthly incidence of patients categorised by NEWS Risk Class referred to, and assessed on the ward by critical care. Above this, incidence rate ratios (IRR) with 95%CI	are reported for hospital, and timing factors. 
-			
+		
 		- maybe
 			- table 1 repeat but comparison of accept vs refused vs limits
 			- table 2 repeat (decision effects)
@@ -133,7 +135,7 @@ inbox:
 		- incidence table
 					- incidence model and table
 							- re-run as 12 hourly model to allow calculation of shift	incidence (out of hours vs in hours) @later
-		
+
 
 
 
