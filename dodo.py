@@ -351,3 +351,30 @@ def task_tb_model_survival_siteonly():
         "targets":  ["write/tables/tb_model_survival_nolimits__sims100_siteonly.xlsx"],
         "actions": ["Rscript tables/tb_model_survival.R --subgrp=nolimits --siteonly --nsims=100 | tee ../logs/tb_model_survival_nolimits__sims100_siteonly.Rout"]
     }
+
+
+#      _____                                                            _       _   
+#     |  __ \                                                          (_)     | |  
+#     | |__) | __ ___ _ __    _ __ ___   __ _ _ __  _   _ ___  ___ _ __ _ _ __ | |_ 
+#     |  ___/ '__/ _ \ '_ \  | '_ ` _ \ / _` | '_ \| | | / __|/ __| '__| | '_ \| __|
+#     | |   | | |  __/ |_) | | | | | | | (_| | | | | |_| \__ \ (__| |  | | |_) | |_ 
+#     |_|   |_|  \___| .__/  |_| |_| |_|\__,_|_| |_|\__,_|___/\___|_|  |_| .__/ \__|
+#                    | |                                                 | |        
+#                    |_|                                                 |_|        
+
+def task_manuscript():
+    """Prepare manuscript"""
+    return {
+        "targets":  ["write/manuscript/paper.docx"],
+        "actions": [
+            """pandoc \
+                --smart \
+                --normalize \
+                --reference-docx=write/manuscript/pandoc-reference.docx  \
+                write/1_title.md \
+                write/3_intro.md \
+                write/4_methods.md \
+                write/5_results.md \
+                write/6_discussion.md \
+                -o write/manuscript/paper.docx"""]
+    }
