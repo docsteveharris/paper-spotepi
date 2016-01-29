@@ -143,7 +143,7 @@ def task_results_spotearly_R():
 
 def task_table1():
     """Prepare Table 1"""
-    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    # - [ ] NOTE(2015-12-31): be careful: do not delete target - contains
     #   formatting and caption for table
 
     return {
@@ -243,7 +243,7 @@ def task_sfig_occupancy_over_time():
 
 def task_tb_occupancy_effects_all():
     """Prepare Table 2 - occupancy (all patients)"""
-    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    # - [ ] NOTE(2015-12-31): be careful: do not delete target - contains
     #   formatting and caption for table
 
     return {
@@ -255,7 +255,7 @@ def task_tb_occupancy_effects_all():
 
 def task_tb_occupancy_effects_reco():
     """Prepare Table 2 - occupancy (recommended patients)"""
-    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    # - [ ] NOTE(2015-12-31): be careful: do not delete target - contains
     #   formatting and caption for table
 
     return {
@@ -267,9 +267,6 @@ def task_tb_occupancy_effects_reco():
 
 def task_tb_model_icu_accept_all():
     """Prepare Table 3a - decision to admit (all admissions)"""
-    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
-    #   formatting and caption for table
-    # - [ ] NOTE(2016-01-19): **UNCOMMENT BOTH TARGET AND ACTION LINES WHEN SWITCHING TO LIVE VERSION
     return {
         # "uptodate": [False], # forces task to run - useful when debugging
         "file_dep": ["tables/tb_model_logistic.R",
@@ -285,7 +282,7 @@ def task_tb_model_icu_accept_all():
 
 def task_tb_model_icu_accept_recommend():
     """Prepare Table 3b - decision to admit (those recommended)"""
-    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
+    # - [ ] NOTE(2015-12-31): be careful: do not delete target - contains
     #   formatting and caption for table
     # - [ ] TODO(2016-01-19): the dependency checking doesn't seem to work
 
@@ -304,9 +301,6 @@ def task_tb_model_icu_accept_recommend():
 
 def task_tb_model_icu_accept_all_siteonly():
     """Extract Median Odds Ratio without adjustment for patient level factors"""
-    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
-    #   formatting and caption for table
-    # - [ ] NOTE(2016-01-19): **UNCOMMENT BOTH TARGET AND ACTION LINES WHEN SWITCHING TO LIVE VERSION
     return {
         # "uptodate": [False], # forces task to run - useful when debugging
         "file_dep": ["tables/tb_model_logistic.R",
@@ -322,9 +316,6 @@ def task_tb_model_icu_accept_all_siteonly():
 
 def task_tb_model_icu_early4_all():
     """Prepare Table - early admission (all admissions)"""
-    # - [ ] NOTE(2015-12-31): becareful: do not delete target - contains
-    #   formatting and caption for table
-    # - [ ] NOTE(2016-01-19): **UNCOMMENT BOTH TARGET AND ACTION LINES WHEN SWITCHING TO LIVE VERSION
     return {
         # "uptodate": [False], # forces task to run - useful when debugging
         "file_dep": ["tables/tb_model_logistic.R",
@@ -338,3 +329,25 @@ def task_tb_model_icu_early4_all():
         "actions": ["Rscript tables/tb_model_logistic.R --outcome=icu_accept --subgrp=all --nsims=100 | tee ../logs/tb_model_early4_all.Rout"]
     }
 
+def task_tb_model_survival_all():
+    """Prepare Table - survival (no limits)"""
+    return {
+        # "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["tables/tb_model_survival.R",
+                    "data/paper-spotepi.RData"],
+        # Debugging version
+        # "targets":  ["write/tables/tb_model_early4_all_sims10.xlsx"],
+        "targets":  ["write/tables/tb_model_survival_nolimits__sims100.xlsx"],
+        # Debugging version
+        "actions": ["Rscript tables/tb_model_survival.R --subgrp=nolimits --nsims=100 | tee ../logs/tb_model_survival_nolimits__sims100.Rout"]
+    }
+
+def task_tb_model_survival_siteonly():
+    """Prepare Table - survival (no limits)"""
+    return {
+        # "uptodate": [False], # forces task to run - useful when debugging
+        "file_dep": ["tables/tb_model_survival.R",
+                    "data/paper-spotepi.RData"],
+        "targets":  ["write/tables/tb_model_survival_nolimits__sims100_siteonly.xlsx"],
+        "actions": ["Rscript tables/tb_model_survival.R --subgrp=nolimits --siteonly --nsims=100 | tee ../logs/tb_model_survival_nolimits__sims100_siteonly.Rout"]
+    }
