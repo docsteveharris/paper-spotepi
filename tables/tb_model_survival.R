@@ -44,9 +44,10 @@ options:
     --help              help  (print this)
     -d, --describe      describe this model
     --censor=CENSOR     censor survival [default: 90]
-    --subgrp=SUBGRP     All patients or subgrp [default: all]
+    --subgrp=SUBGRP     All patients or subgrp [default: nolimits]
     --tsplit=TSPLIT     Cut-points for survSplit [default: c(7)]
     --nsims=NSIMS       number of simulations for bootstrap [default: 5]
+    -b, --bedside       Include icu_accept and early4 predictors
     -s, --siteonly      Exclude patient level predictors" -> doc
 
 require(docopt) # load the docopt library to parse
@@ -67,6 +68,10 @@ Possible subgroups include
 - rxlimits
 - nolimits
 - recommend
+You can also specify options
+- to examine site only adjustment
+- to include bedside decision adjustment
+- to change censoring
 ", stdout())
     quit()
 }
@@ -94,7 +99,7 @@ require(scipaper) # contains model2table
 #  =============
 #  = Load data =
 #  =============
-setwd("/Users/steve/aor/academic/paper-spotepi/src")
+setwd("/Users/steve/aor/academic/paper-spotepi/src/tables")
 source("../share/spotepi_variable_prep.R")
 load("../data/paper-spotepi.RData")
 
@@ -136,13 +141,17 @@ if (subgrp=="all") {
 
 
 # Define model name to be used in filename outputs
-model.name <- paste0("survival_", model.name, "_")
+model.name <- paste0("survival_", model.name)
 
 if (opts$siteonly) {
-    table.name <- paste0(model.name, "_sims", opts$nsims, "_siteonly")
-} else {
-    table.name <- paste0(model.name, "_sims", opts$nsims)
+    model.name <- paste0(model.name, "_siteonly")
 }
+if (opts$bedside) {
+    model.name <- paste0(model.name, "_bedside")
+}
+
+table.name <- paste0(model.name, "_sims", opts$nsims)
+
 
 table.path <- paste0("../write/tables", "/")
 data.path <- "../data/"
@@ -167,6 +176,11 @@ vars.patient <- c(
     "icnarc_score",
     "periarrest"
     # "cc.reco"
+    )
+
+vars.bedside <- c(
+    "icu_accept",
+    "early4"
     )
 
 vars.timing <- c(
@@ -224,12 +238,19 @@ rsample2 <- function(data=tdt, id.unit=id.u, id.cluster=id.c) {
 #  =================================================================
 if (opts$siteonly) {
     # Exclude patient level to permit comparison of MOR with/withouta
-    vars     <- c(vars.timing)
+    vars     <- c(1)
     vars.tvc <- c()
 } else {
-    vars     <- c(vars.timing, vars.patient)
+    if (opts$bedside) {
+        # drop timing vars if you are trying to understand bedside
+        vars     <- c(vars.patient, vars.bedside)
+    } else {
+        vars     <- c(vars.patient, vars.timing)
+    }
     vars.tvc <- c("icnarc_score:factor(period)", "periarrest:factor(period)")
 }
+
+
             
 
 #  =============================
@@ -311,6 +332,7 @@ print(head(tdt.survSplit[,.(id, period, t0, t, f)], 20))
 m1 <- coxph(fm.ph, data=tdt.survSplit)
 m1.confint <- cbind(summary(m1)$conf.int[,c(1,3:4)], p=(summary(m1)$coefficients[,5]))
 (m1.confint <- model2table(m1.confint, est.name="HR"))
+
 
 # Check schoenfeld residuals / FALSE so only runs interactively
 if(FALSE) {
