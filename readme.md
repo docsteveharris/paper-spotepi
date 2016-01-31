@@ -42,12 +42,19 @@ inbox:
 			- convert predicted additional	admissions to percentages
 				 We estimated that in this sample had there been no limitations on capacity then an additional 122 patients (95\%CI 53-186) would have been admitted.
 		
+		- add back in incidence per 1000 admissions
+			see old working
+		
 		- sort out table and figure numbering
 		- comments to move to the discussion
 			- suggesting that, unless there are unmeasured patient level risk factors more important than those already measured, this variability is not due to incomplete risk adjustment.
 		
 		- add decision making into survival model 
 			not because you are interested in its effect, but because you wish to examine the MHR after adjusting for decision - and whether or not that is how 'site' contributes to outcome
+			- add the code @done(2016-01-29)
+			- estimate model
+			- report/comment if makes a difference to MHR
+			- add note into results re this
 		- add in mortality in first 7 days vs 90 days - perhaps to supp figure caption
 	
 	
@@ -104,6 +111,28 @@ inbox:
 			- table 2 repeat (decision effects)
 				- effect of recommendation
 				- effect of decision
+
+BMJ submission:
+
+Checklist -Article requirements
+
+http://www.bmj.com/about-bmj/resources-authors
+
+- Title - all manuscripts - Title page
+	- Names, addresses, and positions of all authors plus email address for corresponding author, ensuring that all people listed as authors fulfil the criteria for authorship - all manuscripts
+- Copyright/licence for publication - all manuscripts
+- A competing interest declaration - all manuscripts
+- Details of contributors and the name of the guarantor - all original research and education articles
+Signed patient consent forms - all manuscripts with personal information about a patient
+
+- Statements regarding ethics approval; informed consent from participants; funding; the role of the study sponsor in study design and the collection, analysis, and interpretation of data and the writing of the article and the decision to submit it for publication; the independence of researchers from funders and sponsors; and the access of researchers to all the data - all original research articles
+- An observational study please follow the STROBE guidelines and submit as a supplemental file the study protocol, if there is one
+	- The registration details, if the study has been registered - these should be added to the last line of the paper's abstract. We will also ask for claification about whether the study was registered before data acquisition or analysis began.
+	- The protocol, if one exists - uploaded as a supplemental file to the submitted paper.
+	- A clear statement of whether the study hypothesis arose before or after inspection of the data (and, if afterwards, we will need an explanation of steps taken to minimise bias).
+	- A completed STROBE checklist - uploaded as a supplemental file to the submitted paper. We will pay particular attention to these items which ask authors to "explain the scientific background and rationale for the investigation being reported" and "state specific objectives, including any prespecified hypotheses."
+
+
 
 @later:
 	- writing
@@ -331,7 +360,7 @@ Archive:
 	- subgroup @done(2015-12-18) @project(Mortality models)
 	- model outputs @done(2015-12-18) @project(Mortality models)
 	- sanity check: add in report of model w/o frailty @done(2015-12-18) @project(Mortality models)
-	- why  missing 'p' (b/c only 1 sim) @done(2015-12-18) @project(Mortality models)
+	- why	missing 'p' (b/c only 1 sim) @done(2015-12-18) @project(Mortality models)
 	- recommended and refused @done(2015-12-18) @project(Mortality models)
 	- refused @done(2015-12-18) @project(Mortality models)
 	- interaction of recommendation? @done(2015-12-18) @project(Mortality models)
