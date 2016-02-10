@@ -33,19 +33,24 @@ Importantly, early (7-day) mortality was elevated even for patients defined as l
 
 This risk is heavily front-loaded with around half of deaths in the first week, and half of the first week deaths in the first 48 hours. This strongly suggests that the opportunity for intervention in these patients is very limited.
 
-Hospital level variation remained a significant factor in 90 day survival in the multi-level model. We could not show a direct effect of occupancy on mortality in this model. However, if part of the effect of being in a 'good' hospital is mediated through how critical care occupancy is managed then we would have inappropriately 'adjusted away' this difference. In a single level model, the effect of occupancy on mortality was greater, and we cannot confidently exclude occupancy as having a clinically important effect. Our observation that, as critical care capacity become more constrained, those patients eventually admitted both waited longer, and  deteriorated further, would be consistent with this.
+Hospital level variation remained a significant factor in 90 day survival in the multi-level model. We could not show a direct effect of occupancy on mortality in this model. However, if part of the effect of being in a 'good' hospital is mediated through how critical care occupancy is managed then we would have inappropriately 'adjusted away' this difference. In a single level model, the effect of occupancy on mortality was greater, and we cannot confidently exclude occupancy as having a clinically important effect. Our observation that, as critical care capacity become more constrained, those patients eventually admitted both waited longer, and  deteriorated further, would be consistent with this. 
+
+Finally, although the incidence of referals to critical care increased during the winter and occupancy increased correspondingly, we saw no independent increase in risk adjusted survival, nor for those assessed out-of-hours or over the weekend.
 
 <!-- 
 Mortality
 Day of week / winter variation / time of day
 -->
-
-
 ## Strengths and limitations
 
 <!-- STRENGTHS -->
-This is the largest prospective study of deteriorating ward patients to date.{>>see research in context<<} The hospitals contributing are representative of the full spectrum of those in the NHS. Most importantly, we have performed follow-up of all patients referred to critical care rather than just the subset of those offered admission.[@OCallaghan:2012da] This permits an examination of the decision making process, and demonstrates that the population referred is at high risk regardless of the outcome of the bedside assessment. 
+This is the largest prospective study of deteriorating ward patients to date.{>>see research in context<<} The hospitals contributing are representative of the full spectrum of those in the NHS. Most importantly, we have performed follow-up of all patients referred to critical care rather than just the subset of those offered admission.[@OCallaghan:2012da] The benefits of this are twofold.
 
+Firstly, this 'denominator' data allows us to examine the demand for critical care arising from inpatient work.{>>add in comparison of incidence data from other countries here<<}
+
+Secondly, follow-up of all patients assessed generates the control group for us to understand the consequences of bedside decision making without bias. With two notable exceptions[Simchen, Robert], most other studies only follow patients admitted to critical care. Evaluations of decision making are therefore limited to early versus late admission, and suffer from survival and exclusion bias. They cannot report on patients who die without critical care admission, or survive despite initial refusal. Our work demonstrates that such patients are numerous. In fact in the first week, even after excluding patients with treatment limits, most deaths among patients referred to critical care occur on the ward without critical care. Otherwise said, patients referred to critical care are at high risk regardless of the outcome of the bedside assessment. 
+
+{>>@resume(2016-02-10)<<}
 Our ability to link the precise time of the bedside assessment to the contemporaneous occupancy of the critical care unit allows us to observe the pressures on decision makers, and the effect that limiting resources has on patient pathways. Moreover, because we prospectively captured the raw physiology that define the severity of illness as well as the bedside recommendation for critical care, we are able to report on the outcomes for the population that either would or should have been admitted were these limits not in play.
 
 - occupancy link
