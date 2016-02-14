@@ -54,3 +54,4 @@ d7.news3 <- ff.np(dead7, data=wdt[news_risk==3], dp=0)
 
 dead90 <- ff.np(dead90, dp=0)
 dead1y <- ff.np(dead1y, dp=0)
+dead1y <- ff.np(dead1y, data=wdt[rxlimits==0], dp=0)
