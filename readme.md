@@ -8,27 +8,22 @@ Examining the effect of occupancy
 Recast results to emphasise interest in outcomes of patients referred to and not immediately admitted (esp. those with a recommendation for critical care)
 
 inbox:
+	- run survival model at 7d as single level
 	- double check occupancy order in markdown now you have re-levelled room_cmp2 
 	- check levels of age category predictors in models (k1 not k0 as baseline)
-
-@continue:
-	- one tricky later paragraph
-	- see @resume tag below
-		- tidy up decision models to use cleaner set of predictors as per mortality model
-
-@next:
-	- redo predictors
-			- add in time-varying covariates to survival models
-			- drop site level predictors except from incidence model
-				- simplify site level predictors (drop ?emergency admissions, CMP throughput) ... or just remove through out
-			- switch to ccmds 2 or 3 (now) (back from osupp)
 	- bootstrap CI 
 		- check/read about which SE to use after bootstrap (simple vs ...)
 			at present assuming central limit theorem holds and sampling by bootstrap creates this distn then use Z
+	- convert incidence model to per 1000 admission metric
+	- sensitivity analyses - check thresholds
+
+
+paper:
 	abstract:
 		- 95%CI for delay when refusing admission
 		- 95%CI for delay with high occupancy
 	intro:
+		- refocus using themes in Chen VA paper and Stelfox paper
 		- explain concept of tracking patients not admitted
 			emphasise USP that we have followed all patients
 	methods:
@@ -51,7 +46,6 @@ inbox:
 		
 		- add decision making into survival model 
 			not because you are interested in its effect, but because you wish to examine the MHR after adjusting for decision - and whether or not that is how 'site' contributes to outcome
-			- add the code @done(2016-01-29)
 			- estimate model
 			- report/comment if makes a difference to MHR
 			- add note into results re this
@@ -256,6 +250,16 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 
 
 Archive:
+	- redo predictors @done(2016-02-09) @project(@next)
+	- add in time-varying covariates to survival models @done(2016-02-09) @project(@next)
+	- drop site level predictors except from incidence model @done(2016-02-09) @project(@next)
+		- simplify site level predictors (drop ?emergency admissions, CMP throughput) ... or just remove through out
+	- switch to ccmds 2 or 3 (now) (back from osupp) @done(2016-02-09) @project(@next)
+	@continue: @done(2016-02-09)
+		- one tricky later paragraph @done(2016-02-09)
+		- see @resume tag below @done(2016-02-09)
+			- tidy up decision models to use cleaner set of predictors as per mortality model
+	- add the code @done(2016-01-29) @project(results)
 	- supplementary figure for schoenfeld residuals @done(2016-01-28) @project(results)
 	- run survival model in full cohort @done(2016-01-27) @project(results)
 		- report multi-level and single level model @done(2016-01-27)
@@ -370,7 +374,7 @@ Archive:
 	- model time to admission for those recommended with MHR etc as before @done(2015-12-16)
 		- next steps
 			- 
-		- would need to include competing risk of death since censoring is _not_ independent  @done(2015-12-16)
+		- would need to include competing risk of death since censoring is _not_ independent	@done(2015-12-16)
 	- fit simplified version of model @done(2015-12-15)
 	- add in frailty @done(2015-12-15)
 	- examine impact of 'correct decision' (i.e. what is the cost of being refused if admitted in the end) @done(2015-12-15)
@@ -383,7 +387,7 @@ Archive:
 	- exclude patients with Rx limits @done(2015-12-08)
 	- basic summary in text @done(2015-12-02)
 		✔ descriptive figure @done (15-12-02 13:38)
-	- include description of patient groups as per draft from paper spot early  @done(2015-12-04)
+	- include description of patient groups as per draft from paper spot early	@done(2015-12-04)
 		- show differences via stream graph which allows inspection of mortality  @done(2015-12-04)
 		- facet stream graph by occupancy
 		- repeat for those recommended for critical care
