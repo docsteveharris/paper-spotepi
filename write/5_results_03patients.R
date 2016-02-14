@@ -1,6 +1,7 @@
 # Uncomment when coding
 # rm(list=ls(all=TRUE))
-# source("write/5_results_01start.R")
+# setwd("/Users/steve/aor/academic/paper-spotepi/src/write")
+# source("../write/5_results_01start.R")
 require(assertthat)
 assert_that("wdt" %in% ls())
 
@@ -51,3 +52,5 @@ d7.news1 <- ff.np(dead7, data=wdt[news_risk==1], dp=0)
 d7.news2 <- ff.np(dead7, data=wdt[news_risk==2], dp=0)
 d7.news3 <- ff.np(dead7, data=wdt[news_risk==3], dp=0)
 
+dead90 <- ff.np(dead90, dp=0)
+dead1y <- ff.np(dead1y, dp=0)

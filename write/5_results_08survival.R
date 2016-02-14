@@ -1,6 +1,7 @@
 # Uncomment when coding
 # rm(list=ls(all=TRUE))
-# source("write/5_results_01start.R")
+# setwd("/Users/steve/aor/academic/paper-spotepi/src/write")
+# source("../write/5_results_01start.R")
 require(assertthat)
 assert_that("wdt" %in% ls())
 
@@ -50,3 +51,10 @@ t.surv$n.cum[2]
 
 # Extract quantiles
 quantile(m.surv, probs=c(1/10,1/5,1/4,1/3,1/2))
+
+# Check length of stay
+lookfor(los,data=wdt.surv1)
+lookfor(discharge,data=wdt.surv1)
+lookfor(ddh,data=wdt.surv1)
+names(wdt)
+describe(wdt$yulosd)
