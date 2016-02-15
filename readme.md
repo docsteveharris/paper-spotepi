@@ -8,18 +8,21 @@ Examining the effect of occupancy
 Recast results to emphasise interest in outcomes of patients referred to and not immediately admitted (esp. those with a recommendation for critical care)
 
 inbox:
+	- need to update doit
+	- convert incidence model to per 1000 admission metric
+	- sensitivity analyses - check thresholds
+	- add a variable representing delayed discharges to the model @later @idea
 	- run survival model at 7d as single level
 	- double check occupancy order in markdown now you have re-levelled room_cmp2 
 	- check levels of age category predictors in models (k1 not k0 as baseline)
 	- bootstrap CI 
 		- check/read about which SE to use after bootstrap (simple vs ...)
 			at present assuming central limit theorem holds and sampling by bootstrap creates this distn then use Z
-	- convert incidence model to per 1000 admission metric
-	- sensitivity analyses - check thresholds
 
 
 paper:
 	abstract:
+		- drop patients with rxlimits from second half
 		- 95%CI for delay when refusing admission
 		- 95%CI for delay with high occupancy
 	intro:
