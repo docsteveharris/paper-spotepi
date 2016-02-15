@@ -58,3 +58,16 @@ lookfor(discharge,data=wdt.surv1)
 lookfor(ddh,data=wdt.surv1)
 names(wdt)
 describe(wdt$yulosd)
+
+# Report early mortality
+t.censor <- 90 # censoring time for this
+tdt.surv[, t:=ifelse(t.trace>t.censor, t.censor, t.trace)]
+tdt.surv[, f:=ifelse(dead==1 & t.trace <= t.censor ,1,0)]
+head(tdt.surv[,.(site,id,t.trace,dead,t,f)])
+m <- with(tdt.surv, Surv(t, f))
+str(m)
+# Fit the baseline survival function using the KM method
+m.surv <- survfit(m~1)
+# Extract survival with 95%CI at times
+(m.surv.summ <- summary(m.surv, times=c(0:90)))
+quantile(rep(m.surv$time, times=m.surv$n.event))

@@ -20,19 +20,20 @@ We conducted a prospective cohort study of consecutive deteriorating ward patien
 
 ## Findings
 
-Critical care teams assessed `r tt$patients` patients of whom `r tt$news_high$n` (`r tt$news_high$p`) were in the highest NEWS risk class giving an incidence of 17 high risk patients (95\%CI 17--18) per hospital per month. `r odys$n[2]` (`r odys$p[2]`) patients were in established organ failure with only `r osupp$n[2]` patients (`r osupp$p[2]`) already on organ support. Sepsis was reported in `r sepsis$n[2]` (`r sepsis$p[2]`) patients. The critical care unit was full at the time of `r tt$full$n` (`r tt$full$p`) assessments. 
+Critical care teams assessed `r tt$patients` patients of whom `r tt$news_high$n` (`r tt$news_high$p`) were in the highest NEWS risk class giving an incidence of 17 high risk patients (95\%CI 17--18) per hospital per month. `r odys$n[2]` (`r odys$p[2]`) patients were in established organ failure with only `r osupp$n[2]` patients (`r osupp$p[2]`) already on organ support. Sepsis was reported in `r sepsis$n[2]` (`r sepsis$p[2]`) patients.
 
 `r tt$rxlimits$n[2]` (`r tt$rxlimits$p[2]`) patients with treatment limitation orders were refused critical care with 7-day, 90-day, and 1-year mortalities of `r tt$rxlimits_dead7$p[2]`, `r tt$rxlimits_dead90$p[2]`, and `r tt$rxlimits_dead1y$p[2]` respectively. They were not considered further.
 
-The bedside assessor recommended `r tt$reco$n[2]` (`r tt$reco$p[2]`) of the remainder to critical care of whom `r tt$reco_accept$n[2]` (`r tt$reco_accept$p[2]`) were accepted. The median delay between asssessment and admission was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`).  Patients over 80 years were less likely to be accepted (OR 0.60 95\%CI 0.53--0.69) as were those assesssed when the unit was full (OR 0.70, 95\%CI 0.57-0.86). After adjustment for patient specific risk factors, decision making varied between hospitals (median interhospital OR 2.11, 95\%1.81--2.42).
+The bedside assessor recommended `r tt$reco$n[2]` (`r tt$reco$p[2]`) of the remainder to critical care of whom `r tt$reco_accept$n[2]` (`r tt$reco_accept$p[2]`) were accepted. The median delay between asssessment and admission was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`).  Patients over 80 years were less likely to be accepted (OR 0.60 95\%CI 0.53--0.69). After adjustment for patient specific risk factors, decision making varied between hospitals (median interhospital OR 2.11, 95\%1.81--2.42).
 
-Of the `r tt$reco_accept$n[1]` (`r tt$reco_accept$p[1]`) patients recommended but initially refused, `r tt$reco_late$n[2]` (`r tt$reco_late$p[2]`) with a median additional delay of `r delay.by.accept$estimate` hours (IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`). `r tt$reco_d7ward$n[2]` (`r  tt$reco_d7ward$p[2]`) recommended and refused died without admission.
+<!-- - [ ] FIXME(2016-02-15): need delay for just those recommended -->
+Of the `r tt$reco_accept$n[1]` (`r tt$reco_accept$p[1]`) patients recommended but initially refused, `r tt$reco_late$n[2]` (`r tt$reco_late$p[2]`) were admitted later with a median additional delay of `r delay.by.accept$estimate` hours (IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`). 
 
-Wihthout treatment limits, 7-day, 90-day, and 1-year mortalities were `r tt$dead7$p[2]`, `r tt$dead90$p[2]`, and `r tt$dead1y$p[2]` respectively. Even within the first week, mortality was front-loaded with `r tt$dead7.d2$n[2]` (`r tt$dead7.d2p$[2]`) within two days. Survival also varied between hospitals with a median interhospital hazard ratio of 1.29 (95%CI, 1.22--1.35). Patients assessed when the unit was full did not have different survival in the multi-level model (HR 1.03, 95%CI 0.90–1.17). However, in a single 
+`r tt$reco_d7ward$n[2]` (`r  tt$reco_d7ward$p[2]`) recommended and refused died without admission.
 
-if the effect of hospital
+Wihthout treatment limits, 7-day, 90-day, and 1-year mortalities were `r tt$dead7$p[2]`, `r tt$dead90$p[2]`, and `r tt$dead1y$p[2]` respectively. Even within the first week, mortality was front-loaded with `r tt$dead7.d2$n[2]` (`r tt$dead7.d2p$[2]`) within two days. Survival also varied between hospitals with a median interhospital hazard ratio of 1.29 (95%CI, 1.22--1.35).
 
-Critical care occupancy did not affect survival in the multi-level model (HR 1.03, 95%CI 0.90–1.17 for patients assessed when the critical care was full). A single level model, constructed in case occupancy was mediated rather than confounded by the effect of hospital, similarly could not exclude a null effect (HR 1.07, 95%CI 1.00–1.15).
+The critical care unit was full at the time of `r tt$full$n` (`r tt$full$p`) assessments. These patients were less likely to be accepted to critical care (OR 0.72 [95%CI 0.59--0.88]), and less likely to be admitted promptly (OR 0.27 [95%CI 0.19--.27]). Increasing occupancy was associated with greater physiological deterioration pending admission (Cochran-Armitage test for trend p=0.01). We could not exclude an effect of occupancy on 90-day survival (HR 1.07, 95%CI 1.00–1.15).
 
 ## Conclusion
 
