@@ -1,3 +1,13 @@
+---
+title: "2_abstract"
+author: "Steve Harris"
+date:	"30 Dec 2015"
+output: md_document
+---
+```{r include=FALSE, echo=FALSE}
+source("5_results_01start.R")
+source("2_abstract_prep.R")
+```
 # Abstract
 
 ## Background
@@ -6,18 +16,19 @@ Recent policy has placed emphasis on identifying and responding to deterioration
 
 ## Methods
 
-We conducted a prospective cohort study of consecutive deteriorating ward patients referred to critical care in `r tt$sites` NHS hospitals (1 November 2010 --- 31 December 2011). We recorded both the assessor's recommendation for critical care, and the decision to admit. For the subsequent week, admission to critical care was defined by linking to the national critical care audit database, and survival to one year by linking to national death registrations. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression, and Cox proportional hazards respectively. 
+We conducted a prospective cohort study of consecutive deteriorating ward patients referred to critical care in `r tt$sites` NHS hospitals (1 November 2010 --- 31 December 2011). We recorded both the assessor's recommendation for critical care, and the decision to admit. Patients were followed for 1 week for critical care use, and for 1 year for survival by linking to national registries. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression, and proportional hazards respectively. 
 
 ## Findings
 
-We included `r tt$patients` patients of whom `r tt$news_high$n` (`r tt$news_high$p`) were in the highest NEWS risk class --- equivalent to 17 high risk patients (95\%CI 17--18) per hospital per month. The critical care unit was full at the time of `r tt$full$n` (`r tt$full$p`) referrals. `r odys$n` (`r odys$p`) patients were in established organ failure with only `r osupp$n` patients (`r osupp$p`) already on organ support. Sepsis was reported in `r sepsis$n` (`r sepsis$p`) patients.
+Critical care teams assessed `r tt$patients` patients of whom `r tt$news_high$n` (`r tt$news_high$p`) were in the highest NEWS risk class giving an incidence of 17 high risk patients (95\%CI 17--18) per hospital per month. `r odys$n[2]` (`r odys$p[2]`) patients were in established organ failure with only `r osupp$n[2]` patients (`r osupp$p[2]`) already on organ support. Sepsis was reported in `r sepsis$n[2]` (`r sepsis$p[2]`) patients. The critical care unit was full at the time of `r tt$full$n` (`r tt$full$p`) assessments. 
 
-`r tt$rxlimits$n[2]` (`r tt$rxlimits$p[2]`) patients with a treatment limitation order were refused critical care, and were not considered further.  `r tt$reco$n[2]` (`r tt$reco$p[2]`) of the remainder were recommended for critical care of which `r tt$reco_accept$n[2]` (`r tt$reco_accept$p[2]`) were accepted.Patients over 80 years were less likely to be offered admission (OR 0.60 95\%CI 0.53--0.69) as were patients assesssed when the unit was full (OR 0.70, 95\%CI 0.57-0.86).There was also significant interhospital variation in admission decisions (Median OR 2.11, 95\%1.81--2.42). 
+`r tt$rxlimits$n[2]` (`r tt$rxlimits$p[2]`) patients with treatment limitation orders were refused critical care with 7-day, 90-day, and 1-year mortalities of `r tt$rxlimits_dead7$p[2]`, `r tt$rxlimits_dead90$p[2]`, and `r tt$rxlimits_dead1y$p[2]` respectively. They were not considered further.
 
-<!-- depends on variables generated in 5_results_06pathways.R -->
-The remaining `r tt$reco_accept$n[1]` (`r tt$reco_accept$p[1]`) patients recommended were refused immediate admission. Of these, `r t$reco_late$n[2]` (`r reco_late$p[2]`) were admitted later and `r tt$reco_d7ward$n[2]` (`r  tt$reco_d7ward$p[2]`) died in the week following without critical care. The median delay between asssessment and admission was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`) if initially accepted but increased by median `r delay.by.accept$estimate` hours (IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`) for those initially refused.
+The bedside assessor recommended `r tt$reco$n[2]` (`r tt$reco$p[2]`) of the remainder to critical care of whom `r tt$reco_accept$n[2]` (`r tt$reco_accept$p[2]`) were accepted. The median delay between asssessment and admission was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`).  Patients over 80 years were less likely to be accepted (OR 0.60 95\%CI 0.53--0.69) as were those assesssed when the unit was full (OR 0.70, 95\%CI 0.57-0.86). After adjustment for patient specific risk factors, decision making varied between hospitals (median interhospital OR 2.11, 95\%1.81--2.42).
 
-Referral when the unit was full decreased the odds of being accepted XXX, and the odds of being admitted promptly XXX.
+Of the `r tt$reco_accept$n[1]` (`r tt$reco_accept$p[1]`) patients recommended but initially refused, `r tt$reco_late$n[2]` (`r tt$reco_late$p[2]`) with a median additional delay of `r delay.by.accept$estimate` hours (IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`). `r tt$reco_d7ward$n[2]` (`r  tt$reco_d7ward$p[2]`) recommended and refused died without admission.
+
+Referral when the unit was full decreased the odds of being accepted OR 0.72 (95%CI 0.59--0.88), and the odds of being admitted promptly OR 0.27 (95%CI 0.19--0.37).
 
 
 
