@@ -28,11 +28,11 @@ The bedside assessor recommended `r tt$reco$n[2]` (`r tt$reco$p[2]`) of the rema
 
 Of the `r tt$reco_accept$n[1]` (`r tt$reco_accept$p[1]`) patients recommended but initially refused, `r tt$reco_late$n[2]` (`r tt$reco_late$p[2]`) with a median additional delay of `r delay.by.accept$estimate` hours (IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`). `r tt$reco_d7ward$n[2]` (`r  tt$reco_d7ward$p[2]`) recommended and refused died without admission.
 
-Referral when the unit was full decreased the odds of being accepted OR 0.72 (95%CI 0.59--0.88), and the odds of being admitted promptly OR 0.27 (95%CI 0.19--0.37).
+Wihthout treatment limits, 7-day, 90-day, and 1-year mortalities were `r tt$dead7$p[2]`, `r tt$dead90$p[2]`, and `r tt$dead1y$p[2]` respectively. Even within the first week, mortality was front-loaded with `r tt$dead7.d2$n[2]` (`r tt$dead7.d2p$[2]`) within two days. Survival also varied between hospitals with a median interhospital hazard ratio of 1.29 (95%CI, 1.22--1.35). Patients assessed when the unit was full did not have different survival in the multi-level model (HR 1.03, 95%CI 0.90–1.17). However, in a single 
 
+if the effect of hospital
 
-
-In 13017 (86\%) patients without treatment limits, mortality occured early with 964 (7\%), 1827 (14\%), and 3935 (30\%) deaths at 2, 7, and 90 days respectively. Survival was worse for patients asssessed when the critical care unit was full (HR 1.13, 95\%CI1.00--1.27), and varied between site even after adjustment for patient level risk factors (Median Hazard Ratio 1.28, 95\%CI  1.26--1.30). In the 2141 patients with treatment limits, 90 day mortality was 66\% (1402 deaths).
+Critical care occupancy did not affect survival in the multi-level model (HR 1.03, 95%CI 0.90–1.17 for patients assessed when the critical care was full). A single level model, constructed in case occupancy was mediated rather than confounded by the effect of hospital, similarly could not exclude a null effect (HR 1.07, 95%CI 1.00–1.15).
 
 ## Conclusion
 
