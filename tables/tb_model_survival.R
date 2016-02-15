@@ -149,6 +149,9 @@ if (opts$siteonly) {
 if (opts$bedside) {
     model.name <- paste0(model.name, "_bedside")
 }
+if (t.censor != 90) {
+    model.name <- paste0(model.name, "_t", opts$censor)
+}
 
 table.name <- paste0(model.name, "_sims", opts$nsims)
 
