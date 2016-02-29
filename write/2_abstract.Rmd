@@ -12,11 +12,11 @@ source("2_abstract_prep.R")
 
 ## Background
 
-Recent policy has placed emphasis on identifying and responding to deterioration among ward patients including early access to critical care. However, critical care provision in the NHS is constrained, delay to admission is likely, and patient outcomes poorly understood.
+Identifying and responding to deterioration among ward patients includes early access to critical care. However, critical care provision in the NHS is constrained, delay to admission is thought likely, and patient outcomes are poorly understood.
 
 ## Methods
 
-We conducted a prospective cohort study of consecutive deteriorating ward patients referred to critical care in `r tt$sites` NHS hospitals (1 November 2010 --- 31 December 2011). We recorded both the assessor's recommendation for critical care, and the decision to admit. Patients were followed for 1 week for critical care use, and for 1 year for survival by linking to national registries. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression, and proportional hazards respectively. 
+We conducted a prospective cohort study of consecutive deteriorating ward patients referred to critical care in `r tt$sites` NHS hospitals (1 November 2010 --- 31 December 2011). We recorded both the assessor's recommendation for critical care, and the decision to admit. Admissions to critical care within one week, and deaths within one year were defined by linking to national registries. Incidence models were stratified by the NHS National Early Warning Score (NEWS) risk class, and used generalised estimating equations. Decision making and survival were modelled with random effects for the hospital using logistic regression and proportional hazards models respectively. 
 
 ## Findings
 
@@ -24,14 +24,11 @@ Critical care teams assessed `r tt$patients` patients of whom `r tt$news_high$n`
 
 `r tt$rxlimits$n[2]` (`r tt$rxlimits$p[2]`) patients with treatment limitation orders were refused critical care with 7-day, 90-day, and 1-year mortalities of `r tt$rxlimits_dead7$p[2]`, `r tt$rxlimits_dead90$p[2]`, and `r tt$rxlimits_dead1y$p[2]` respectively. They were not considered further.
 
-The bedside assessor recommended `r tt$reco$n[2]` (`r tt$reco$p[2]`) of the remainder to critical care of whom `r tt$reco_accept$n[2]` (`r tt$reco_accept$p[2]`) were accepted. The median delay between asssessment and admission was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`).  Patients over 80 years were less likely to be accepted (OR 0.60 95\%CI 0.53--0.69). After adjustment for patient specific risk factors, decision making varied between hospitals (median interhospital OR 2.11, 95\%1.81--2.42).
+The bedside assessor recommended `r tt$reco$n[2]` (`r tt$reco$p[2]`) of the remainder to critical care of whom `r tt$reco_accept$n[2]` (`r tt$reco_accept$p[2]`) were initally accepted. The median delay between asssessment and admission was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`).  Patients over 80 years were less likely to be accepted (OR 0.60 95\%CI 0.53--0.69). Despite adjustment for patient specific risk factors, decision making varied markedly between hospitals (median interhospital OR 2.11, 95\%1.81--2.42).
 
-<!-- - [ ] FIXME(2016-02-15): need delay for just those recommended -->
-Of the `r tt$reco_accept$n[1]` (`r tt$reco_accept$p[1]`) patients recommended but initially refused, `r tt$reco_late$n[2]` (`r tt$reco_late$p[2]`) were admitted later with a median additional delay of `r delay.by.accept$estimate` hours (IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`). 
+Of the `r tt$reco_accept$n[1]` (`r tt$reco_accept$p[1]`) patients recommended but initially refused, `r tt$reco_late$n[2]` (`r tt$reco_late$p[2]`) were admitted later with a median additional delay of `r delay.by.accept.reco$estimate` hours (IQR `r delay.by.accept.reco$lower`--`r delay.by.accept.reco$upper`). A further `r tt$reco_d7ward$n[2]` (`r  tt$reco_d7ward$p[2]`) patients recommended and refused died without admission.
 
-`r tt$reco_d7ward$n[2]` (`r  tt$reco_d7ward$p[2]`) recommended and refused died without admission.
-
-Wihthout treatment limits, 7-day, 90-day, and 1-year mortalities were `r tt$dead7$p[2]`, `r tt$dead90$p[2]`, and `r tt$dead1y$p[2]` respectively. Even within the first week, mortality was front-loaded with `r tt$dead7.d2$n[2]` (`r tt$dead7.d2p$[2]`) within two days. Survival also varied between hospitals with a median interhospital hazard ratio of 1.29 (95%CI, 1.22--1.35).
+Without treatment limits, 7-day, 90-day, and 1-year mortalities were `r tt$dead7$p[2]`, `r tt$dead90$p[2]`, and `r tt$dead1y$p[2]` respectively. Even within the first week, mortality was front-loaded with `r tt$dead7.d2$n[2]` (`r tt$dead7.d2$p[2]`) within two days. Survival also varied between hospitals with a median interhospital hazard ratio of 1.29 (95%CI, 1.22--1.35).
 
 The critical care unit was full at the time of `r tt$full$n` (`r tt$full$p`) assessments. These patients were less likely to be accepted to critical care (OR 0.72 [95%CI 0.59--0.88]), and less likely to be admitted promptly (OR 0.27 [95%CI 0.19--.27]). Increasing occupancy was associated with greater physiological deterioration pending admission (Cochran-Armitage test for trend p=0.01). We could not exclude an effect of occupancy on 90-day survival (HR 1.07, 95%CI 1.00–1.15).
 
