@@ -19,7 +19,7 @@ source("5_results_04hospitals.R")
 
 The participating hospitals comprised `r n.teach` teaching and `r n.dgh` general hospitals that each collected data between September 2010 and December 2011 for a median of `r smonths$q50` months (IQR `r smonths$iqr` months). Each hospital contributed a median of `r pts_q$q50` patients (IQR `r pts_q$iqr`) equivalent to `r pts_overnight$q50` patients referred to critical care (IQR `r pts_overnight$iqr`) per 1,000 overnight admissions. Critical Care Outreach Teams (CCOT) operated 24 hours/day and 7 days/week in `r ccot$n[4]` (`r ccot$p[4]`) hospitals, less than 24 hours/day in `r ccot$n[3]` (`r ccot$p[3]`) hospitals, and less than 7 days/week in `r ccot$n[2]` (`r ccot$p[2]`) hospitals. Two hospitals had no CCOT.
 
-There was a median of `r beds$q50` (IQR `r beds$iqr`) critical care beds per hospital (mixed Level 2 [typically intensive monitoring or single organ support], and Level 3 [ventilated or multiple organ support]), most often in a single physical location (`r colocate$n[1]` hospitals). 
+There was a median of `r beds$q50` (IQR `r beds$iqr`) critical care beds per hospital (mixed Level 2 [typically intensive monitoring or single organ support], and Level 3 [ventilated or multiple organ support]), most often colocated in a single physical location (`r colocate$n[1]` hospitals). 
 
 ## Incidence of critical care referrals
 <!-- numbers here from stata log files for incidence models -->

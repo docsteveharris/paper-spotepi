@@ -26,11 +26,14 @@
 #   severity scores
 
 rm(list=ls(all=TRUE))
-# setwd('/Users/steve/aor/academic/paper-spotearly/src/analysis')
+setwd('/Users/steve/aor/academic/paper-spotepi/src/')
 
 # Load the necessary data
 # -----------------------
-load("../data/paper-spotepi.RData")
+load("data/paper-spotepi.RData")
+
+# Define output format
+figure.fmt <- "pdf"
 
 # Load dependencies
 # -----------------
@@ -83,36 +86,39 @@ doplot.severity <- function(v.dead, v.severity, l.severity, r.severity) {
 
 # ICNARC score
 # ------------
-gg.2 <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$icnarc0,
+gg.icnarc <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$icnarc0,
     r.severity=c(0,50),
     l.severity="ICNARC physiology score")
 
-# ggsave(filename=paste0("write/figures", "/fg_dead7_imscore.png"), plot=gg.2,
-# width=5, height=4, scale=1.3, dpi=600
-# )
-ggsave(filename=paste0("write/figures", "/fg_dead7_imscore.jpg"), plot=gg.2,
-width=5, height=4, scale=1.3
-)
-
 # SOFA score
 # ----------
-gg.2 <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$sofa_score,
+gg.sofa <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$sofa_score,
     r.severity=c(0,15),
     l.severity="SOFA score")
 
-ggsave(filename=paste0("write/figures", "/fg_dead7_sofa.jpg"), plot=gg.2,
-width=5, height=4, scale=1.3
-)
 
 # NEWS score
 # ----------
-describe(wdt$news_score)
-gg.2 <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$news_score,
+# describe(wdt$news_score)
+gg.news <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$news_score,
     r.severity=c(0,20),
     l.severity="NEWS score")
 
-ggsave(filename=paste0("write/figures", "/fg_dead7_news.jpg"), plot=gg.2,
+# Open file for PDF printing
+pdf(file = paste0("write/figures", "/fg_dead7_aps.", "pdf"), width=16, height=8)
+grid.newpage()
+pushViewport(viewport(layout=grid.layout(1,3)))
+print(gg.icnarc, vp=viewport(layout.pos.row=1, layout.pos.col=1))
+print(gg.sofa, vp=viewport(layout.pos.row=1, layout.pos.col=2))
+print(gg.news, vp=viewport(layout.pos.row=1, layout.pos.col=3))
+dev.off()
+
+ggsave(filename=paste0("write/figures", "/fg_dead7_imscore.", figure.fmt), plot=gg.icnarc,
 width=5, height=4, scale=1.3
 )
-
-
+ggsave(filename=paste0("write/figures", "/fg_dead7_sofa.", figure.fmt), plot=gg.sofa,
+width=5, height=4, scale=1.3
+)
+ggsave(filename=paste0("write/figures", "/fg_dead7_news.", figure.fmt), plot=gg.news,
+width=5, height=4, scale=1.3
+)
