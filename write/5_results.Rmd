@@ -35,6 +35,13 @@ Table 1 shows the baseline data for all ward patients assessed. Sepsis was repor
 
 `r dead7$n[2]` (`r dead7$p[2]`) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with `r dead7.d2$n[2]` (`r dead7.d2$p[2]`) of these deaths occuring in the first 48 hours (supplementary Figure 2). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (supplementary Figure 3). For example, the 7-day mortality was `r d7.news1$p[2]` (`r d7.news1$n[2]` deaths), `r d7.news2$p[2]` (`r d7.news2$n[2]` deaths), and `r d7.news3$p[2]` (`r d7.news3$n[2]` deaths)for NEWS low, medium and high risk classes respectively.
 
+<!-- - [ ] FIXME(2016-02-29):  -->
+We also recorded the bedside assessors clinical recommendation for critical care as part of the decision making process. The `r recommend$n[2]` patients (`r recommend$p[2]`) judged as requiring critical care had a 7-day mortality of XXX. Measured physiological severity correlated well with the bedside recommendation (supplementary Figure 3). Nonetheless, critical care was recommended on assessment for XXX NEWS low risk patients, and refused for XXX high risk patients.
+
+ Within the subgroups a recommendation for critical care was associated with XXX relative risk of death, and 
+
+
+
 Overall mortality at 90-days and 1-year was `r dead90$p[2]` (`r dead90$n[2]` patients), and `r dead90$p[2]` (`r dead90$n[2]` patients) respectively.
 
 ## Patient pathways following ward assessment
@@ -42,23 +49,38 @@ Overall mortality at 90-days and 1-year was `r dead90$p[2]` (`r dead90$n[2]` pat
 source("5_results_06pathways.R")
 ```
 
-We extracted two clinical decisions at the point of the bedside assessment. We asked whether the bedside assessor would recommend the patient for critical care (`r recommend$n[2]` patients [`r recommend$p[2]`]) or ward care (`r recommend$n[1]` patients [`r recommend$p[1]`]) (Figure 1b). Additionally, we recorded the decision to admit (Figure 1c), and classified patients as either initially refused (`r decision$n[2]` patients [`r decision$p[2]`]) without treatment limits, initially refused with treatment limits (`r decision$n[3]` patients [`r decision$p[3]`]), or immediately accepted to critical care (`r decision$n[1]` patients [`r decision$p[1]`]). Amongst those recommended for critical care, the proportions initially refused without treatment limits, initially refused with limits, or immediately accepted were `r decision.rec$p[2]` (`r decision.rec$n[2]` patients), `r decision.rec$p[3]` (`r decision.rec$n[3]` patients), and `r decision.rec$p[1]` (`r decision.rec$n[1]` patients) respectively.
+<!-- define bedside decision -->
+We extracted the clinical decision made following the bedside assessment, and classified patients into three groups: those refused admission with treatment limits (pre-existing or otherwise); those refused admission without treatment limits (active ward care); and, those offered immediate critical care (Figure 1).
 
-We then tracked patient pathways over the following week.
+There were `r decision$n[3]` patients (`r decision$p[3]`) refused with treatment limits, `r decision$n[2]` patients (`r decision$p[2]`) assigned to active ward-care,  and `r decision$n[1]` patients (`r decision$p[1]`) immediately offered critical care. We used the active ward care group as the baseline comparator.
 
-### Patients with treatment limits refused critical care
+### Refused critical care with treatment limits
 
-These `r decision$n[3]` patients had a 7-day mortality of `r limits.dead7$p[2]` (`r limits.dead7$n[2]` deaths). The initial decision to refuse admission was reversed in just `r limits.icucmp$n[2]` patients (`r limits.icucmp$p[2]`) of whom `r limits.icu.dead7$n[2]` (`r limits.icu.dead7$p[2]`) died within the week.
+Patients with treatment limits had a 7-day mortality of `r limits.dead7$p[2]` (`r limits.dead7$n[2]` deaths). The initial decision to refuse admission was reversed in just `r limits.icucmp$n[2]` patients (`r limits.icucmp$p[2]`) of whom `r limits.icu.dead7$n[2]` (`r limits.icu.dead7$p[2]`) died within the week. Although the final 90-day mortality was substantial `r limits.dead90$p[2]` (`r limits.dead90$n[2]` deaths), `r limits.dead1y$n[1]` patients (`r limits.dead1y$p[1]`) survived a year despite the decision.
 
-Compared to those refused without a treatment limitation order, this cohort was older (`r age.by.limits$est2` vs `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell (`r sofa.by.limits$est2` vs `r sofa.by.limits$est1` SOFA points, 95\%CI for difference `r sofa.by.limits$ci`). Although the final 90-day mortality was substantial `r limits.dead90$p[2]` (`r limits.dead90$n[2]` deaths), `r limits.dead1y$n[1]` patients (`r limits.dead1y$p[1]`) survived a year despite the decision.
+Compared to the active ward care cohort, these patients were older (`r age.by.limits$est2` vs `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell (`r sofa.by.limits$est2` vs `r sofa.by.limits$est1` SOFA points, 95\%CI for difference `r sofa.by.limits$ci`). 
 
 We did not consider these patients further.
 
-### Patients without treatment limits refused critical care
+### Active ward care
 
-Patients without treatment limits initially refused critical care had a 7-day mortality of `r ward.dead7$p[2]` (`r ward.dead7$n[2]` deaths). Most deaths (`r ward.dead7.icu$n[1]` deaths `r ward.dead7.icu$p[1]`)  occured on the ward without critical care but `r ward.dead7.icu$n[2]` deaths (`r ward.dead7.icu$p[2]`) followed delayed admission. Within the week, the initial decision to refuse was reversed in `r ward.icucmp$n[2]` patients (`r ward.icucmp$p[2]`), so a total of `r ward.icu.or.dead7$n[2]` (`r ward.icu.or.dead7$p[2]`) patients died or were admitted to critical care.
+Patients initially refused critical care without treatment limits had a 7-day mortality of `r ward.dead7$p[2]` (`r ward.dead7$n[2]` deaths). Most deaths (`r ward.dead7.icu$n[1]` deaths `r ward.dead7.icu$p[1]`)  occured on the ward without critical care but `r ward.dead7.icu$n[2]` deaths (`r ward.dead7.icu$p[2]`) followed delayed admission. Within the week, the initial decision to refuse was reversed in `r ward.icucmp$n[2]` patients (`r ward.icucmp$p[2]`), so a total of `r ward.icu.or.dead7$n[2]` (`r ward.icu.or.dead7$p[2]`) patients died or were admitted to critical care.
+
+
+We asked whether
 
 7-day mortality was higher for those recommended but refused (`r ward.surv.by.reco$est2` versus `r ward.surv.by.reco$est1` [risk difference `r ward.surv.by.reco$d` 95\%CI `r ward.surv.by.reco$ci`]), and for those where the initial decision to refuse was reversed (`r ward.surv.by.icu$est2` versus `r ward.surv.by.icu$est1` [risk difference `r ward.surv.by.icu$d` 95\%CI `r ward.surv.by.icu$ci`]).
+
+
+<!-- rewrite -->
+
+
+<!-- define subgroup -->
+
+
+	Amongst those recommended for critical care, the proportions initially refused without treatment limits, initially refused with limits, or immediately accepted were `r decision.rec$p[2]` (`r decision.rec$n[2]` patients), `r decision.rec$p[3]` (`r decision.rec$n[3]` patients), and `r decision.rec$p[1]` (`r decision.rec$n[1]` patients) respectively.
+
+
 
 ### Patients immediately accepted to critical care
 
