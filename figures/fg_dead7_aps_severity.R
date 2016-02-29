@@ -26,14 +26,14 @@
 #   severity scores
 
 rm(list=ls(all=TRUE))
-setwd('/Users/steve/aor/academic/paper-spotepi/src/')
+# setwd('/Users/steve/aor/academic/paper-spotepi/src/')
 
 # Load the necessary data
 # -----------------------
 load("data/paper-spotepi.RData")
 
 # Define output format
-figure.fmt <- "pdf"
+figure.fmt <- "pdf" # note SVG requires X quartz on Mac OS X
 
 # Load dependencies
 # -----------------
@@ -77,7 +77,9 @@ doplot.severity <- function(v.dead, v.severity, l.severity, r.severity) {
         # ggtitle("Physiological severity at assessment\n and 7-day mortality") +
         # ggtitle("") +
         coord_cartesian(x=r.severity, y=c(0,50)) +
-        scale_size_area() + # NB: default in ggplot is scale radius which is misleading
+        scale_size_area(
+            breaks=c(200,400,800,1600,3200),
+            labels=c("200","400","800","1600", "3200")) + # NB: default in ggplot is scale radius which is misleading
         theme_minimal()
     gg.2
     return(gg.2)
@@ -86,9 +88,11 @@ doplot.severity <- function(v.dead, v.severity, l.severity, r.severity) {
 
 # ICNARC score
 # ------------
+require(ggplot2)
 gg.icnarc <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$icnarc0,
     r.severity=c(0,50),
     l.severity="ICNARC physiology score")
+print(gg.icnarc)
 
 # SOFA score
 # ----------
@@ -103,6 +107,9 @@ gg.sofa <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$sofa_score,
 gg.news <- doplot.severity(v.dead=wdt$dead7, v.severity=wdt$news_score,
     r.severity=c(0,20),
     l.severity="NEWS score")
+
+# Make a summary file within R
+# but note that the final publication file is done by hand within Graphic
 
 # Open file for PDF printing
 pdf(file = paste0("write/figures", "/fg_dead7_aps.", "pdf"), width=16, height=8)
