@@ -56,26 +56,37 @@ find_outliers <- function(y, coef = 1.5) {
 
    return(y[outliers])
 }
-outlier_data <- ddply(tdt, .(icu_accept), summarise, time2icu = find_outliers(time2icu))
+outlier_data <- data.table(
+  ddply(tdt, .(icu_accept), summarise, time2icu = find_outliers(time2icu)))
 str(outlier_data)
 
+# Can't do coord_cartesian and coord_flip together so manually truncate in graphic
 time2icu.boxplot <- ggplot(data=tdt,
         aes(y=time2icu, x=icu_accept)) +
-    geom_boxplot(notch=TRUE, outlier.colour=NA, varwidth=TRUE) +
+    geom_boxplot(notch=FALSE, outlier.colour=NA, varwidth=FALSE, width=0.25) +
     geom_jitter(data=outlier_data, alpha=1/4, size=1,
         position=position_jitter(width=0.1, height=0.3)) +
-    coord_cartesian(y=c(0,96)) +
-    scale_y_continuous(breaks=c(0,4,12,24,48,72,96)) +
-    theme_minimal()
+    scale_y_continuous(
+      # labels=c("0", "4h", "12h", "1d", "2d", "3d", "4d", "5d", "6d", "7d" ),
+      # breaks=c(0,4,12,24,48,72,96,120,144,168)
+      breaks=c(0,4,12,24,48,72,96)
+      ) +
+    theme_minimal() +
+    coord_flip()
+    # coord_cartesian(y=c(0,96))
+
+time2icu.boxplot
 
 time2icu.boxplot.fmt <- time2icu.boxplot +
-    labs(y="Time (hours)", x="Decision at bedside assessment") +
-    ggtitle("Delay to admission to critical care") +
+    labs(y="Time to critical care admission", x="Decision at bedside assessment") +
+    # ggtitle("Delay to admission to critical care") +
     theme(text = element_text(vjust=0.5, size=10),
         plot.title = element_text(size=10))
 
 time2icu.boxplot.fmt
 
-ggsave(filename="../outputs/figures/fg_time2icu_by_decision.png", plot=time2icu.boxplot.fmt )
-ggsave(filename="../outputs/figures/fg_time2icu_by_decision.pdf", plot=time2icu.boxplot.fmt)
+# ggsave(filename="../outputs/figures/fg_time2icu_by_decision.png", plot=time2icu.boxplot.fmt )
+ggsave(filename="../write/figures/fg_time2icu_by_decision.pdf",
+  width=16, height=4,
+  plot=time2icu.boxplot.fmt)
 
