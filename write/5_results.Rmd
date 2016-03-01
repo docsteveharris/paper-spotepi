@@ -35,14 +35,12 @@ Table 1 shows the baseline data for all ward patients assessed. Sepsis was repor
 
 `r dead7$n[2]` (`r dead7$p[2]`) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with `r dead7.d2$n[2]` (`r dead7.d2$p[2]`) of these deaths occuring in the first 48 hours (supplementary Figure 2). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (supplementary Figure 3). For example, the 7-day mortality was `r d7.news1$p[2]` (`r d7.news1$n[2]` deaths), `r d7.news2$p[2]` (`r d7.news2$n[2]` deaths), and `r d7.news3$p[2]` (`r d7.news3$n[2]` deaths)for NEWS low, medium and high risk classes respectively.
 
-<!-- - [ ] FIXME(2016-02-29):  -->
-We also recorded the bedside assessors clinical recommendation for critical care as part of the decision making process. The `r recommend$n[2]` patients (`r recommend$p[2]`) judged as requiring critical care had a 7-day mortality of XXX. Measured physiological severity correlated well with the bedside recommendation (supplementary Figure 3). Nonetheless, critical care was recommended on assessment for XXX NEWS low risk patients, and refused for XXX high risk patients.
-
- Within the subgroups a recommendation for critical care was associated with XXX relative risk of death, and 
-
-
-
 Overall mortality at 90-days and 1-year was `r dead90$p[2]` (`r dead90$n[2]` patients), and `r dead90$p[2]` (`r dead90$n[2]` patients) respectively.
+
+## Ward assessment
+
+<!-- resume -->
+The critical care assessor recommended `r recommend$n[2]` (`r recommend$p[2]`) for critical care. These patients had a higher physiological severity of illness (ICNARC physiology score `r icnarc.by.reco$est2` versus `r icnarc.by.reco$est1`, 95% confidence interval for difference `r icnarc.by.reco$ci`), and a greater 7-day mortality XXX. There was a good correlation between the recommendation and measured severity (supplementary Figure 4), but the associated additional risk of death for those recommended was most promient with the lowest measured risk. For example, a recommendation increased overall 7-day mortality by XXX, but within the low, medium and high NEWS risk classes the odds ratios were respectively.
 
 ## Patient pathways following ward assessment
 ```{r include=FALSE, echo=FALSE}
