@@ -1,0 +1,81 @@
+# author: Steve Harris
+# date: 2014-10-15
+# subject: Rework time2icu plots in R
+
+# Readme
+# ======
+
+
+# Todo
+# ====
+
+
+# Log
+# ===
+# 2014-11-07
+# - file created
+# 2014-12-18
+# - updated, to be combined in a single layout with 'by_beds'
+# - current plot size is wxh 3x7 ish
+# 2016-03-01
+# - moved in from paper-spotearly
+
+rm(list=ls(all=TRUE))
+
+library(data.table)
+library(reshape2)
+library(ggplot2)
+library(Hmisc)
+library(plyr)
+
+# Load the necessary data
+# -----------------------
+# setwd('/Users/steve/aor/academic/paper-spotepi/src/')
+load("data/paper-spotepi.RData")
+
+tdt <- wdt[!is.na(time2icu),.(
+    time2icu,
+    icu_accept=factor(icu_accept, labels=c("Refused", "Accepted")),
+    dead90)]
+describe(tdt$icu_accept)
+
+gg.all <- ggplot(data=tdt)
+str(gg.all)
+gg.limit <- ggplot(tdt[time2icu<=96])
+str(gg.limit)
+
+# Boxplot
+# -------
+# NOTE: 2014-11-07 - [ ] http://stackoverflow.com/questions/3010403/jitter-if-multiple-outliers-in-ggplot2-boxplot
+find_outliers <- function(y, coef = 1.5) {
+   qs <- c(0, 0.25, 0.5, 0.75, 1)
+   stats <- as.numeric(quantile(y, qs))
+   iqr <- diff(stats[c(2, 4)])
+
+   outliers <- y < (stats[2] - coef * iqr) | y > (stats[4] + coef * iqr)
+
+   return(y[outliers])
+}
+outlier_data <- ddply(tdt, .(icu_accept), summarise, time2icu = find_outliers(time2icu))
+str(outlier_data)
+
+time2icu.boxplot <- ggplot(data=tdt,
+        aes(y=time2icu, x=icu_accept)) +
+    geom_boxplot(notch=TRUE, outlier.colour=NA, varwidth=TRUE) +
+    geom_jitter(data=outlier_data, alpha=1/4, size=1,
+        position=position_jitter(width=0.1, height=0.3)) +
+    coord_cartesian(y=c(0,96)) +
+    scale_y_continuous(breaks=c(0,4,12,24,48,72,96)) +
+    theme_minimal()
+
+time2icu.boxplot.fmt <- time2icu.boxplot +
+    labs(y="Time (hours)", x="Decision at bedside assessment") +
+    ggtitle("Delay to admission to critical care") +
+    theme(text = element_text(vjust=0.5, size=10),
+        plot.title = element_text(size=10))
+
+time2icu.boxplot.fmt
+
+ggsave(filename="../outputs/figures/fg_time2icu_by_decision.png", plot=time2icu.boxplot.fmt )
+ggsave(filename="../outputs/figures/fg_time2icu_by_decision.pdf", plot=time2icu.boxplot.fmt)
+
