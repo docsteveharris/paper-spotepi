@@ -16,7 +16,9 @@ tdt.surv <- tdt.surv[rxlimits==0]
 dim(tdt.surv)
 
 # Check data correct
-assert_that(all.equal(dim(tdt.surv), c(13017,84)))
+# - [ ] NOTE(2016-03-01): prefer identical to all.equal or use all.equal == TRUE
+# 		if using identical then need to check 'type' is equal hence L suffix for integer
+assert_that(identical(dim(tdt.surv), c(13017L,85L)))
 
 #  =============================
 #  = Set up survival structure =

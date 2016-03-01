@@ -5,6 +5,8 @@
 require(assertthat)
 assert_that("wdt" %in% ls())
 
+tdt[, surv7 := !dead7]
+
 # Patients with sepsis
 tt$sepsis <- data.table(sepsis = wdt[,ifelse(sepsis %in% c(3,4),1,0)])
 sepsis <- ff.np(sepsis, data=tt$sepsis, dp=0)
@@ -52,7 +54,7 @@ d7.news1 <- ff.np(dead7, data=wdt[news_risk==1], dp=0)
 d7.news2 <- ff.np(dead7, data=wdt[news_risk==2], dp=0)
 d7.news3 <- ff.np(dead7, data=wdt[news_risk==3], dp=0)
 
-(d7.news3.by.reco <- ff.prop.test(surv7, icu_recommend, data=wdt[news_risk==3]))
+(d7.news3.by.reco <- ff.prop.test(surv7, icu_recommend, data=tdt[news_risk==3]))
 
 
 # Final mortality
@@ -63,7 +65,6 @@ dead1y <- ff.np(dead1y, data=wdt[rxlimits==0], dp=0)
 # Now add on visiti recommendation
 
 # ICU recommendation
-tdt[, surv7 := !dead7]
 (recommend <- ff.np(icu_recommend, tdt, dp=0))
 (sofa.by.reco <- ff.t.test(sofa_score, recommend, data=tdt))
 (icnarc.by.reco <- ff.t.test(icnarc_score, recommend, data=tdt))

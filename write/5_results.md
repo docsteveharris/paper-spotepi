@@ -15,18 +15,18 @@ Participating hospitals
 
 The participating hospitals comprised 10 teaching and 38 general
 hospitals that each collected data between September 2010 and December
-2011 for a median of 8 months (IQR 5--9 months). Each hospital
-contributed a median of 252 patients (IQR 162--380) equivalent to 6
-patients referred to critical care (IQR 3--9) per 1,000 overnight
+2011 for a median of 8 months (IQR 5 to 9 months). Each hospital
+contributed a median of 252 patients (IQR 162 to 380) equivalent to 6
+patients referred to critical care (IQR 3 to 9) per 1,000 overnight
 admissions. Critical Care Outreach Teams (CCOT) operated 24 hours/day
 and 7 days/week in 14 (29%) hospitals, less than 24 hours/day in 19
 (40%) hospitals, and less than 7 days/week in 13 (27%) hospitals. Two
 hospitals had no CCOT.
 
-There was a median of 12 (IQR 9--18) critical care beds per hospital
+There was a median of 12 (IQR 9 to 18) critical care beds per hospital
 (mixed Level 2 \[typically intensive monitoring or single organ
 support\], and Level 3 \[ventilated or multiple organ support\]), most
-often in a single physical location (45 hospitals).
+often colocated in a single physical location (45 hospitals).
 
 Incidence of critical care referrals
 ------------------------------------
@@ -57,79 +57,91 @@ defined as a SOFA score greater than or equal to two, was present in
 support at the time of assessment was, however, uncommon (870 patients
 \[6%\]).
 
-Overall, 2708 (18%) patients died during the 7-days following ward
-assessment. Mortality was heavily front-loaded with 1539 (57%) of these
-deaths occuring in the first 48 hours (supplementary Figure 2). There
-was a clear correlation between physiological severity and early (7-day)
+2708 (18%) patients died during the 7-days following ward assessment.
+Mortality was heavily front-loaded with 1539 (57%) of these deaths
+occuring in the first 48 hours (supplementary Figure 2). There was a
+clear correlation between physiological severity and early (7-day)
 mortality using either ward based (NEWS) or critical care scoring
 systems (SOFA, ICNARC) (supplementary Figure 3). For example, the 7-day
-mortality was 9% (328 deaths), 15% (15% deaths), and 26% (1734
+mortality was 9% (328 deaths), 15% (629 deaths), and 26% (1734
 deaths)for NEWS low, medium and high risk classes respectively.
+
+Overall mortality at 90-days and 1-year was 35% (5337 patients), and 35%
+(5337 patients) respectively.
+
+Ward assessment
+---------------
+
+The critical care assessor recommended 5321 (35%) for critical care.
+These patients had a higher physiological severity of illness (ICNARC
+physiology score 17.6 versus 14.3, 95% confidence interval for
+difference 3.0 to 3.5), and a greater 7-day mortality 19.6% versus
+17.0%, difference 1.3 to 4.0%. There was a clear correlation between the
+recommendation and measured severity (supplementary Figure 4).
 
 Patient pathways following ward assessment
 ------------------------------------------
 
-We extracted two clinical decisions at the point of the bedside
-assessment. We asked whether the bedside assessor would recommend the
-patient for critical care (5321 patients \[35%\]) or ward care (9837
-patients \[65%\]) (Figure 1b). Additionally, we recorded the decision to
-admit (Figure 1c), and classified patients as either initially refused
-(9471 patients \[62%\]) without treatment limits, initially refused with
-treatment limits (2141 patients \[14%\]), or immediately accepted to
-critical care (3546 patients \[23%\]). Amongst those recommended for
-critical care, the proportions initially refused without treatment
-limits, initially refused with limits, or immediately accepted were 30%
-(1601 patients), 6% (345 patients), and 63% (3375 patients)
-respectively.
+We extracted the clinical decision made following the bedside
+assessment, and classified patients into three groups: those refused
+admission with treatment limits (pre-existing or otherwise); those
+refused admission without treatment limits (active ward care); and,
+those offered immediate critical care (Figure 1).
 
-We then tracked patient pathways over the following week.
+There were 2141 patients (14%) refused with treatment limits, 9471
+patients (62%) assigned to active ward-care, and 3546 patients (23%)
+immediately offered critical care. We used the active ward care group as
+the control group for all comparisons.
 
-### Patients with treatment limits refused critical care
+### Refused critical care with treatment limits
 
-These 2141 patients had a 7-day mortality of 41% (881 deaths). The
-initial decision to refuse admission was reversed in just 76 patients
-(4%) of whom 26 (34%) died within the week.
+Patients with treatment limits had a 7-day mortality of 41% (881
+deaths). The initial decision to refuse admission was reversed in just
+76 patients (4%) of whom 26 (34%) died within the week. Although the
+final 90-day mortality was substantial 65% (1402 deaths), 506 patients
+(24%) survived a year despite the decision.
 
-Compared to those refused without a treatment limitation order, this
-cohort was older (77 vs 66 years, 95%CI for difference 11--12 years),
-and more acutely unwell (3.6 vs 2.8 SOFA points, 95%CI for difference
-0.7--0.9). The final 90-day mortality was substantial 65% (1402 deaths),
-nonetheless 506 patients (24%) survived a year despite the decision.
+These patients were older (77 vs 66 years, 95%CI for difference 11 to 12
+years), and more acutely unwell (3.6 vs 2.8 SOFA points, 95%CI for
+difference 0.7 to 0.9) than those assigned active ward care. We did not
+consider these patients further.
 
-We did not consider these patients further.
+### Active ward care
 
-### Patients without treatment limits refused critical care
+Patients for active ward care had a 7-day mortality of 12% (1102
+deaths). Most deaths (799 deaths 73%) occured on the ward but 303 deaths
+(27%) followed delayed critical care admission. The initial decision to
+refuse critical care was reversed within a week for 1745 patients (18%),
+so a total of 2544 (27%) patients died or were admitted to critical
+care.
 
-Patients without treatment limits initially refused critical care had a
-7-day mortality of 12% (1102 deaths). Most deaths (799 deaths 73%)
-occured on the ward without critical care but 303 deaths (27%) followed
-delayed admission. Within the week, the initial decision to refuse was
-reversed in 1745 patients (18%), so a total of 2544 (27%) patients died
-or were admitted to critical care.
+The active ward care group included 1601 (16.9%) patients who had been
+recommended critical care on assessment. These patients had a higher
+7-day mortality (17.6% versus 10.4%, 95% confidence interval for
+difference 5.1 to 9.1%), were more likely to have the intial refusal
+reversed (17.4% versus 10.3%, risk difference 5.1 to 9.0%).
 
-7-day mortality was higher for those recommended but refused (17.6%
-versus 10.4% \[risk difference 7.1% 95%CI 5.1--9.1%\]), and for those
-where the initial decision to refuse was reversed (17.4% versus 10.3%
-\[risk difference 7.0% 95%CI 5.1--9.0%\]).
+### Immediate critical care
 
-### Patients immediately accepted to critical care
-
-The 3546 (23%) patients accepted to critical care at the initial bedside
-assessment had a 7-day mortality of 20% (725 deaths). Just 42 (6%) of
-those deaths occurred before admission was arranged, but a further 254
-patients (9%) were never admitted but survived regardless.
+The 3546 (23%) patients immediately accepted to critical care had a
+7-day mortality of 20% (725 deaths). Just 42 (6%) of those deaths
+occurred before admission was arranged, but a further 254 patients (9%)
+were never admitted but survived regardless.
 
 Those offered admission were marginally younger (64.1 versus 65.6 years,
-95%CI 0.8--2.2 years), and more acutely unwell (4.1 versus 2.8 SOFA
-points, 95%CI 1.2--1.3).
+95%CI 0.8 to 2.2 years), but were distinctly unwell (18.1 versus 13.9
+ICNARC physiology points, 95%CI 3.9 to 4.5).
 
 The median delay between assessment and admission for these patients was
-2 hours (IQR 1--4) compared to 12 hours (IQR 5--29) for those refused
-without treatment limits (median additional delay 9 hours, IQR 9--10)
-(Figure 2). This meant that 2277 (74%) admissions were achieved within 4
-hours for those initially accepted versus 256 (16%) for those initially
-refused (risk difference 58%, 95%CI 56--60%).
+2 hours (IQR 1 to 4) compared to 12 hours (IQR 5 to 29) for late
+admissions from the active ward care group (median additional delay 9
+hours, IQR 9--10) (Figure 2). This meant that 2277 (74%) admissions were
+achieved within 4 hours for those initially accepted versus 256 (16%)
+for those initially refused (risk difference 58%, 95%CI 56 to 60%).
+Amongst patients recommended to critical care, 2373 (46%) were admitted
+promptly.
 
+<!-- resume: move this up, then add pathway specific notes in -->
 Critical care occupancy
 -----------------------
 
@@ -171,9 +183,9 @@ The model also demonstrated significant hospital level variation with a
 Median Odds Ratio (MOR) of 2.11 (95%CI 1.81-2.42) which differed little
 to that estimated excluding patient predictors (MOR 2.18 \[95%CI
 1.82--2.60\]). The MOR summarises the differences when comparing
-decision making for patients in any two randomly selected hospitals, and
-consistency when excluding patient level predictors suggests that it is
-a true hospital level difference.
+decision making for patients from any two randomly selected hospitals,
+and consistency when excluding patient level predictors suggests that it
+is a true hospital level difference.
 
 Determinants of prompt admission
 --------------------------------

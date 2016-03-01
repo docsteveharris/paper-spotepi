@@ -23,10 +23,10 @@ with(tdt, CrossTable(icu_recommend, bedside.decision))
 
 # lookfor(recommend, tdt)
 # Reverse definition of dead7 to get mortality not survival
-(ward.reco <- ff.np(recommend, data=tdt[bedside.decision=="ward"]))
+(ward.reco <- ff.np(recommend, data=tdt[bedside.decision=="ward"], dp=0))
 tdt[, surv7 := !dead7]
-(ward.surv.by.reco <- ff.prop.test(surv7, recommend, data=tdt[bedside.decision=="ward"]))
-(ward.surv.by.icu <- ff.prop.test(surv7, icucmp, data=tdt[bedside.decision=="ward"]))
+(ward.surv.by.reco <- ff.prop.test(surv7, recommend, data=tdt[bedside.decision=="ward"], dp=0))
+(ward.surv.by.icu <- ff.prop.test(surv7, icucmp, data=tdt[bedside.decision=="ward"], dp=0))
 
 ### Patients WITH treatment limits initially refused critical care
 
@@ -36,6 +36,7 @@ tdt[, surv7 := !dead7]
 
 (age.by.limits <- ff.t.test(tdt[bedside.decision!="icu"], age, bedside.decision, dp=0))
 (sofa.by.limits <- ff.t.test(tdt[bedside.decision!="icu"], sofa_score, bedside.decision, dp=1))
+(icnarc.by.limits <- ff.t.test(tdt[bedside.decision!="icu"], icnarc_score, bedside.decision, dp=1))
 
 (limits.dead90 <- ff.np(dead90, tdt[bedside.decision=="rxlimits"], dp=0))
 (limits.dead1y <- ff.np(dead1y, wdt[rxlimits==1], dp=0))
