@@ -61,6 +61,9 @@ tdt.timing[, refuse := !accept]
 names(delay.by.accept)
 
 # Repeat for just those recommended
+(reco.icu <- ff.np(icucmp, tdt[recommend==1]))
+(reco.delay <- ff.mediqr(time2icu, data=tdt.timing[icu_recommend==1], dp=0))
+
 (icu.delay.reco <- ff.mediqr(time2icu, data=tdt.timing[icu_recommend==1 & bedside.decision=="icu"], dp=0))
 (ward.delay.reco <- ff.mediqr(time2icu, data=tdt.timing[icu_recommend==1 & bedside.decision=="ward"], dp=0))
 (delay.by.accept.reco <- pairwiseCI(time2icu ~ refuse, data=tdt.timing[icu_recommend==1 & bedside.decision!="rxlimits"], method="Median.diff")$byout[[1]])
