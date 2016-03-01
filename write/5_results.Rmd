@@ -46,7 +46,6 @@ The critical care assessor recommended `r recommend$n[2]` (`r recommend$p[2]`) f
 source("5_results_06pathways.R")
 ```
 
-<!-- define bedside decision -->
 We extracted the clinical decision made following the bedside assessment, and classified patients into three groups: those refused admission with treatment limits (pre-existing or otherwise); those refused admission without treatment limits (active ward care); and, those offered immediate critical care (Figure 1).
 
 There were `r decision$n[3]` patients (`r decision$p[3]`) refused with treatment limits, `r decision$n[2]` patients (`r decision$p[2]`) assigned to active ward-care,  and `r decision$n[1]` patients (`r decision$p[1]`) immediately offered critical care. We used the active ward care group as the control group for all comparisons.
@@ -57,20 +56,19 @@ Patients with treatment limits had a 7-day mortality of `r limits.dead7$p[2]` (`
 
 These patients were older (`r age.by.limits$est2` vs `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell (`r sofa.by.limits$est2` vs `r sofa.by.limits$est1` SOFA points, 95\%CI for difference `r sofa.by.limits$ci`) than those assigned active ward care. We did not consider these patients further.
 
-
 ### Active ward care
 
 Patients for active ward care had a 7-day mortality of `r ward.dead7$p[2]` (`r ward.dead7$n[2]` deaths). Most deaths (`r ward.dead7.icu$n[1]` deaths `r ward.dead7.icu$p[1]`)  occured on the ward but `r ward.dead7.icu$n[2]` deaths (`r ward.dead7.icu$p[2]`) followed delayed critical care admission. The initial decision to refuse critical care was reversed within a week for `r ward.icucmp$n[2]` patients (`r ward.icucmp$p[2]`), so a total of `r ward.icu.or.dead7$n[2]` (`r ward.icu.or.dead7$p[2]`) patients died or were admitted to critical care.
 
 The active ward care group included `r ward.reco$n[2]` (`r ward.reco$p[2]`) patients who had been recommended critical care on assessment. These patients had a higher 7-day mortality (`r ward.surv.by.reco$est2` versus `r ward.surv.by.reco$est1`,  95% confidence interval for difference `r ward.surv.by.reco$ci`), were more likely to have the intial refusal reversed (`r ward.surv.by.icu$est2` versus `r ward.surv.by.icu$est1`,  risk difference `r ward.surv.by.icu$ci`). 
 
-### Patients immediately accepted to critical care
+### Immediate critical care
 
-The `r decision$n[1]` (`r decision$p[1]`) patients accepted to critical care at the initial bedside assessment had a 7-day mortality of `r icu.dead7$p[2]` (`r icu.dead7$n[2]` deaths). Just `r icu.dead7.pre$n[1]` (`r icu.dead7.pre$p[1]`) of those deaths occurred before admission was arranged, but a further `r icu.icucmp$n[1]` patients (`r icu.icucmp$p[1]`) were never admitted but survived regardless.
+The `r decision$n[1]` (`r decision$p[1]`) patients immediately accepted to critical care had a 7-day mortality of `r icu.dead7$p[2]` (`r icu.dead7$n[2]` deaths). Just `r icu.dead7.pre$n[1]` (`r icu.dead7.pre$p[1]`) of those deaths occurred before admission was arranged, but a further `r icu.icucmp$n[1]` patients (`r icu.icucmp$p[1]`) were never admitted but survived regardless.
 
-Those offered admission were marginally younger (`r age.by.icu$est1` versus `r age.by.icu$est2` years, 95\%CI `r age.by.icu$ci` years), and more acutely unwell (`r sofa.by.icu$est1` versus `r sofa.by.icu$est2` SOFA points, 95\%CI `r sofa.by.icu$ci`).
+Those offered admission were marginally younger (`r age.by.icu$est1` versus `r age.by.icu$est2` years, 95\%CI `r age.by.icu$ci` years), but were distinctly unwell (`r icnarc.by.icu$est1` versus `r icnarc.by.icu$est2` ICNARC physiology points, 95\%CI `r icnarc.by.icu$ci`).
 
-The median delay between assessment and admission for these patients was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`) compared to `r ward.delay$q50` hours (IQR `r ward.delay$iqr`) for those refused without treatment limits (median additional delay `r delay.by.accept$estimate` hours, IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`) (Figure 2). This meant that `r icu.early4$n[2]` (`r icu.early4$p[2]`) admissions were achieved within 4 hours for those initially accepted versus `r ward.early4$n[2]` (`r ward.early4$p[2]`) for those initially refused (risk difference `r early4.by.accept$d`, 95\%CI `r early4.by.accept$ci`). Amongst patients recommended to critical care, `r recommend.early4$n[2]` (`r recommend.early4$p[2]`) were admitted promptly.
+The median delay between assessment and admission for these patients was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`) compared to `r ward.delay$q50` hours (IQR `r ward.delay$iqr`) for late admissions from the active ward care group (median additional delay `r delay.by.accept$estimate` hours, IQR `r delay.by.accept$lower`--`r delay.by.accept$upper`) (Figure 2). This meant that `r icu.early4$n[2]` (`r icu.early4$p[2]`) admissions were achieved within 4 hours for those initially accepted versus `r ward.early4$n[2]` (`r ward.early4$p[2]`) for those initially refused (risk difference `r early4.by.accept$d`, 95\%CI `r early4.by.accept$ci`). Amongst patients recommended to critical care, `r recommend.early4$n[2]` (`r recommend.early4$p[2]`) were admitted promptly.
 
 
 ## Critical care occupancy

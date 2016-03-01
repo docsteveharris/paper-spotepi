@@ -52,6 +52,26 @@ d7.news1 <- ff.np(dead7, data=wdt[news_risk==1], dp=0)
 d7.news2 <- ff.np(dead7, data=wdt[news_risk==2], dp=0)
 d7.news3 <- ff.np(dead7, data=wdt[news_risk==3], dp=0)
 
+(d7.news3.by.reco <- ff.prop.test(surv7, icu_recommend, data=wdt[news_risk==3]))
+
+
+# Final mortality
 dead90 <- ff.np(dead90, dp=0)
 dead1y <- ff.np(dead1y, dp=0)
 dead1y <- ff.np(dead1y, data=wdt[rxlimits==0], dp=0)
+
+# Now add on visiti recommendation
+
+# ICU recommendation
+tdt[, surv7 := !dead7]
+(recommend <- ff.np(icu_recommend, tdt, dp=0))
+(sofa.by.reco <- ff.t.test(sofa_score, recommend, data=tdt))
+(icnarc.by.reco <- ff.t.test(icnarc_score, recommend, data=tdt))
+
+# Overall risk
+(d7.reco <- ff.prop.test(surv7, recommend, data=tdt))
+# Strata specific effect risk
+(d7.news1.by.reco <- ff.prop.test(surv7, recommend, data=tdt[news_risk==1]))
+(d7.news2.by.reco <- ff.prop.test(surv7, recommend, data=tdt[news_risk==2]))
+(d7.news3.by.reco <- ff.prop.test(surv7, recommend, data=tdt[news_risk==3]))
+

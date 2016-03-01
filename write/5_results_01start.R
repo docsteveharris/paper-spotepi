@@ -1,5 +1,6 @@
 # Results - set-up for R markdwon document
 rm(list=ls(all=TRUE))
+setwd("~/aor/academic/paper-spotepi/src/write")
 
 # Load libraries
 library(assertthat)

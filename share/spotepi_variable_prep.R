@@ -32,6 +32,8 @@ prep.wdt <- function(data=wdt) {
             dead90,             # 90 day mortality, 1==dead
             open_beds_cmp,      # beds available at time of ward assessment
             rxlimits,           # treatment limitations set (i.e. not for ICU)
+                                # ward follow-up planned
+            follow = v_disposal %in% c(1,2),
             icu_recommend,      # recommended for critical care at assessment
             icu_accept,         # accepted to critical care at assessment
             icucmp,             # admitted to ICU in week following assessment

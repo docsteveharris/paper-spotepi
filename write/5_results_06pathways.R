@@ -23,6 +23,7 @@ with(tdt, CrossTable(icu_recommend, bedside.decision))
 
 # lookfor(recommend, tdt)
 # Reverse definition of dead7 to get mortality not survival
+(ward.reco <- ff.np(recommend, data=tdt[bedside.decision=="ward"]))
 tdt[, surv7 := !dead7]
 (ward.surv.by.reco <- ff.prop.test(surv7, recommend, data=tdt[bedside.decision=="ward"]))
 (ward.surv.by.icu <- ff.prop.test(surv7, icucmp, data=tdt[bedside.decision=="ward"]))
@@ -47,6 +48,7 @@ tdt[, surv7 := !dead7]
 
 (age.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], age, bedside.decision, dp=1))
 (sofa.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], sofa_score, bedside.decision, dp=1))
+(icnarc.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], icnarc_score, bedside.decision, dp=1))
 
 # (time2icu <- ff.mediqr(time2icu, data=tdt.timing, dp=0))
 (icu.delay <- ff.mediqr(time2icu, data=tdt.timing[bedside.decision=="icu"], dp=0))
