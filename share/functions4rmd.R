@@ -18,6 +18,8 @@
 # 2015-12-08
 # - added ff.prop.test
 # - renamed ff.t.test (from t.test.format) to be consistent
+# 2016-02-29
+# - changed double hyphen '--' to ' to ' as per BMJ
 
 require(data.table)
 
@@ -48,7 +50,7 @@ ff.t.test <- function(data=wdt, var, byvar, dp=1) {
     }
 
     byvar.var.d     <- sprintf(fmt, abs(byvar.var.d))
-    byvar.var.ci    <- paste(l95, '--', u95, sep='')
+    byvar.var.ci    <- paste(l95, ' to ', u95, sep='')
 
     return(list(
         est1 = est1,
@@ -73,7 +75,7 @@ ff.mediqr <- function(var, data=wdt, dp=0) {
     v <- eval(substitute(var), data)
     fmt <- paste("%.", dp, "f", sep="")
     v.q <- sprintf(fmt, quantile(v, na.rm=TRUE))
-    v.iqr <- paste(v.q[2], "--", v.q[4], sep="")
+    v.iqr <- paste(v.q[2], " to ", v.q[4], sep="")
     return(list(q50=v.q[3], iqr=v.iqr))
 
 }
@@ -125,7 +127,7 @@ ff.prop.test <- function(var, byvar, data=wdt, dp=1) {
     }
 
     byvar.var.d     <- paste0(sprintf(fmt, 100*abs(byvar.var.d)), "%")
-    byvar.var.ci    <- paste0(l95, "--", u95, "%")
+    byvar.var.ci    <- paste0(l95, " to ", u95, "%")
 
     return(list(
         table = t,
