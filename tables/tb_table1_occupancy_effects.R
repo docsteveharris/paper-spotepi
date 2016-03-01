@@ -116,6 +116,8 @@ vars.strata <-  'room_cmp2' # i.e. inspect all patients
 
 vars <- c(
     'icu_recommend',
+    'rxlimits',
+    'ward',
     'icu_accept',
     'early4.ok',
     'icucmp',
@@ -136,6 +138,8 @@ if (is.na(vars.strata)) {
 # Define the characteristics of the variables
 vars.factor <- c(
     'icu_recommend',
+    'rxlimits',
+    'ward',
     'icu_accept',
     'early4.ok',
     'icucmp',
