@@ -38,18 +38,16 @@ and 76% respectively. They were not considered further.
 
 The bedside assessor recommended 4976 (38%) of the remainder to critical
 care of whom 3375 (68%) were initally accepted. The median delay between
-asssessment and admission was 2 hours (IQR 1--4). Patients over 80 years
-were less likely to be accepted (OR 0.60 95%CI 0.53--0.69). Despite
-adjustment for patient specific risk factors, decision making varied
-markedly between hospitals (median interhospital OR 2.11,
+asssessment and admission was 2 hours (IQR 1 to 4). Patients over 80
+years were less likely to be accepted (OR 0.60 95%CI 0.53--0.69).
+Despite adjustment for patient specific risk factors, decision making
+varied markedly between hospitals (median interhospital OR 2.11,
 95%1.81--2.42).
 
-<!-- - [ ] FIXME(2016-02-15): need delay for just those recommended -->
 Of the 1601 (32%) patients recommended but initially refused, 1021 (64%)
 were admitted later with a median additional delay of 6 hours (IQR
-5--7).
-
-179 (11.2%) recommended and refused died without admission.
+5--7). A further 179 (11.2%) patients recommended and refused died
+without admission.
 
 Without treatment limits, 7-day, 90-day, and 1-year mortalities were
 14%, 30%, and 39% respectively. Even within the first week, mortality

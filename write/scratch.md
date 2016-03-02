@@ -13,6 +13,7 @@ We conducted a prospective cohort study of consecutive deteriorating ward patien
 
 Critical care teams assessed 15158 patients including 6759 (45%) in the NEWS high risk category. A typical hospital would see 17 high risk patients (95%CI 17–18) per hospital per month. 5164 (34%) patients were in established organ failure but only 870 (6%) patients were already receiving organ support. Sepsis was reported in 9296 (61%) patients. 2141 (14%) patients were refused critical care with a treatment limitation order of which 506 (24%) nonetheless survived to one year. The critical care unit was full at the time of 1198 (8%) assessments. 
 
+<!-- - [ ] add in severity comparison if commenting on survival -->
 3546 (27%) patients were initally accepted to critical care with a 7-day mortality of 20% (725 deaths) compared to 12% (1102 deaths) for the 9471 (62%) refused without treatment limits. Elderly patients were less likely to be accepted (≥80 years: odds ratio (OR) 0.51, 95% confidence interval 0.43 to 0.60) as were patients referred when the unit was full (OR 0.72, 0.59 to 0.88). Decision-making varied significantly between hospitals (MOR 2.11, 95% confidence interval 1.81 to 2.42).
 
 <!-- discuss patients refused -->
@@ -22,13 +23,15 @@ The median delay to admission was 2 hours (IQR 1–-4) if initially accepted, an
 
 <!-- @resume(2016-02-16T16-10 ) -->
 - [X] mortality distribution: early vs late  @done(2016-02-16)
-- [ ] mortality magnitude
 - [ ] mortality and decision
+- [ ] recommend and accept interaction
 - [ ] subgroup - those recommended
 - [ ] interhospital variation
 
 
-90-day mortality was 30% (3935) for patients without treatment limits, and most deaths occurred early (25% within 3 days, and 50% within 9 days). Mortality was higher for those recommended to critical care, 
+90-day mortality was 30% (3935) for patients without treatment limits, and most deaths occurred early (25% within 3 days, and 50% within 9 days). Survival was worse for patients initially accepted to critical care (hazard ratio 1.18, 95% confidence interval 1.09 to 1.27) which we ascribe to an indication bias.
+
+ Mortality was higher for those recommended to critical care, 
 
 
 

@@ -15,9 +15,9 @@ assert_that("wdt" %in% ls())
 assert_that("tt" %in% ls())
 tt$patients <- nrow(wdt)
 tt$sites <- length(unique(wdt$icode))
+str(tt)
 
 tt$news_high <- data.frame(ff.np(news_risk, dp=0))[4,]
-
 (tt$full <- data.frame(ff.np(room_cmp2, wdt[!is.na(room_cmp2)], dp=0))[1,])
 
 # Organ failure
@@ -96,3 +96,4 @@ tt$dead7.d2 <- ff.np(dead2, dp=0, data=wdt[rxlimits==0 & dead7==1])
 # with(wdt[rxlimits==0 & icu_recommend], CrossTable(dead90))
 # with(wdt[rxlimits==0 & icu_recommend & icu_accept==1], CrossTable(dead90))
 # with(wdt[rxlimits==0 & icu_recommend & icu_accept==0], CrossTable(dead90))
+

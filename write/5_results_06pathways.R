@@ -54,12 +54,12 @@ tdt[, icucmp_not := !icucmp]
 (sofa.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], sofa_score, bedside.decision, dp=1))
 (icnarc.by.icu <- ff.t.test(tdt[bedside.decision!="rxlimits"], icnarc_score, bedside.decision, dp=1))
 describe(tdt$room_cmp2)
-tt <- tdt[bedside.decision!="rxlimits" & room_cmp2!="[ 1, 3)",
+tt.1 <- tdt[bedside.decision!="rxlimits" & room_cmp2!="[ 1, 3)",
 	.(	ward=ifelse(bedside.decision=="icu",0,1),
 		full=ifelse(room_cmp2=="[-5, 1)",1,0)
 		)]
-tt
-(full.by.icu <- ff.prop.test(ward, full, data=tt,  dp=1))
+tt.1
+(full.by.icu <- ff.prop.test(ward, full, data=tt.1,  dp=1))
 
 # (time2icu <- ff.mediqr(time2icu, data=tdt.timing, dp=0))
 (icu.delay <- ff.mediqr(time2icu, data=tdt.timing[bedside.decision=="icu"], dp=0))

@@ -29,4 +29,3 @@ tdt.timing <- tdt[is.na(elgthtr) | elgthtr == 0]
 
 # empty list to store rmd vars
 tt <- list()                     
-
