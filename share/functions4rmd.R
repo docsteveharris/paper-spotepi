@@ -127,7 +127,7 @@ ff.prop.test <- function(var, byvar, data=wdt, dp=1) {
     }
 
     byvar.var.d     <- paste0(sprintf(fmt, 100*abs(byvar.var.d)), "%")
-    byvar.var.ci    <- paste0(l95, " to ", u95, "%")
+    byvar.var.ci    <- paste0(l95, "% to ", u95, "%")
 
     return(list(
         table = t,
