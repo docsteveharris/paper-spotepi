@@ -29,7 +29,7 @@ The critical care unit was fully occupied for `r room$n[1]` (`r room$p[1]`) asse
 ## Incidence of critical care referrals
 <! to  numbers here from stata log files for incidence models  to >
 
-We estimated the mean baseline (non-teaching hospital with 50,000 admissions per year and 24/7 CCOT provision) incidence of referrals to critical care at 46 (95\% confidence interval 50 to 54) patients per month of which 17 (95\%CI 17 to 18) patients met the NEWS high risk criteria at assessment. As critical care outreach provision decreased then the number of patients assessed fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14 to 1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82 to 0.92) than the rest of year. When we included a measure of case finding in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile (supplementary Figure 2).
+We estimated the mean baseline (non-teaching hospital with 60,000 admissions per year and 24/7 CCOT provision) incidence of referrals to critical care at 46 (95\% confidence interval 50 to 54) patients per month of which 17 (95\%CI 17 to 18) patients met the NEWS high risk criteria at assessment. This is equivalent to 8 unselected referrals or 3 NEWS high risk referrals per 1,000 overnight admissions. As critical care outreach provision decreased then the number of patients assessed fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14 to 1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82 to 0.92) than the rest of year. When we included a measure of case finding in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile (supplementary Figure 2).
 
 ## Patient characteristics
 ```{r patients, include=FALSE, echo=FALSE}
@@ -72,7 +72,6 @@ The `r decision$n[1]` patients immediately accepted to critical care had a 7-day
 Those offered immediate admission were marginally younger (`r age.by.icu$est1` versus `r age.by.icu$est2` years, 95\%CI `r age.by.icu$ci` years), but distinctly more unwell (`r icnarc.by.icu$est1` versus `r icnarc.by.icu$est2` ICNARC physiology points, 95\%CI `r icnarc.by.icu$ci`) than the active ward care group. As critical care occupancy at the time of the ward assessment increased, patients were less likely to be immediately accepted (Table 2, Cochran-Armitage test for trend p<0.0001).
 
 ## Delay to admission to critical care
-<! to  resume  to >
 
 The median delay between assessment and admission for patients immediately accepted was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`) compared to `r ward.delay$q50` hours (IQR `r ward.delay$iqr`) for late admissions from the active ward care group (median additional delay `r delay.by.accept$estimate` hours, IQR `r delay.by.accept$lower` to `r delay.by.accept$upper`) (Figure 2a). This meant that `r icu.early4$n[2]` (`r icu.early4$p[2]`) admissions were achieved within 4 hours for those immediately accepted versus `r ward.early4$n[2]` (`r ward.early4$p[2]`) for those initially refused (risk difference `r early4.by.accept$d`, 95\%CI `r early4.by.accept$ci`). For the subgroup recommended to critical care whose initial refusal was later reversed, the median delay to admission was `r ward.delay.reco$q50` hours (IQR `r ward.delay.reco$iqr`).
 
@@ -106,7 +105,7 @@ A series of models were fitted with 90-day survival as the dependent variable fo
 
 Other patient level risk factors were consistent with the existing literature on outcomes in similar patients: older patients, and those with sepsis (other than genito-urinary) had worse outcomes.[@Harrison:2004brb] Patients assessed during the winter months, over the weekend, and out-of-hours did not have a significantly worse adjusted survival than baseline.
 
-Critical care occupancy did not affect adjusted mortality in the multi-level model (zero beds: hazard ratio 1.03, 95\% confidence interval 0.90 to 1.17). A single level model (supplementary Table 1), constructed in case occupancy was mediated through rather than confounded by the effect of the hospital, similarly could not exclude a null effect (1.07, 1.00 to 1.15).
+Critical care occupancy did not affect adjusted mortality in the multi-level model (zero beds: hazard ratio 1.03, 95\% confidence interval 0.90 to 1.17). A single level model (supplementary Table 2), constructed in case occupancy was mediated through rather than confounded by the effect of the hospital, similarly could not exclude a null effect (1.07, 1.00 to 1.15).
 
 The full multi-level model demonstrated significant hospital level variation in survival (median hazard ratio 1.28, 1.22 to 1.34) which was little altered by adjustment for patient level risk factors (MHR 1.29, 1.22 to 1.35).
 
