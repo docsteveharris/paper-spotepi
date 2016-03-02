@@ -8,13 +8,18 @@ Examining the effect of occupancy
 Recast results to emphasise interest in outcomes of patients referred to and not immediately admitted (esp. those with a recommendation for critical care)
 
 inbox:
+	- consistency
+		- ward assessment not bedside
+	- occupancy
+	- sensitivity
+		- by occupancy definition
+		- by data quality
 	- need to update doit
-	- convert incidence model to per 1000 admission metric
+	- be consistent and use ICNARC physiology points through-out and NEWS for classes
+	- formatting for the BMJ
 	- sensitivity analyses - check thresholds
 	- add a variable representing delayed discharges to the model @later @idea
 	- run survival model at 7d as single level
-	- double check occupancy order in markdown now you have re-levelled room_cmp2 
-	- check levels of age category predictors in models (k1 not k0 as baseline)
 	- bootstrap CI 
 		- check/read about which SE to use after bootstrap (simple vs ...)
 			at present assuming central limit theorem holds and sampling by bootstrap creates this distn then use Z
@@ -22,36 +27,18 @@ inbox:
 
 paper:
 	abstract:
-		- drop patients with rxlimits from second half
-		- 95%CI for delay when refusing admission
-		- 95%CI for delay with high occupancy
 	intro:
-		- refocus using themes in Chen VA paper and Stelfox paper
-		- explain concept of tracking patients not admitted
-			emphasise USP that we have followed all patients
 	methods:
-		- explain why mortality analysis in subgroup of patients rejected
-		- add in 
-			Cox proportional hazards were used to model survival with a shared frailty (random effect) for hospitals which was is reported as a Median Hazard Ratio (MHR).[Bengtsson and Dribe, 2010, #60939] The proportional hazards assumption was checked by inspecting plots of smoothed exponentiated standardised Schoënfeld residuals, and re-entering terms using time-varying co-efficients where necessary.
 	
 	results:
-		
+		- table 1: update
+			- mortality at 1 year?
 		- determinants of decision to admit
 			- convert predicted additional	admissions to percentages
 				 We estimated that in this sample had there been no limitations on capacity then an additional 122 patients (95\%CI 53-186) would have been admitted.
 		
-		- add back in incidence per 1000 admissions
-			see old working
 		
-		- sort out table and figure numbering
-		- comments to move to the discussion
-			- suggesting that, unless there are unmeasured patient level risk factors more important than those already measured, this variability is not due to incomplete risk adjustment.
 		
-		- add decision making into survival model 
-			not because you are interested in its effect, but because you wish to examine the MHR after adjusting for decision - and whether or not that is how 'site' contributes to outcome
-			- estimate model
-			- report/comment if makes a difference to MHR
-			- add note into results re this
 		- add in mortality in first 7 days vs 90 days - perhaps to supp figure caption
 	
 	
@@ -64,44 +51,18 @@ paper:
 	
 	figures:
 		
-		- figure 1 (strobe plus pathways)
-			- a strobe
-			- b recommended
-			- c decision
-		- figure 2 (time2icu) @next
-			borrow from spot early code
 		
-		- supplementary
-			- incidence and case finding
-			- daily hazard
-			- severity of illness and outcome
-			- critical care occupancy
-			- schoenfeld_residuals_icnarc_score.jpg
 		
-		- maybe
-			- time 2 icu figure
 	
 	tables:
 		
-		- table 1 (baseline characteristics)
-			- modifications 
-						- with age categories
-						- peri-arrest status
-						- assessment timing
 		
-		- table 2 (occupancy effects)
-		- convert to tables 3a and 3b
-			- table 3 (determinants of decision to admit)
-			- table 4 (determinants of prompt admission)
 		- add early admission and decision to admit into the survival model? @today
 		- table 4 
 			add as additional column to table 3?
 		
 		
 		- supplementary
-			- incidence table
-				- caption
-					The bottom line shows the monthly incidence of patients categorised by NEWS Risk Class referred to, and assessed on the ward by critical care. Above this, incidence rate ratios (IRR) with 95%CI	are reported for hospital, and timing factors. 
 		
 		- maybe
 			- table 1 repeat but comparison of accept vs refused vs limits
@@ -253,6 +214,62 @@ For now, I have moved _all_ files into a subfolder called spot_ward so that I ha
 
 
 Archive:
+	- drop patients with rxlimits from second half @done(2016-03-02) @project(abstract)
+	- 95%CI for delay when refusing admission @done(2016-03-02) @project(abstract)
+	- 95%CI for delay with high occupancy @done(2016-03-02) @project(abstract)
+	- refocus using themes in Chen VA paper and Stelfox paper @done(2016-03-02) @project(intro)
+	- explain concept of tracking patients not admitted @done(2016-03-02) @project(intro)
+		emphasise USP that we have followed all patients
+	- explain why mortality analysis in subgroup of patients rejected @done(2016-03-02) @project(methods)
+	- add in  @done(2016-03-02) @project(methods)
+		Cox proportional hazards were used to model survival with a shared frailty (random effect) for hospitals which was is reported as a Median Hazard Ratio (MHR).[Bengtsson and Dribe, 2010, #60939] The proportional hazards assumption was checked by inspecting plots of smoothed exponentiated standardised Schoënfeld residuals, and re-entering terms using time-varying co-efficients where necessary.
+	- mortality by treatment decision? @done(2016-03-02) @project(results)
+	- add back in incidence per 1000 admissions @done(2016-03-02) @project(results)
+		see old working
+	- sort out table and figure numbering @done(2016-03-02) @project(results)
+	- comments to move to the discussion @done(2016-03-02) @project(results)
+		- suggesting that, unless there are unmeasured patient level risk factors more important than those already measured, this variability is not due to incomplete risk adjustment.
+	- add decision making into survival model  @done(2016-03-02) @project(results)
+		not because you are interested in its effect, but because you wish to examine the MHR after adjusting for decision - and whether or not that is how 'site' contributes to outcome
+		- estimate model
+		- report/comment if makes a difference to MHR
+		- add note into results re this
+	- figure 1 (strobe plus pathways) @done(2016-03-02) @project(figures)
+		- a strobe
+		- b recommended
+		- c decision
+	- figure 2 (time2icu) @done(2016-03-02) @project(figures)
+		borrow from spot early code
+	- supplementary @done(2016-03-02) @project(figures)
+		- incidence and case finding
+		- daily hazard
+		- severity of illness and outcome
+		- critical care occupancy
+		- schoenfeld_residuals_icnarc_score.jpg
+	- maybe @done(2016-03-02) @project(figures)
+		- time 2 icu figure
+	- table 1 (baseline characteristics) @done(2016-03-02) @project(tables)
+		- modifications 
+					- with age categories
+					- peri-arrest status
+					- assessment timing
+	- table 2 (occupancy effects) @done(2016-03-02) @project(tables)
+	- convert to tables 3a and 3b @done(2016-03-02) @project(tables)
+		- table 3 (determinants of decision to admit)
+		- table 4 (determinants of prompt admission)
+	- incidence table @done(2016-03-02) @project(tables)
+		- caption
+			The bottom line shows the monthly incidence of patients categorised by NEWS Risk Class referred to, and assessed on the ward by critical care. Above this, incidence rate ratios (IRR) with 95%CI	are reported for hospital, and timing factors. 
+	- bed pressure:  high/medium/low @done(2016-03-02) @project(inbox)
+	- fluctuates with season of the year: need figure to back this up @done(2016-03-02) @project(inbox)
+	- add follow-up metric @done(2016-03-01) @project(inbox)
+	- convert -- to 'to' @done(2016-03-02) @project(inbox)
+		 e.g. 
+			(rate ratio 1.82, 1.35 to 2.46)
+			(≥12 hours: rate ratio 1.77, 1.07 to 2.93)
+	- convert incidence model to per 1000 admission metric @done(2016-03-02) @project(inbox)
+	- double check occupancy order in markdown now you have re-levelled room_cmp2  @done(2016-03-02) @project(inbox)
+	- check levels of age category predictors in models (k1 not k0 as baseline) @done(2016-03-02) @project(inbox)
 	- redo predictors @done(2016-02-09) @project(@next)
 	- add in time-varying covariates to survival models @done(2016-02-09) @project(@next)
 	- drop site level predictors except from incidence model @done(2016-02-09) @project(@next)
@@ -391,7 +408,7 @@ Archive:
 	- basic summary in text @done(2015-12-02)
 		✔ descriptive figure @done (15-12-02 13:38)
 	- include description of patient groups as per draft from paper spot early	@done(2015-12-04)
-		- show differences via stream graph which allows inspection of mortality  @done(2015-12-04)
+		- show differences via stream graph which allows inspection of mortality	@done(2015-12-04)
 		- facet stream graph by occupancy
 		- repeat for those recommended for critical care
 	- switch to waf or make file structure @done(2015-11-27)
