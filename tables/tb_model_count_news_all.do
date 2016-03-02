@@ -39,6 +39,8 @@
 * 2015-12-29
 * - removed news high restriction
 * - dropped occupancy vars -  not sure how to interpret
+* 2016-03-02
+* - added in code to est per 1000 overnight admission
 
 
 *  ============================
@@ -119,6 +121,9 @@ save ../data/scratch/scratch.dta, replace
 * Prepare data from working_postflight
 * ------------------------------------
 use ../data/working_postflight.dta, clear
+su hes_overnight if pickone_site
+global hes_overnight_bar = r(mean) 
+di $hes_overnight_bar
 cap drop ccot_p_*
 tabulate ccot_shift_pattern, generate(ccot_p_)
 su ccot_p_*
@@ -210,10 +215,10 @@ su weekend
 tab room_cmp2_l1
 * reset centering for hes_overnight
 lookfor hes
-cap drop pickone_site
-egen pickone_site = tag(icode)
-su hes_overnight if pickone_site
-replace hes_overnight_c = hes_overnight - 50
+* cap drop pickone_site
+* egen pickone_site = tag(icode)
+* su hes_overnight if pickone_site
+* replace hes_overnight_c = hes_overnight - 50
 
 * Data preparation complete
 * -------------------------
@@ -270,6 +275,12 @@ di "U95CI: "  + 7 * (r(estimate) + 1.96 * r(se))
 di "per month: " + 365/12 * r(estimate)
 di "L95CI: "  + 365/12 * (r(estimate) - 1.96 * r(se))
 di "U95CI: "  + 365/12 * (r(estimate) + 1.96 * r(se))
+
+* Stata calc from baseline incidence to per 10000 overnight
+* Equivalent to 22 per month x 12 months / 53.8k overnight admissions/year
+di "per 1000: " + 365 * r(estimate) / $hes_overnight_bar
+di "L95CI: "  + 365 * (r(estimate) / $hes_overnight_bar) - 1.96 * r(se)
+di "U95CI: "  + 365 * (r(estimate) / $hes_overnight_bar) + 1.96 * r(se)
 
 * NOTE: 2014-03-24 - run model with factor variable notation
 * Now use this to calculate the effect of 24/7 outreach on IRR cf 7 days
