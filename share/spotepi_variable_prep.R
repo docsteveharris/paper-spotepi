@@ -16,7 +16,7 @@
 # - file created
 require(data.table)
 require(Hmisc)
-require(datascibc)
+require(dsbc)
 
 source("../share/derive.R")
 
