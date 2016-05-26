@@ -29,6 +29,7 @@ tdt[, surv7 := !dead7]
 (ward.surv.by.icu <- ff.prop.test(surv7, icucmp, data=tdt[bedside.decision=="ward"], dp=0))
 # Patients admitted late
 tdt[, icucmp_not := !icucmp]
+(ward.reco.icu.late <- ff.np(icucmp, data=tdt[bedside.decision=="ward" & recommend==1], dp=0))
 (ward.icu.by.reco <- ff.prop.test(icucmp_not, recommend, data=tdt[bedside.decision=="ward"], dp=0))
 
 ### Patients WITH treatment limits initially refused critical care
@@ -69,6 +70,15 @@ require(pairwiseCI)
 tdt.timing[, refuse := !accept]
 (delay.by.accept <- pairwiseCI(time2icu ~ refuse, data=tdt.timing[bedside.decision!="rxlimits"], method="Median.diff")$byout[[1]])
 names(delay.by.accept)
+
+# Test for trend across medians
+install.packages("clinfun")
+library(clinfun)
+?jonckheere.test
+table(tdt$room_cmp2)
+tdt[, room_cmp2 := ordered(room_cmp2, levels=c("[-5, 1)", "[ 1, 3)", "[ 3,21]"))]
+with(tdt[!is.na(time2icu),.(time2icu, room_cmp2)], 
+    jonckheere.test(time2icu, room_cmp2, nperm=5000))
 
 # Repeat for just those recommended
 (reco.icu <- ff.np(icucmp, tdt[recommend==1]))

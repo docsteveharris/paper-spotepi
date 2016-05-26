@@ -10,7 +10,7 @@ source("5_results_01start.R")
 
 # Results
 
-48 hospitals reported 20893 visits over 435 months. 2694 visits (12.9\%) did not meet the inclusion criteria including 1860 (8.9\%) repeat visits, and 586 (2.8\%) patients recently discharged from critical care. Data linkage was incomplete (\< 80\%) for 66 (15\%) study-months excluding a further 2440 (11.7\%) visits. Therefore 15759 patients were recruited to the study, of which 15158 (96.1\%) completed follow-up without error and were available for analysis (Figure 1). Final data linkage (ward visits to critical care admissions) was 93\% complete.
+48 hospitals reported 20,893 visits for ward assessment over 435 study months. 2,694 visits (12.9\%) did not meet the inclusion criteria including 1,860 (8.9\%) repeat assessments, and 586 (2.8\%) assessments for recent critical care discharges. Data linkage did not meet the quality control level (\> 80\%) for 66 (15\%) study-months excluding a further 2,440 (11.7\%) visits. Of the 15,759 patients remaining, 15,158 (96.1\%) completed follow-up without error and were available for analysis (Figure 1). Final data linkage (ward visits to critical care admissions) was 93\% complete.
 
 ## Participating hospitals
 ```{r hospitals, include=FALSE, echo=FALSE}
@@ -20,62 +20,65 @@ source("5_results_04hospitals.R")
 source("5_results_05occupancy.R")
 ```
 
-The participating hospitals comprised `r n.teach` teaching and `r n.dgh` general hospitals that each collected data between September 2010 and December 2011 for a median of `r smonths$q50` months (IQR `r smonths$iqr` months). Each hospital contributed a median of `r pts_q$q50` patients (IQR `r pts_q$iqr`). Critical Care Outreach Teams (CCOT) operated 24 hours/day and 7 days/week in `r ccot$n[4]` (`r ccot$p[4]`) hospitals, less than 24 hours/day in `r ccot$n[3]` (`r ccot$p[3]`) hospitals, and less than 7 days/week in `r ccot$n[2]` (`r ccot$p[2]`) hospitals. Two hospitals had no CCOT.
+Participating hospitals comprised `r n.teach` teaching and `r n.dgh` general hospitals collecting data for a median of `r smonths$q50` months (IQR `r smonths$iqr` months) between September 2010 and December 2011. Each contributed a median of `r pts_q$q50` patients (IQR `r pts_q$iqr`). CCOTs operated 24 hours/day and 7 days/week in `r ccot$n[4]` (`r ccot$p[4]`) hospitals, less than 24 hours/day in `r ccot$n[3]` (`r ccot$p[3]`) hospitals, and less than 7 days/week in `r ccot$n[2]` (`r ccot$p[2]`) hospitals. Two hospitals had no CCOT.
 
-There was a median of `r beds$q50` (IQR `r beds$iqr`) critical care beds per hospital (mixed Level 2 [typically intensive monitoring or single organ support], and Level 3 [ventilated or multiple organ support]), most often co-located in a single physical location (`r colocate$n[1]` hospitals).
 
-Bed pressure was high (zero or fewer beds) for `r room$n[1]` (`r room$p[1]`) assessments, medium (one or two beds available) for `r room$n[2]` (`r room$p[2]`) assessments, and low (three or more beds available) for the remaining `r room$n[3]` (`r room$p[3]`) assessments. Critical care occupancy fluctuated with time of the day, day of the week, and season of the year (supplementary Figure 1).
+There was a median of `r beds$q50` (IQR `r beds$iqr`) adult general critical care beds per hospital (mixed Level 2 [typically intensive monitoring or single organ support], and Level 3 [ventilated or multiple organ support]), most often co-located in a single physical location (`r colocate$n[1]` hospitals).
 
-## Incidence of critical care referrals
+Bed pressure was high (zero or fewer available beds) at the time of `r room$n[1]` (`r room$p[1]`) ward assessments, medium (one or two beds available) for `r room$n[2]` (`r room$p[2]`) assessments, and low (three or more beds available) for the remaining `r room$n[3]` (`r room$p[3]`) assessments. Critical care occupancy fluctuated with time of the day, day of the week, and season of the year (supplementary Figure 1).
 
-We estimated the mean baseline (non-teaching hospital with 60,000 admissions per year and 24/7 CCOT provision) incidence of referrals to critical care at 46 (95\% confidence interval 50 to 54) patients per month of which 17 (95\%CI 17 to 18) patients met the NEWS high risk criteria at assessment. This is equivalent to 8 unselected referrals or 3 NEWS high risk referrals per 1,000 overnight admissions. As critical care outreach provision decreased then the number of patients assessed fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14 to 1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82 to 0.92) than the rest of year. When we included a measure of case finding in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but may have begun to plateau for the hospitals with referral rates in the highest quartile (supplementary Figure 2).
+## Incidence of referrals for ward assessment by critical care
 
-## Patient characteristics
+The mean baseline incidence of referrals to critical care (for a non-teaching hospital with 60,000 admissions per year and 24/7 CCOT provision) was 46 (95\%CI 50 to 54) patients per month of whom 17 (95\%CI 17 to 18) patients met the NEWS high risk criteria at assessment. This is equivalent to 8 unselected referrals or 3 NEWS high risk referrals per 1,000 overnight admissions. 
+
+With decreasing provision of critical care outreach, the number of patients assessed also fell (supplementary Table 1). Winter was busier (IRR 1.22, 95\%CI 1.14 to 1.31), and weekends quieter (IRR 0.87, 95\%CI 0.82 to 0.92) than the rest of the year. When a measure of case finding was included in the models (cases assessed per 1000 overnight hospital admissions), referral incidence increased initially but then began to plateau for those hospitals with referral rates in the highest quartile (supplementary Figure 2).
+
+## Patient characteristics and outcomes
 ```{r patients, include=FALSE, echo=FALSE}
 source("5_results_03patients.R")
 ```
 
-Table 1 shows the baseline data for all ward patients assessed. Sepsis was reported in `r sepsis$n[2]` patients (`r sepsis$p[2]`). Of these, the respiratory system was considered to be the source in half (`r s.resp.n`, `r s.resp.p`). Organ failure, defined as a SOFA score greater than or equal to two, was present in `r odys$n[2]` of patients (`r odys$p[2]`). `r rdys$n[2]` patients (`r rdys$p[2]`) were in respiratory failure, `r kdys$n[2]` (`r kdys$p[2]`) were in renal failure, and `r shock$n[2]` (`r shock$p[2]`) were shocked. Organ support at the time of assessment was uncommon (`r osupp$n[2]` patients, `r osupp$p[2]`).
+Table 1 presents the baseline data for all ward patients assessed. Sepsis was reported in `r sepsis$n[2]` patients (`r sepsis$p[2]`). Of these, the respiratory system was considered to be the source about half (`r s.resp.n`, `r s.resp.p`). Organ failure, defined as a SOFA score greater than or equal to two, was present in `r odys$n[2]` of patients (`r odys$p[2]`). `r rdys$n[2]` patients (`r rdys$p[2]`) were in respiratory failure, `r kdys$n[2]` (`r kdys$p[2]`) were in renal failure, and `r shock$n[2]` (`r shock$p[2]`) were in cardiovascular shock. Organ support at the time of assessment was uncommon (`r osupp$n[2]` patients, `r osupp$p[2]`).
 
-`r dead7$n[2]` (`r dead7$p[2]`) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with `r dead7.d2$n[2]` (`r dead7.d2$p[2]`) of these deaths occuring in the first 48 hours (supplementary Figure 3). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (supplementary Figure 3). For example, the 7-day mortality was `r d7.news1$p[2]` (`r d7.news1$n[2]` deaths), `r d7.news2$p[2]` (`r d7.news2$n[2]` deaths), and `r d7.news3$p[2]` (`r d7.news3$n[2]` deaths)for NEWS low, medium and high risk classes respectively.
+`r dead7$n[2]` (`r dead7$p[2]`) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with `r dead7.d2$n[2]` (`r dead7.d2$p[2]`) of these deaths occuring within the first 48 hours (supplementary Figure 3). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (supplementary Figure 3). As an example, the 7-day mortality was `r d7.news1$p[2]` (`r d7.news1$n[2]` deaths), `r d7.news2$p[2]` (`r d7.news2$n[2]` deaths), and `r d7.news3$p[2]` (`r d7.news3$n[2]` deaths)for NEWS low, medium and high risk classes respectively.
 
-The critical care assessor judged that `r recommend$n[2]` patients (`r recommend$p[2]`) required critical care. These patients had a higher physiological severity of illness (ICNARC physiology score `r icnarc.by.reco$est2` versus `r icnarc.by.reco$est1`, 95% confidence interval for difference `r icnarc.by.reco$ci`), and a greater 7-day mortality (`r d7.reco$est2` versus `r d7.reco$est1`, difference `r d7.reco$ci`). There was a clear correlation between measured severity and the assessors judgement of need (supplementary Figure 5).
+The critical care assessors judged that `r recommend$n[2]` patients (`r recommend$p[2]`) required critical care. These patients had a higher physiological severity of illness (ICNARC physiology score `r icnarc.by.reco$est2` versus `r icnarc.by.reco$est1`, 95% confidence interval for difference `r icnarc.by.reco$ci`), and a greater 7-day mortality (`r d7.reco$est2` versus `r d7.reco$est1`, difference `r d7.reco$ci`). There was a clear correlation between measured severity and the assessors' judgements of need (supplementary Figure 5).
 
-Overall mortality at 90-days was `r dead90$p[2]` (`r dead90$n[2]` patients), and at one year was `r dead1y$p[2]` (`r dead1y$n[2]` patients) respectively.
+<!-- - [ ] TODO(2016-05-23): check this is *overall* -->
+Overall mortality at 90-days was `r dead90$p[2]` (`r dead90$n[2]` patients), and at one year was `r dead1y$p[2]` (`r dead1y$n[2]` patients).
 
-## Patient pathways following ward assessment
+## Patient pathways following ward assessment by critical care
 ```{r pathways, include=FALSE, echo=FALSE}
 source("5_results_06pathways.R")
 ```
 
-Patients were classified into three groups following the ward assessment: those refused admission with treatment limits (pre-existing or otherwise); those refused admission without treatment limits (active ward care); and, those offered immediate critical care (Figure 1).
+Patients were classified into three groups following the initial ward assessment: `r decision$n[3]` patients (`r decision$p[3]`) declined admission with treatment limits (pre-existing or newly-placed); `r decision$n[2]` patients (`r decision$p[2]`) declined admission without treatment limits (Ongoing ward care); and `r decision$n[1]` patients (`r decision$p[1]`) offered immediate critical care.
 
-There were `r decision$n[3]` patients (`r decision$p[3]`) refused with treatment limits, `r decision$n[2]` patients (`r decision$p[2]`) assigned to active ward-care,  and `r decision$n[1]` patients (`r decision$p[1]`) immediately offered critical care.
+### Declined critical care with treatment limits
 
-### Refused critical care with treatment limits
+The `r decision$n[3]` patients with treatment limits had a 7-day mortality of `r limits.dead7$p[2]` (`r limits.dead7$n[2]` deaths). The initial decision to decline admission was reversed in just `r limits.icucmp$n[2]` patients (`r limits.icucmp$p[2]`) of whom `r limits.icu.dead7$n[2]` (`r limits.icu.dead7$p[2]`) died within the week. Although the final 90-day mortality was substantial `r limits.dead90$p[2]` (`r limits.dead90$n[2]` deaths), `r limits.dead1y$n[1]` patients (`r limits.dead1y$p[1]`) survived for at least year despite the decision.
 
-The `r decision$n[3]` patients with treatment limits had a 7-day mortality of `r limits.dead7$p[2]` (`r limits.dead7$n[2]` deaths). The initial decision to refuse admission was reversed in just `r limits.icucmp$n[2]` patients (`r limits.icucmp$p[2]`) of whom `r limits.icu.dead7$n[2]` (`r limits.icu.dead7$p[2]`) died within the week. Although the final 90-day mortality was substantial `r limits.dead90$p[2]` (`r limits.dead90$n[2]` deaths), `r limits.dead1y$n[1]` patients (`r limits.dead1y$p[1]`) survived a year despite the decision.
+Patients declined critical care with treatment limits were older (`r age.by.limits$est2` versus `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell (`r icnarc.by.limits$est2` versus `r icnarc.by.limits$est1` ICNARC physiology points, 95%CI for the difference `r icnarc.by.limits$ci`) than those assigned Ongoing ward care. Critical care occupancy did not affect the proportion of patients declined admission with treatment limits (Table 2).
 
-Patients refused with treatment limits were older (`r age.by.limits$est2` versus `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell (`r icnarc.by.limits$est2` vs `r icnarc.by.limits$est1` ICNARC points, difference `r icnarc.by.limits$ci`) than those assigned active ward care. Critical care occupancy did not affect the proportion of patients refused admission with treatment limits (Table 2).
+### Ongoing ward care
 
-### Active ward care
+The `r decision$n[2]` patients for ongoing ward care had a 7-day mortality of `r ward.dead7$p[2]` (`r ward.dead7$n[2]` deaths). Most deaths (`r ward.dead7.icu$n[1]` deaths `r ward.dead7.icu$p[1]`)  occured on the ward but `r ward.dead7.icu$n[2]` deaths (`r ward.dead7.icu$p[2]`) followed delayed critical care admission. The initial decision to decline critical care was reversed within the week for `r ward.icucmp$n[2]` patients (`r ward.icucmp$p[2]`), so a total of `r ward.icu.or.dead7$n[2]` (`r ward.icu.or.dead7$p[2]`) patients died or were admitted to critical care.
 
-The `r decision$n[2]` patients for active ward care had a 7-day mortality of `r ward.dead7$p[2]` (`r ward.dead7$n[2]` deaths). Most deaths (`r ward.dead7.icu$n[1]` deaths `r ward.dead7.icu$p[1]`)  occured on the ward but `r ward.dead7.icu$n[2]` deaths (`r ward.dead7.icu$p[2]`) followed delayed critical care admission. The initial decision to refuse critical care was reversed for `r ward.icucmp$n[2]` patients (`r ward.icucmp$p[2]`), so a total of `r ward.icu.or.dead7$n[2]` (`r ward.icu.or.dead7$p[2]`) patients died or were admitted to critical care.
-
-The active ward care group included `r ward.reco$n[2]` (`r ward.reco$p[2]`) patients who had been recommended critical care on assessment. These patients had a higher 7-day mortality (`r ward.surv.by.reco$est2` versus `r ward.surv.by.reco$est1`,  95% confidence interval for difference `r ward.surv.by.reco$ci`), and were more likely to have the initial refusal reversed (`r ward.icu.by.reco$est2` versus `r ward.icu.by.reco$est1`,  risk difference `r ward.icu.by.reco$ci`). 
+The ongoing ward care group included `r ward.reco$n[2]` (`r ward.reco$p[2]`) patients who had nonetheless been recommended critical care by the assessor. These patients had a higher 7-day mortality (`r ward.surv.by.reco$est2` versus `r ward.surv.by.reco$est1`,  95% confidence interval for difference `r ward.surv.by.reco$ci`), and were more likely to have the initial refusal reversed (`r ward.icu.by.reco$est2` versus `r ward.icu.by.reco$est1`,  risk difference `r ward.icu.by.reco$ci`). 
 
 ### Immediate critical care
 
 The `r decision$n[1]` patients immediately accepted to critical care had a 7-day mortality of `r icu.dead7$p[2]` (`r icu.dead7$n[2]` deaths). Just `r icu.dead7.pre$n[1]` (`r icu.dead7.pre$p[1]`) of those deaths occurred before admission was arranged, but a further `r icu.icucmp$n[1]` patients (`r icu.icucmp$p[1]`) were never admitted but survived nonetheless.
 
-Those offered immediate admission were marginally younger (`r age.by.icu$est1` versus `r age.by.icu$est2` years, 95\%CI `r age.by.icu$ci` years), but distinctly more unwell (`r icnarc.by.icu$est1` versus `r icnarc.by.icu$est2` ICNARC physiology points, 95\%CI `r icnarc.by.icu$ci`) than the active ward care group. As critical care occupancy at the time of the ward assessment increased, patients were less likely to be immediately accepted (Table 2, Cochran-Armitage test for trend p<0.0001).
+Those offered immediate admission were marginally younger (`r age.by.icu$est1` versus `r age.by.icu$est2` years, 95\%CI `r age.by.icu$ci` years), but distinctly more unwell (`r icnarc.by.icu$est1` versus `r icnarc.by.icu$est2` ICNARC physiology points, 95\%CI `r icnarc.by.icu$ci`) than the ongoing ward care group. As critical care occupancy at the time of the ward assessment increased, patients were less likely to be immediately accepted (Table 2, Cochran-Armitage test for trend p<0.0001).
 
 ## Delay to admission to critical care
 
-The median delay between assessment and admission for patients immediately accepted was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`) compared to `r ward.delay$q50` hours (IQR `r ward.delay$iqr`) for late admissions from the active ward care group (median additional delay `r delay.by.accept$estimate` hours, IQR `r delay.by.accept$lower` to `r delay.by.accept$upper`) (Figure 2a). This meant that `r icu.early4$n[2]` (`r icu.early4$p[2]`) admissions were achieved within 4 hours for those immediately accepted versus `r ward.early4$n[2]` (`r ward.early4$p[2]`) for those initially refused (risk difference `r early4.by.accept$d`, 95\%CI `r early4.by.accept$ci`). For the subgroup recommended to critical care whose initial refusal was later reversed, the median delay to admission was `r ward.delay.reco$q50` hours (IQR `r ward.delay.reco$iqr`).
+The median delay between assessment and admission for patients immediately accepted was `r icu.delay$q50` hours (IQR `r icu.delay$iqr`) compared to `r ward.delay$q50` hours (IQR `r ward.delay$iqr`) for those whose initial refusal was subsequently reversed (median additional delay `r delay.by.accept$estimate` hours, IQR `r delay.by.accept$lower` to `r delay.by.accept$upper`) (Figure 2a). Thus prompt admission (within 4 hours) was delivered for `r icu.early4$n[2]` patients (`r icu.early4$p[2]`) when immediately accepted versus `r ward.early4$n[2]` (`r ward.early4$p[2]`) when initially declined (risk difference `r early4.by.accept$d`, 95\%CI `r early4.by.accept$ci`).
 
-<!-- @resume(2016-03-02): bed pressure phrasing ... -->
-Increasing occupancy at assessment increased the median delay from 3 (low bed pressure), to 4 (medium pressure), to 6 hours (high pressure, Figure 2b, Cochran-Armitage test for trend p<0.0001).
+For the subgroup of `r ward.reco.icu.late$n[2]` ongoing ward care patients who had been recommended for critical care (by their assessor), but were initially declined, and later had that refusal reversed, the median delay to admission was `r ward.delay.reco$q50` hours (IQR `r ward.delay.reco$iqr`).
+
+Increasing occupancy at assessment increased the median delay from 3 (low bed pressure), to 4 (medium pressure), to 6 hours (high pressure, Figure 2b, Jonckheere-Terpstra test for trend p=0.0004).
 
 ## Determinants of a decision to admit
 ```{r decision, include=FALSE, echo=FALSE}
@@ -84,22 +87,22 @@ source("5_results_07models.R")
 
 We built a multi-level (patients nested within hospitals) logistic regression model to examine factors associated with a decision to admit for patients without treatment limits (Table 3). As with the univariate comparisons above, older patients were less likely to be admitted (patients over 80 years: odds ratio 0.60, 0.53 to 0.69), and more acutely unwell patients were more likely to be admitted (OR 1.07 per ICNARC physiology point, 95% confidence interval 1.06 to 1.07). Similarly, patients already receiving organ support (1.83, 1.55 to 2.16), or clinically judged to be peri-arrest (6.32, 5.18 to 7.70) were also more likely to be admitted.
 
-Patients referred out-of-hours (7pm-7am), during the weekend, or during the winter were more likely to be offered critical care (odds ratios between 1.04 to 1.33), but those assessed when bed pressure was high (OR 0.70,  0.57 to 0.86), or medium (0.87, 0.77 to 0.98) were less likely to be accepted. We estimated that in this sample had there been no limitations on capacity then an additional 122 patients (95\%CI 53 to 186) would have been immediately accepted.
+Patients referred out-of-hours (7pm-7am), during the weekend, or during the winter were more likely to be offered critical care (odds ratios between 1.04 to 1.33), but those assessed when bed pressures were high (OR 0.70,  0.57 to 0.86), or medium (0.87, 0.77 to 0.98) were less likely to be accepted. We estimated, that in this sample, an additional 122 patients (95\%CI 53 to 186) would have been immediately accepted had there been no limitations on critical care capacity.
 
-The model also demonstrated significant hospital level variation with a Median Odds Ratio (MOR) of 2.11 (95\% confidence interval 1.81 to 2.42) which differed little to that estimated excluding patient predictors (MOR 2.18, 1.82 to 2.60). The MOR summarises the differences when comparing decision making for similar patients from any two randomly selected hospitals, and consistency when excluding patient level predictors suggests that it is a true hospital level difference.
+The model also demonstrated significant hospital level variation with a MOR of 2.11 (95\% confidence interval 1.81 to 2.42) which differed little to that estimated excluding patient predictors (MOR 2.18, 1.82 to 2.60). The MOR summarises the differences when comparing decision making for similar patients from any two randomly selected hospitals, and consistency when excluding patient level predictors suggests that it is a true hospital level difference.
 
 ## Determinants of prompt admission
 
-The modelling was repeated but now with the delivery of admission to critical care within 4 hours (a prompt admission) as the outcome, and the decision to admit as an additional predictor (Table 3). We excluded an additional `r elgthtr$n[3]` (`r elgthtr$p[3]`) patients where surgery between assessment and admission inevitably delayed that admission.
+The modelling was repeated but now with the delivery of admission to critical care within 4 hours (a prompt admission) as the outcome, and the decision to admit as an additional predictor (Table 3). In this analysis, we also excluded `r elgthtr$n[3]` (`r elgthtr$p[3]`) patients whose admission was inevitably delayed urgent surgery.
 
-The associations between prompt admission and patient level predictors were broadly similar with younger and sicker patients being admitted more promptly. However, patients assessed during the winter, while being more likely to be offered critical care, were now less likely to be admitted promptly (odds ratio 0.76, 0.64 to 0.90). The strongest predictor of prompt admission was a decision to admit at the initial bedside assessment (odds ratio 69, 59 to 81). Even though the decision to admit was included in the model, bed pressure still had a marked effect (high pressure: 0.27, 0.19 to 0.37) and hospital level variation persisted (MOR 1.89, 1.63 to 2.21).
+The patient-level predictors of prompt admission were broadly similar to those for decisions to admit, with younger and sicker patients being admitted more promptly. However, patients assessed during the winter, while being more likely to be offered critical care, were less likely to be admitted promptly (OR 0.76, 0.64 to 0.90). The strongest predictor of prompt admission was a decision to admit at the initial bedside assessment (OR 69, 59 to 81). Even though the decision to admit was included in the model, bed pressure still had a marked effect (high pressure: 0.27, 0.19 to 0.37) and hospital level variation persisted (MOR 1.89, 1.63 to 2.21).
 
 ## Determinants of 90-day mortality
 ```{r survival, include=FALSE, echo=FALSE}
 source("5_results_08survival.R")
 ```
 
-Amongst patients without treatment limits, there were `r t.surv$n[2]` deaths (`r t.surv$fail[2]`) by the end of the first day, `r t.surv$n[3]` (`r t.surv$fail[3]`) by the end of the first week, `r t.surv$n[4]` (`r t.surv$fail[4]`) by the end of the first month, and `r t.surv$n[5]`(`r t.surv$fail[5]`) by 90 days (proportions from Kaplan-Meier failure function).
+Amongst patients without treatment limits, there were `r t.surv$n[2]` deaths (`r t.surv$fail[2]`) by the end of the first day, `r t.surv$n[3]` (`r t.surv$fail[3]`) by the end of the first week, `r t.surv$n[4]` (`r t.surv$fail[4]`) by the 30 days, and `r t.surv$n[5]`(`r t.surv$fail[5]`) by 90 days (proportions from Kaplan-Meier failure function).
 
 A series of models were fitted with 90-day survival as the dependent variable for patients without treatment limits. The final best model (Table 4) incorporated a time-varying effect for measured physiological severity and reported peri-arrest status such that their effects were attenuated after the first week (supplementary Figure 6).
 
@@ -107,6 +110,6 @@ Other patient level risk factors were consistent with the existing literature on
 
 Critical care occupancy did not affect adjusted mortality in the multi-level model (high pressure: hazard ratio 1.03, 95\% confidence interval 0.90 to 1.17). A single level model (supplementary Table 2), constructed in case occupancy was mediated through rather than confounded by the effect of the hospital, similarly could not exclude a null effect (hazard ratio 1.07, 1.00 to 1.15, p=0.06).
 
-The full multi-level model demonstrated significant hospital level variation in survival (median hazard ratio 1.28, 1.22 to 1.34) which was little altered by adjustment for patient level risk factors (MHR 1.29, 1.22 to 1.35).
+The full multi-level model demonstrated significant hospital level variation in survival (MHR 1.28, 1.22 to 1.34) which was little altered by adjustment for patient level risk factors (MHR 1.29, 1.22 to 1.35).
 
 Repeating the survival model in the subgroup recommended to critical care at the initial assessment produced similar effects albeit with less precision (supplementary Table 2).
