@@ -40,24 +40,9 @@ The second weakness is structural rather than operational, and is that, in defin
 
 
 ## Conclusions and implications for practice and future research
-<!-- Conclusion,
-- Address, but do not “over-sell”, perceived significance of the study to the field and possible implications for practice/policy
-- Ensure conclusions relate directly to the stated a priori hypothesis (and not hypotheses from other studies or outside the area of the study)
-- Avoid excessive generalizations of the implications, including unjustified extrapolations beyond the actual population(s) studied
-- Remember that except for randomized, controlled trials, there can only be testable hypotheses and observed associations, rather than rigorous proof of cause and effect
-- Address areas for improvement with future studies
- -->
 
 Aspects of the study stand in spite of these limitations. Ward patients referred to critical care numerous, and vulnerable. The opportunity for intervention is brief, and there is important variation in practice between hospitals. The bedside assessment is an effective but imperfect triage tool, as the mortality in those initially declined admission is high. Given that we already excluded patients with treatment limitations, it is of concern that around half of these early deaths occur without a trial of critical care.
 
 A substantial proportion of patients assessed and recommended for critical care are not offered a bed, and this proportion increases when capacity is limited. Expanding critical care bed numbers would first and foremost benefit this group. However, it might also create a virtuous circle. Earlier admission may lead to shorter stays thereby improving flow through critical care as well as outcomes. Identifying those patients who should be admitted promptly is already the top priority for both clinicians and patients.[@Reay:2014vm] What we have contributed we hope, is firm evidence in support of this.
 
-
-<!-- move this to the end to explain how these all link and why the decision should not be seen in isolation -->
-<!-- start of section -->
-This delivery of prompt critical care depends on a chain of events: the hospital must have the appropriate infrastructure; the acute illness must occur when there is critical care capacity; the bedside assessor must recognise the imminent risk to the patient; and, finally the critical care gatekeeper must act on the recommendation. 
-In our model, the most important of these events was that final decision to admit although the decision d
-
-, but both through that decision, and in addition to it, critical care capacity, and wider hospital factors affect the delivery of prompt critical care.
-<!-- end of section -->
 
