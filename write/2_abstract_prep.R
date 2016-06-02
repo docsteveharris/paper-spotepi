@@ -53,10 +53,9 @@ tt$reco_late <- ff.np(reco_late, data=tt$reco_late, dp=0)
 tt$reco_d7ward <- data.table(reco_d7ward = 
 	wdt[rxlimits==0 & icu_recommend==1 & icu_accept==0,
 		ifelse(dead7==1 & icucmp==0, 1, 0)])
-tt$reco_d7ward <- ff.np(reco_d7ward, data=tt$reco_d7ward)
+tt$reco_d7ward <- ff.np(reco_d7ward, data=tt$reco_d7ward, dp=0)
 
 # Mortality without limits
-tt$dead7 <- ff.np(dead7, data=wdt[rxlimits==0], dp=0)
 tt$dead7 <- ff.np(dead7, data=wdt[rxlimits==0], dp=0)
 tt$dead90 <- ff.np(dead90, data=wdt[rxlimits==0], dp=0)
 tt$dead1y <- ff.np(dead1y, data=wdt[rxlimits==0], dp=0)

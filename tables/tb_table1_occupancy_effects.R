@@ -54,9 +54,6 @@
 # update.packages(type='source')
 rm(list=ls(all=TRUE))
 
-# Define file name
-table1.file <- "../write/tables/table1_all.xlsx"
-
 library(assertthat)
 library(data.table)
 library(reshape2)
@@ -101,12 +98,19 @@ with(wdt, CrossTable(alive7noICU, room_cmp2))
 wdt[,dead7noICU := ifelse(dead7==1 & icucmp==0,1,0)]
 with(wdt, CrossTable(dead7noICU, room_cmp2))
 
+# Below assumes normal dist - prob OK
 describe(wdt$ims1)
 with(wdt, tapply(ims1, room_cmp2, summary))
 describe(wdt$ims2)
 with(wdt, tapply(ims2, room_cmp2, summary))
 describe(wdt$ims_delta)
 with(wdt, tapply(ims_delta, room_cmp2, summary))
+
+# Checking with medians
+tdt <- copy(wdt)
+library(clinfun)
+with(tdt[!is.na(ims_delta),.(ims_delta, room_cmp2 = factor(room_cmp2, ordered=TRUE))], 
+    jonckheere.test(ims_delta, room_cmp2, nperm=1000))
 
 # Define strata
 vars.strata <-  'room_cmp2' # i.e. inspect all patients

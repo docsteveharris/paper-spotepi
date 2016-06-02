@@ -72,7 +72,7 @@ tdt.timing[, refuse := !accept]
 names(delay.by.accept)
 
 # Test for trend across medians
-install.packages("clinfun")
+# install.packages("clinfun")
 library(clinfun)
 ?jonckheere.test
 table(tdt$room_cmp2)
