@@ -174,9 +174,9 @@ def task_sfig_dead7_aps():
         "file_dep": ["figures/fg_dead7_aps_severity.R",
                     "data/paper-spotepi.RData"],
         "targets":  [
-                    "write/figures/fg_dead7_sofa.jpg",
-                    "write/figures/fg_dead7_icnarc.jpg",
-                    "write/figures/fg_dead7_news.jpg"
+                    "write/figures/fg_dead7_sofa.pdf",
+                    "write/figures/fg_dead7_icnarc.pdf",
+                    "write/figures/fg_dead7_news.pdf"
                     ],
         "actions": ["R CMD BATCH figures/fg_dead7_aps_severity.R ../logs/fg_dead7_aps_severity.Rout"]
     }
@@ -362,9 +362,16 @@ def task_tb_model_survival_siteonly():
 #                    | |                                                 | |        
 #                    |_|                                                 |_|        
 
+def task_results():
+    """Convert R markdown results sections of manuscript"""
+    # - [ ] TODO(2016-06-02): rmarkdown build for abstract
+    # - [ ] TODO(2016-06-02): rmarkdown build for results
+
+
 def task_manuscript():
     """Prepare manuscript"""
     return {
+        # "uptodate": [True], # forces task to run - useful when debugging
         "targets":  ["write/manuscript/paper.docx"],
         "actions": [
             """pandoc \
@@ -372,6 +379,7 @@ def task_manuscript():
                 --normalize \
                 --reference-docx=write/manuscript/pandoc-reference.docx  \
                 write/1_title.md \
+                write/2_abstract.md \
                 write/3_intro.md \
                 write/4_methods.md \
                 write/5_results.md \
