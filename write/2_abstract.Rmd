@@ -20,7 +20,7 @@ We conducted a prospective cohort study of consecutive deteriorating ward patien
 
 ## Findings
 
-Critical care teams assessed `r tt$patients` patients of whom `r tt$news_high$n` (`r tt$news_high$p`) were in the highest NEWS risk class giving an incidence of 17 NEWS high risk patients (95\%CI 17--18) per hospital per month. `r odys$n[2]` (`r odys$p[2]`) patients were already in established organ failure with only `r osupp$n[2]` patients (`r osupp$p[2]`) already on organ support. Sepsis was reported in `r sepsis$n[2]` (`r sepsis$p[2]`) patients.
+Critical care teams assessed `r tt$patients` patients of whom `r tt$news_high$n` (`r tt$news_high$p`) were in the highest NEWS risk class giving an incidence of 17 NEWS high risk patients (95\%CI 17--18) per hospital per month. `r odys$n[2]` (`r odys$p[2]`) patients were already in established organ failure. Sepsis was reported in `r sepsis$n[2]` (`r sepsis$p[2]`) patients.
 
 `r tt$rxlimits$n[2]` (`r tt$rxlimits$p[2]`) patients with treatment limitation orders were declined critical care. 7-day, 90-day, and 1-year mortalities were `r tt$rxlimits_dead7$p[2]`, `r tt$rxlimits_dead90$p[2]`, and `r tt$rxlimits_dead1y$p[2]` respectively.
 

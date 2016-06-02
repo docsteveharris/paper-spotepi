@@ -42,9 +42,8 @@ Table 1 presents the baseline data for all ward patients assessed. Sepsis was re
 
 `r dead7$n[2]` (`r dead7$p[2]`) patients died during the 7-days following ward assessment. Mortality was heavily front-loaded with `r dead7.d2$n[2]` (`r dead7.d2$p[2]`) of these deaths occuring within the first 48 hours (supplementary Figure 3). There was a clear correlation between physiological severity and early (7-day) mortality using either ward based (NEWS) or critical care scoring systems (SOFA, ICNARC) (supplementary Figure 3). As an example, the 7-day mortality was `r d7.news1$p[2]` (`r d7.news1$n[2]` deaths), `r d7.news2$p[2]` (`r d7.news2$n[2]` deaths), and `r d7.news3$p[2]` (`r d7.news3$n[2]` deaths)for NEWS low, medium and high risk classes respectively.
 
-The critical care assessors judged that `r recommend$n[2]` patients (`r recommend$p[2]`) required critical care. These patients had a higher physiological severity of illness (ICNARC physiology score `r icnarc.by.reco$est2` versus `r icnarc.by.reco$est1`, 95% confidence interval for difference `r icnarc.by.reco$ci`), and a greater 7-day mortality (`r d7.reco$est2` versus `r d7.reco$est1`, difference `r d7.reco$ci`). There was a clear correlation between measured severity and the assessors' judgements of need (supplementary Figure 5).
+The critical care assessors recommended `r recommend$n[2]` patients (`r recommend$p[2]`) for critical care. These patients had a higher physiological severity of illness (ICNARC physiology score `r icnarc.by.reco$est2` versus `r icnarc.by.reco$est1`, 95% confidence interval for difference `r icnarc.by.reco$ci`), and a greater 7-day mortality (`r d7.reco$est2` versus `r d7.reco$est1`, difference `r d7.reco$ci`). There was a clear correlation between measured severity and the assessors' judgements of need (supplementary Figure 5).
 
-<!-- - [ ] TODO(2016-05-23): check this is *overall* -->
 Overall mortality at 90-days was `r dead90$p[2]` (`r dead90$n[2]` patients), and at one year was `r dead1y$p[2]` (`r dead1y$n[2]` patients).
 
 ## Patient pathways following ward assessment by critical care
@@ -52,13 +51,13 @@ Overall mortality at 90-days was `r dead90$p[2]` (`r dead90$n[2]` patients), and
 source("5_results_06pathways.R")
 ```
 
-Patients were classified into three groups following the initial ward assessment: `r decision$n[3]` patients (`r decision$p[3]`) declined admission with treatment limits (pre-existing or newly-placed); `r decision$n[2]` patients (`r decision$p[2]`) declined admission without treatment limits (Ongoing ward care); and `r decision$n[1]` patients (`r decision$p[1]`) offered immediate critical care.
+Patients were classified into three groups following the initial ward assessment: `r decision$n[3]` patients (`r decision$p[3]`) declined admission with treatment limits (pre-existing or newly-placed); `r decision$n[2]` patients (`r decision$p[2]`) declined admission without treatment limits (ongoing ward care); and `r decision$n[1]` patients (`r decision$p[1]`) offered immediate critical care.
 
 ### Declined critical care with treatment limits
 
 The `r decision$n[3]` patients with treatment limits had a 7-day mortality of `r limits.dead7$p[2]` (`r limits.dead7$n[2]` deaths). The initial decision to decline admission was reversed in just `r limits.icucmp$n[2]` patients (`r limits.icucmp$p[2]`) of whom `r limits.icu.dead7$n[2]` (`r limits.icu.dead7$p[2]`) died within the week. Although the final 90-day mortality was substantial `r limits.dead90$p[2]` (`r limits.dead90$n[2]` deaths), `r limits.dead1y$n[1]` patients (`r limits.dead1y$p[1]`) survived for at least year despite the decision.
 
-Patients declined critical care with treatment limits were older (`r age.by.limits$est2` versus `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell (`r icnarc.by.limits$est2` versus `r icnarc.by.limits$est1` ICNARC physiology points, 95%CI for the difference `r icnarc.by.limits$ci`) than those assigned Ongoing ward care. Critical care occupancy did not affect the proportion of patients declined admission with treatment limits (Table 2).
+Patients declined critical care with treatment limits were older (`r age.by.limits$est2` versus `r age.by.limits$est1` years, 95\%CI for difference `r age.by.limits$ci` years), and more acutely unwell  than those assigned ongoing ward care (`r icnarc.by.limits$est2` versus `r icnarc.by.limits$est1` ICNARC physiology points, 95%CI for the difference `r icnarc.by.limits$ci`). Critical care occupancy did not affect the proportion of patients declined admission with treatment limits (Table 2).
 
 ### Ongoing ward care
 
@@ -93,9 +92,9 @@ The model also demonstrated significant hospital level variation with a MOR of 2
 
 ## Determinants of prompt admission
 
-The modelling was repeated but now with the delivery of admission to critical care within 4 hours (a prompt admission) as the outcome, and the decision to admit as an additional predictor (Table 3). In this analysis, we also excluded `r elgthtr$n[3]` (`r elgthtr$p[3]`) patients whose admission was inevitably delayed urgent surgery.
+The modelling was repeated but now with the delivery of admission to critical care within 4 hours (a prompt admission) as the outcome, and the decision to admit as an additional predictor (Table 3). In this analysis, we also excluded `r elgthtr$n[3]` (`r elgthtr$p[3]`) patients whose admission was delayed for urgent surgery.
 
-The patient-level predictors of prompt admission were broadly similar to those for decisions to admit, with younger and sicker patients being admitted more promptly. However, patients assessed during the winter, while being more likely to be offered critical care, were less likely to be admitted promptly (OR 0.76, 0.64 to 0.90). The strongest predictor of prompt admission was a decision to admit at the initial bedside assessment (OR 69, 59 to 81). Even though the decision to admit was included in the model, bed pressure still had a marked effect (high pressure: 0.27, 0.19 to 0.37) and hospital level variation persisted (MOR 1.89, 1.63 to 2.21).
+The patient-level predictors of prompt admission were broadly similar to those for decisions to admit, with younger and sicker patients being admitted more promptly. However, patients assessed during the winter, while being more likely to be offered critical care, were less likely to be admitted promptly (OR 0.76, 0.64 to 0.90). The strongest predictor of prompt admission was the decision to admit following the initial bedside assessment (OR 69, 59 to 81). Even though the decision to admit was included in the model, bed pressure still had a marked effect (high pressure: 0.27, 0.19 to 0.37) and hospital level variation persisted (MOR 1.89, 1.63 to 2.21).
 
 ## Determinants of 90-day mortality
 ```{r survival, include=FALSE, echo=FALSE}
