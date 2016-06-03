@@ -6,7 +6,7 @@ Critical care capacity affected the decision to admit, and subsequent patient pa
 
 The consequences of critical care strain, and inter-hospital variation in decision making were two-fold. Firstly, affected patients had their admission delayed either directly (delayed immediate critical care), or indirectly (declined immediate admission before late reversal of the initial decision). Secondly, patients were simply less likely to ever be cared for critical care during the week following assessment. Correspondingly, they were more likely to die on the ward without critical care. This was true even for the cohort of patients for whom the bedside assessor thought critical care was justified.
 
-Despite an immediate decision to admit, one-quarter of patients were still not admitted within the fours hours recommended. Compared to the international literature this four hour target is not strict.[@Stelfox:2012iy; @Robert:2012ep] 
+Despite an immediate decision to admit, one-quarter of patients were still not admitted within the four hours recommended. Compared to the international literature this four hour target is not strict.[@Stelfox:2012iy; @Robert:2012ep] 
 
 The mortality rate in these patients is high. Around one in three patients assessed die within 90-days, and nearly one half do not survive a year. In fact, the mortality is not dissimilar to that seen in the unselected critical care population even though only a mintority of these ward patients were admitted.[@Harrison:2014ei; @Harrison:2007jt]
 
