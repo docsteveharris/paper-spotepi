@@ -24,6 +24,10 @@ inbox:
 		- check/read about which SE to use after bootstrap (simple vs ...)
 			at present assuming central limit theorem holds and sampling by bootstrap creates this distn then use Z
 
+now:
+	- [ ] TODO(2016-06-02): table edits as per DH
+	- [ ] TODO(2016-06-02): methods edit re recommend as per KR
+	- [ ] TODO(2016-06-02): submission to BMJ
 
 paper:
 	abstract:
