@@ -73,3 +73,9 @@ The lead author* affirms that this manuscript is an honest, accurate, and transp
 ### Ethics committee approval
 
 Ethical approval (reference 10/H0306/19) was provided by the NHS National Research Ethics Committee (Cambridgeshire 3) on 2 September 2010 for study protocol version 1.1.
+
+### Data sharing
+
+- [ ] TODO(2016-06-04): 
+
+"Data sharing: patient level data [and/or] full dataset [and/or] technical appendix [and/or] statistical code [and/or] available at [/doi] [with open access/with these restrictions] [from the corresponding author at ]. Participants gave informed consent for data sharing [or ... consent was not obtained but the presented data are anonymised and risk of identification is low ... or consent was not obtained but the potential benefits of sharing these data outweigh the potential harms because ...]"

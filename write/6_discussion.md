@@ -1,5 +1,16 @@
 # Discussion
 
+- [ ] TODO(2016-06-04): 
+ 
+> Structured discussion
+> Please ensure that the discussion section of your article comprises no more than five paragraphs and follows this overall structure, although you do not need to signpost these elements with subheadings:
+> 
+> Statement of principal findings
+> Strengths and weaknesses of the study
+> Strengths and weaknesses in relation to other studies, discussing important differences in results
+> Meaning of the study: possible explanations and implications for clinicians and policymakers
+> Unanswered questions and future research
+
 We describe the events following initial bedside assessment by critical care of more than 15000 ward patients in 48 acute NHS hospitals. Nearly half (45%) of these patients were defined as being at high risk by current guidelines{Anonymous:2012un}, and one-third (33%) were assessed when the critical care unit was under-strain (two or fewer beds available). One in twelve (8%) were assessed when the unit was completely full. 
 
 Critical care capacity affected the decision to admit, and subsequent patient pathways. Moreover, the decision making varied between hospitals. Bias against admitting the elderly provided additional evidence of rationing.

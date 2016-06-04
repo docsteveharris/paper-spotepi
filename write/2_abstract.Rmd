@@ -10,6 +10,35 @@ source("2_abstract_prep.R")
 ```
 # Abstract
 
+Please note that as of 24 October 2015, The BMJ underwent a substantial print redesign. We have dispensed with the Pico summary, and now use restructured abstracts that will appear in the print issue only. Please note that the definitive, online version of the full length article will still have abstracts structured as set out in the guidelines below.
+
+With the new print abstract structure, we hope to merge the best components of the Pico and the online abstract to present the information in a succinct and readable format. We will update this section in due course, but for more details please see this editorial.
+
+Please ensure that the structured abstract is as complete, accurate, and clear as possible—but not unnecessarily long—and has been approved by all authors. We may screen original research articles by reading only the abstract. For randomised controlled trials please provide all the information required for the CONSORT extension for abstracts.
+
+> Please note the general rules for abstracts in The BMJ:
+> 
+> Abstracts should be 250- 300 words long: you may need up to 400 words, however, for a CONSORT or PRISMA style abstract. MEDLINE can now handle up to 600 words
+> Use active voice but avoid “we did” or “we found”.
+> Numbers over 10 do not need spelling out at the start of sentences.
+> Sentences starting with a number do not require a capital letter.
+> P values should always be accompanied by supporting data, and denominators should be given for percentages.
+> Abstracts do not need references.
+> If the standard headings do not suit the type of study, please substitute something sensible, such as "population" as a heading instead of "participants" in an economics article. Please do not simply delete the heading.
+> 
+> For standard original research articles please provide the following headings and information (for RCTs please add the trial registration details - but there is no need to provide the additional subheadings which are used in the CONSORT statement on abstracts, as long as you include all the required information, and the same applies to the PRISMA statement):
+> 
+> Objectives - a clear statement of the main aim of the study and the major hypothesis tested or research question posed
+> Design - including factors such as prospective, randomisation, blinding, placebo control, case control, crossover, criterion standards for diagnostic tests, etc.
+> Setting - include the level of care, eg primary, secondary; number of participating centres. Be general rather than give the name of the specific centre, but give the geographical location if this is important.
+> Participants (instead of patients or subjects) - numbers entering and completing the study, sex, and ethnic group if appropriate. Give clear definitions of how selected, entry and exclusion criteria.
+> Interventions - what, how, when and for how long. This heading can be deleted if there were no interventions but should normally be included for randomised controlled trials, crossover trials, and before and after studies.
+> Main outcome measures - those planned in the protocol, those finally measured (if different, explain why).
+> Results - main results with (for quantitative studies) 95% confidence intervals and, where appropriate, the exact level of statistical significance and the number need to treat/harm. Whenever possible, state absolute rather than relative risks.
+> Conclusions - primary conclusions and their implications, suggesting areas for further research if appropriate. Do not go beyond the data in the article. Conclusions are important because this is often the only part that readers look at.
+> Trial registration - registry and number (for clinical trials and, if available, for observational studies and systematic reviews).
+> Please note that confidence intervals should be written in the format (15 to 27) within parentheses, using the word "to" rather than a hyphen.
+
 ## Background
 
 Identifying and responding to deterioration among ward patients includes early access to critical care. However, critical care provision in the NHS is constrained, and the effects of this on delay to critical care admission, and patient outcomes are poorly understood.
@@ -39,4 +68,6 @@ Deteriorating ward patients referred to critical care are vulnerable with a high
 ## Funding
 
 Wellcome Trust, NIHR Service Support Costs, and the Intensive Care National Audit & Research Centre
+
+- [ ] TODO(2016-06-04): A registration number and name of register for any study type, if registered—in the last line of the structured abstract. We are keen to promote registration for observational studies and systematic reviews.
 
