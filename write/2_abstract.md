@@ -1,78 +1,34 @@
-Abstract
-========
+# Abstract #
 
-Background
-----------
+## Objectives 
 
-Identifying and responding to deterioration among ward patients includes
-early access to critical care. However, critical care provision in the
-NHS is constrained, and the effects of this on delay to critical care
-admission, and patient outcomes are poorly understood.
+To describe the impact of delayed or refused critical care admission on outcomes of deteriorating ward patients
 
-Methods
--------
+## Design 
 
-We conducted a prospective cohort study of consecutive deteriorating
-ward patients referred to critical care in 48 NHS hospitals (1 November
-2010 --- 31 December 2011). We recorded both the assessor's
-recommendation for critical care, and the decision to admit. Admissions
-to critical care within one week, and deaths within one year were
-defined by linking to national registries. Incidence models were
-stratified by the NHS National Early Warning Score (NEWS) risk class,
-and used generalised estimating equations. Decision making and survival
-were modelled with random effects for the hospital using logistic
-regression and proportional hazards models respectively.
+Prospective observational cohort study
 
-Findings
---------
+## Setting 
 
-Critical care teams assessed 15158 patients of whom 6759 (45%) were in
-the highest NEWS risk class giving an incidence of 17 NEWS high risk
-patients (95%CI 17--18) per hospital per month. 5164 (34%) patients were
-already in established organ failure with only 870 patients (6%) already
-on organ support. Sepsis was reported in 9296 (61%) patients.
+48 NHS hospitals
 
-2141 (14%) patients with treatment limitation orders were declined
-critical care. 7-day, 90-day, and 1-year mortalities were 41%, 65%, and
-76% respectively.
+## Participants
 
-Of the remainder, the bedside assessor recommended 4976 (38%) to
-critical care. 3375 (68%) were immediately accepted. The median delay
-between asssessment and admission was 2 hours (IQR 1 to 4). Patients
-over 80 years were less likely to be accepted (OR 0.60 95%CI
-0.53--0.69). Despite adjustment for patient specific risk factors,
-decision making varied markedly between hospitals (median inter-hospital
-OR 2.11, 95%1.81--2.42).
+15158 adult ward patients referred to, and assessed by, critical care during 2010-11
 
-Of the 1601 (32%) patients recommended but initially refused, 1021 (64%)
-were admitted later with a median additional delay of 6 hours (IQR
-5--7). A further 179 (11%) patients recommended and refused died without
-admission.
+## Main outcome measures 
 
-Excluding patients with treatment limits, 7-day, 90-day, and 1-year
-mortalities were 14%, 30%, and 39% respectively. Mortality occured early
-with 964 of first week deaths (53%) within two days. Survival also
-varied between hospitals with a median interhospital hazard ratio of
-1.29 (95%CI, 1.22--1.35).
+Provision and timeliness of critical care, and mortality up to one year
 
-The critical care unit was full at the time of 1198 (8%) assessments.
-The patients concerned were less likely to be accepted to critical care
-(OR 0.72 \[95%CI 0.59--0.88\]), and less likely to be admitted promptly
-(OR 0.27 \[95%CI 0.19--0.37\]). Increasing occupancy was associated with
-greater physiological deterioration pending admission (p=0.01). We could
-not exclude an effect of occupancy on 90-day survival (HR 1.07, 95%CI
-1.00–-1.15).
+## Results 
 
-Conclusion
-----------
+Of 15158 ward patients assessed, 5164 (34%) were already in organ failure, with only 870 (6%) in receipt of organ support. 6759 (45%) were in the highest National Early Warning Score (NEWS) risk class giving an incidence of 17 high-risk referrals per hospital per month. 2141 (14%) patients with treatment limitation orders were declined critical care. Of the 13017 patients without treatment limits, 4976 (38%) were recommended for critical care, and 3375 (68%) were immediately offered admission (median time to admission 2 hours, IQR 1 to 4). The 1601 (32%) patients recommended for, but not immediately offered, critical care comprised 1021 (64%) who were admitted later  (median time 12 hours, IQR 5 to 29), and 179 (11%) patients who died without admission. Decision-making varied by patient subgroup (odds ratio (OR) 0.60, 95%CI 0.53 to 0.69 for immediate admission if \geq 80 years), and by hospital (median inter-hospital OR 2.11, 95%CI 1.81 to 2.42). For patients without treatment limits, 7-day, 90-day, and 1-year mortalities were 14%, 30%, and 39%, respectively. Survival varied between hospitals, even after adjustment for patient-specific risks (median inter-hospital hazard ratio (HR) 1.29, 95%CI 1.22-1.35). 1198 (8%) patients were assessed when critical care unit were less likely to be offered admission (OR 0.72, 95%CI 0.59 to 0.88), or admitted promptly (OR 0.27, 95%CI 0.19 to 0.37). Increased critical care occupancy was associated with greater physiological deterioration pending admission (p=0.01). An effect of occupancy on 90-day survival could not be excluded (HR 1.07, 95%CI 1.00 to 1.15).
 
-Deteriorating ward patients referred to critical care are vulnerable
-with a high initial mortality. Despite clinical recommendation for
-admission a substantial minority die without admission. High critical
-care occupancy both prejudices and delays admission.
+## Conclusions 
 
-Funding
--------
+Deteriorating ward patients referred to critical care have a high mortality. Despite clinical recommendation for admission, a substantial minority die or deteriorate pending admission partly related to high critical care occupancy.
 
-Wellcome Trust, NIHR Service Support Costs, and the Intensive Care
-National Audit & Research Centre
+## Registration 
+
+[ClinicalTrials.gov](http://clinicaltrials.gov/show/NCT01099813) (No. NCT01099813).
+

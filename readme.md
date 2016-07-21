@@ -76,6 +76,29 @@ paper:
 
 BMJ submission:
 
+- [x] Title - All manuscripts 
+- [x] Names, addresses, and positions of all authors - All manuscripts 
+- [ ] Copyright - All manuscripts 
+- [ ] A statement that "the Corresponding Author has the right to grant on behalf of all authors and does grant on behalf of all authors, an exclusive licence (or non exclusive for government employees) on a worldwide basis to the BMJ Publishing Group Ltd to permit this article (if accepted) to be published in BMJ editions and any other BMJPGL products and sublicences such use and exploit all subsidiary rights, as set out in our licence." 
+- [ ] Competing interest statement - All manuscripts 
+- [ ] All authors have completed the Unified Competing Interest form atwww.icmje.org/coi_disclosure.pdf (available on request from the corresponding author) and declare: no support from any organisation for the submitted work [or describe if any]; no financial relationships with any organisations that might have an interest in the submitted work in the previous three years [or describe if any], no other relationships or activities that could appear to have influenced the submitted work [or describe if any].- Please note: The corresponding author must collect Unified Competing Interest forms from all authors and summarise their declarations as above within the manuscript. You do NOT need to send copies of the forms to the BMJ. Please click here for further guidance 
+- [ ] Details of contributors, and the name of the guarantor - All full papers (eg not fillers or personal views) 
+- [ ] Transparency declaration: a statement that the lead author (the manuscript’s guarantor) affirms that the manuscript is an honest, accurate, and transparent account of the study being reported; that no important aspects of the study have been omitted; and that any discrepancies from the study as planned (and, if relevant, registered) have been explained 
+- [ ] Details of ethical approval (or a statement that it was not required) - All research studies 
+- [ ] Details of funding - All research studies 
+- [ ] Details of the role of the study sponsors - All research studies 
+- [ ] Statement of independence of researchers from funders - All research studies 
+- [ ] Trial registration details (registry and number) - All clinical trials 
+- [ ] Data sharing statement All research studies 
+- [ ] As an appendix (or in a supplementary file) 
+- [ ] CONSORT statement - All randomised controlled trials 
+PRISMA statement - All systematic reviews 
+EVEREST statement - All economic evaluations 
+STARD statement - All diagnostic research papers 
+STROBE statement - All observational studies 
+- [ ] Patient consent - All articles that include photographs or descriptions of patients 
+
+
 Checklist -Article requirements
 
 http://www.bmj.com/about-bmj/resources-authors

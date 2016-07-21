@@ -21,7 +21,7 @@ Survival was evaluated at 90-days. Sample size was calculated to evaluate mortal
 
 From the physiology measurements at ward assessment, the ICNARC physiology score, the NHS National Early Warning Score (NEWS) and the Sequential Organ Failure Assessment (SOFA) score were calculated with missing values given zero weights as recommended.[@Anonymous:2012un; @Harrison:2007jt; @Vincent:1996vs] The NEWS score can be used to define three risk classes (Low, Medium, and High) designed to trigger an escalating clinical response.
 
-Prompt admission to critical care was defined as one occuring within four hours of ward assessment.[@Anonymous:2013up]
+Prompt admission to critical care was defined as one occurring within four hours of ward assessment.[@Anonymous:2013up]
 
 The indicator of critical care unit occupancy was the difference between the maximum number of beds reported to ICNARC, and the number of actively treated patients occupying those beds at the time the ward patient was assessed. Bed pressure (occupancy) was defined as being high (zero or fewer beds available), medium (one or two beds available), or low (three or more beds available).
 
@@ -31,5 +31,6 @@ Categorical data were reported as counts and percentages, and continuous data as
 
 ## Role of the funding source
 
-The study was centrally funded by the Wellcome Trust, sponsored by ICNARC, and supported at NHS hospitals through the NIHR service support costs. The funders of the study had no role in the study design; data gathering, analysis, and interpretation; writing of the report; and decision to submit for publication. The corresponding author had full access to all the data (including statistical reports and tables), takes responsibility for the integrity of the data and accuracy of the data analysis, and takes final responsibility for the decision to submit for publication.
+The study was centrally funded by the Wellcome Trust, via a Clinical Research Training Fellowship (awarded to SH), and ICNARC (KR/DH), the London School of Hygiene and Tropical Medicine (SH/CS), the NIHR Clinical Research Network and the NIHR UCLH/UCL Biomedical Research Centre (MS). The funders of the study had no role in the study design; gathering, analysis, and interpretation of these data; writing of the report; and decision to submit the report for publication. The corresponding author had full access to all data (including statistical reports and tables); takes responsibility for the integrity of these data and the accuracy of the analysis; and takes final responsibility for the decision to submit for publication.
+
 

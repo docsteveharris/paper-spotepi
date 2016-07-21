@@ -1,3 +1,5 @@
+stop()
+- [ ] NOTE(2016-07-21): this is superseded by the handwritten abstract file 2_abstract.md
 ---
 title: "2_abstract"
 author: "Steve Harris"
@@ -38,6 +40,47 @@ Please ensure that the structured abstract is as complete, accurate, and clear a
 > Conclusions - primary conclusions and their implications, suggesting areas for further research if appropriate. Do not go beyond the data in the article. Conclusions are important because this is often the only part that readers look at.
 > Trial registration - registry and number (for clinical trials and, if available, for observational studies and systematic reviews).
 > Please note that confidence intervals should be written in the format (15 to 27) within parentheses, using the word "to" rather than a hyphen.
+
+## Objectives 
+
+To describe the provision, the timeliness of critical care, and the mortality for deteriorating ward patients, and the effect of critical care bed occupancy assessed with different
+
+## Design 
+
+Prospective observational cohort study
+
+## Setting 
+
+48 NHS hospitals
+
+## Participants
+
+15158 adult ward patients referred to, and assessed at the bedside by critical care during 2010-11
+
+## Main outcome measures 
+
+Provision and timeliness of critical care, and mortality up to one year
+
+## Results 
+
+15158 ward patients were assessed by critical care. 5164 (34%) patients were in organ failure, but only 870 (6%) were already in receipt of organ support. 6759 (45%) were in the highest NEWS risk class giving an incidence of 17 NEWS high risk referrals was per hospital per month. The critical care unit was full at the time of 1198 (8%) assessments.
+
+2141 (14%) patients with treatment limitation orders were declined critical care. Of the 13017 patients remaining, 4976 (38%) were recommended for critical care, and 3375 (68%) were immediately offered admission with a median delay to admission of 2 hours (IQR 1 to 4). The 1601 (32%) patients recommended for, but not immediately offered, critical care comprised 1021 (64%) who were admitted later  (median delay 12 hours [IQR 5 to 29]), and 179 (11%) patients who died without admission. Decision making varied by patient subgroup (OR 0.60 [95%CI 0.53 to 0.69] for immediate admission if 80 years or older), and by hospital (median inter-hospital OR 2.11, 95% 1.81 to 2.42). Without treatment limits, 7-day, 90-day, and 1-year mortalities were 14%, 30%, and 39% (1827, 3935, and 5068 deaths respectively). Mortality occured early
+with 964 of first week deaths (53%) within two days. After adjustment for patient specific risks, survival still varied between hospitals (median interhospital hazard ratio of 1.29 [95%CI, 1.22--1.35]).
+
+Patients assessed when critical care was full were less likely to be offered admission  (OR 0.72 \[95%CI 0.59--0.88\]), and less likely to be admitted promptly (OR 0.27 \[95%CI 0.19--0.37\]). Increasing occupancy was associated with greater physiological deterioration pending admission (p=0.01). We could
+not exclude an effect of occupancy on 90-day survival (HR 1.07, 95%CI
+1.00--1.15).
+
+## Conclusions 
+
+Deteriorating ward patients referred to critical care are vulnerable with a high initial mortality. Despite clinical recommendation for admission a substantial minority die without admission. High critical care occupancy both prejudices and delays admission.
+
+
+
+
+
+## Trial registration 
 
 ## Background
 

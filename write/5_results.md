@@ -66,7 +66,7 @@ was uncommon (870 patients, 6%).
 
 2708 (18%) patients died during the 7-days following ward assessment.
 Mortality was heavily front-loaded with 1539 (57%) of these deaths
-occuring within the first 48 hours (supplementary Figure 3). There was a
+occurring within the first 48 hours (supplementary Figure 3). There was a
 clear correlation between physiological severity and early (7-day)
 mortality using either ward based (NEWS) or critical care scoring
 systems (SOFA, ICNARC) (supplementary Figure 3). As an example, the
