@@ -1,25 +1,33 @@
 Dear Editor,
 
-We have pleasure in submitting our manuscript entitled "Provision of critical care for deteriorating ward patients, and impact on mortality: a prospective observational cohort study in 48 NHS hospitals" for your consideration.
+We have pleasure in submitting our manuscript entitled "Provision of critical care, and impact on mortality for deteriorating ward patients: a prospective observational cohort study in 48 NHS hospitals" for your consideration.
 
 This is the largest prospective observational study of deteriorating ward patients referred to critical care to date. We show that these vulnerable patients are often admitted late, or refused admission. One in twelve patients are referred when the critical care unit is already full, which negatively impacts on provision and timeliness of critical care, and patient physiology. Moreover, there is significant variation between hospitals even after adjustment for occupancy and patient specific risk factors. 
 
-With an the NHS firmly in the spotlight, we believe our study results will be particularly timely to fuel the debate about healthcare spending and resource utilization.
-
-Please note 
-
-- this work won awards when presented at the UK and European Intensive Care Society Meetings in 2014
-- we would respectfully suggest the following people to help with peer review
+With the NHS firmly in the spotlight, we believe our study results will be particularly timely to fuel the debate about healthcare spending and resource utilization.
 
 Sincerely
 
+Steve Harris
+
+---
+
+Dr Steve Harris PhD FRCA FFICM
+Consultant in Anaesthesia and Critical Care
+University College London Hospital
+
+Primary email: doc@steveharris.me
+Secure email: s.harris8@nhs.net
+mobile: 07977 583315
 
 
-> We realise that the paper exceeds the recommended word count. We have included an extensive discussion about the biases in a non-randomised evaluation of critical care alongside the instrumental variable analysis. Whilst we believe this is important, if the paper needed shortening, then the description of decision making and outcomes for NHS ward patients, when critical care is under strain do stand independently.
+Additional notes
 
-In the cover letter
+Please note 
 
-- [X] Details of previous publications from the same study - including in scientific abstracts or partial reports by the media at scientific meetings and in foreign language journals.
-- [X] Details of any previous publication of the same study in electronic form. For example, The BM does not consider posting of protocols and results in clinical trials registries to be prior publication, but we would like to know if results have been posted, and where (please provide URLs or trial registration details). And we are pleased to consider articles based on longer systematic reviews and meta-analyses published at the Cochrane Library or HTA database.
-- [ ] Names and contact details (including email addresses) of suitable peer reviewers; we often find authors' suggestions helpful, although this is optional.
-
+- This work has been presented (and won awards) at the UK and European Intensive Care Society Meetings in 2014
+- We would respectfully suggest the following people to help with peer review
+    + Professor Nick Black, nick.black@lshtm.ac.uk
+    + Dr Nazir Lone, nazir.lone@ed.ac.uk
+    + Professor Richard Grieve, Richard.Grieve@lshtm.ac.uk
+- We realise that the paper exceeds the recommended word count (4403 versus 4000 words). We considered removing the discussion of incidence but retained this on the basis that it was one of the endpoints of the original study protocol. We would be happy to move this to the supplemental material if needed.

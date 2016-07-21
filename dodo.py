@@ -379,6 +379,7 @@ def task_manuscript():
                 --normalize \
                 --reference-docx=write/manuscript/pandoc-reference.docx  \
                 write/1_title.md \
+                write/what_this_paper_adds.md \
                 write/2_abstract.md \
                 write/3_intro.md \
                 write/4_methods.md \

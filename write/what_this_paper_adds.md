@@ -1,14 +1,15 @@
-"What this paper adds" box
-Please produce a box offering a thumbnail sketch of what your article adds to the literature, for readers who would like an overview without reading the whole article. The box should be divided into two short sections, each with 1-3 short sentences.
+# What this paper adds #
 
-Section 1: What is already known on this subject
-In two or three single sentence bullet points, please summarise the state of scientific knowledge on this subject before you did your study, and why this study needed to be done. Be clear and specific, not vague.
+## What is already known on this topic ##
 
-For example, you might say: “Numerous observational studies have suggested that tea drinking may be effective in treating depression, but until now evidence from randomised controlled trials has been lacking/the only randomised controlled trial to date was underpowered/was carried out in an unusual population/did not use internationally accepted outcome measures/used too low a dose of tea.”
+- Critical care provision in the UK is limited in comparison to health care systems in Europe and North America.
+- Deteriorating patient pathways, the interface between the ward and critical care, have been a priority area for the National Health Service (NHS) since 2005 but existing data comes comes from small retrospective studies or voluntary reporting systems.
 
-or: “Evidence from trials of tea therapy in depression have given conflicting results. Although Sjogren and Smith conducted a systematic review in 1995, a further 15 trials have been carried out since then…”
+## What this study adds ##
 
-Section 2: What this study adds
-In one or two single sentence bullet points, give a simple answer to the question “What do we now know as a result of this study that we did not know before?” Be brief, succinct, specific, and accurate. For example: "Our study suggests that tea drinking has no overall benefit in depression."
+- Ward patients assessed by critical care are immediately vulnerable:  a third are in established organ failure, and 14% die within a week, even excluding those with treatment limits.
+- Although a third (35%) of patients assessed are recommended critical care, 37% of these are not offered a bed, and delays to admission commonly exceed national guidelines
+- One in twelve patients (8%) are assessed when the unit is already full: these patients are less likely to be offered critical care or admitted promptly, and are more likely to deteriorate pending admission.
+- Bedside decision making for deteriorating patients is imperfect, and compromised by current critical care provision.
 
-You might use the last sentence to summarise any implications for practice, research, policy, or public health. For example, your study might have asked and answered a new question (one whose relevance has only recently become clear); contradicted a belief, dogma, or previous evidence provided a new perspective on something that is already known in general; or provided evidence of higher methodological quality for a message that is already known.
+

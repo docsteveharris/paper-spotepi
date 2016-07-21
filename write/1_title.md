@@ -2,7 +2,7 @@
 
 ## Title
 
-Provision of critical care for deteriorating ward patients, and impact on mortality: a prospective observational cohort study in 48 NHS hospitals
+Provision of critical care and mortality for deteriorating ward patients: a prospective observational cohort study in 48 NHS hospitals
 
 ## Authors
 
@@ -61,7 +61,7 @@ The study was registered on the National Institute of Health Research (NIHR) res
 
 Wellcome Trust, via a Clinical Research Training Fellowship (awarded to SH), and ICNARC (KR/DH), the London School of Hygiene and Tropical Medicine (SH/CS), the NIHR Clinical Research Network and the NIHR UCLH/UCL Biomedical Research Centre (MS). The funders of the study had no role in the study design; gathering, analysis, and interpretation of these data; writing of the report; and decision to submit the report for publication.
 
-### Data sharing
+## Data sharing
 
-Patient level data and full dataset and statistical code available at from the corresponding author. Consent was not obtained, but permission to process patient data was approved by the National Information Governance Board Ethics & Confidentiality Committee (Reference ECC 1-02 (FT1)/2011), and all identifiable data have now been destroyed. The presented data are anonymised and risk of identification is low.
+Patient level data and full dataset and statistical code available from the corresponding author. Consent was not obtained, but permission to process patient data was approved by the National Information Governance Board Ethics & Confidentiality Committee (Reference ECC 1-02 (FT1)/2011), and all identifiable data have now been destroyed. The presented data are anonymised and risk of identification is low.
 
